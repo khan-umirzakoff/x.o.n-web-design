@@ -1,4 +1,5 @@
 import React, { useMemo } from 'react';
+import { Link } from 'react-router-dom';
 
 // Static image URLs for decorative purposes. These load instantly without API calls.
 const wallImages = [
@@ -37,11 +38,10 @@ const wallImages = [
 ];
 
 interface WallProps {
-    navigate: (page: string) => void;
     t: (key: string) => string;
 }
 
-const Wall: React.FC<WallProps> = ({ navigate, t }) => {
+const Wall: React.FC<WallProps> = ({ t }) => {
     // Shuffle images once on component mount for variety, but keep it stable on re-renders.
     const { row1, row2, row3 } = useMemo(() => {
         const shuffled = [...wallImages].sort(() => 0.5 - Math.random());
@@ -51,11 +51,6 @@ const Wall: React.FC<WallProps> = ({ navigate, t }) => {
             row3: shuffled.slice(22, 32),
         }
     }, []);
-
-    const handleWallClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
-        navigate('games');
-    };
 
     const renderRow = (images: string[], animationClass: string) => (
         <div className="flex">
@@ -78,7 +73,7 @@ const Wall: React.FC<WallProps> = ({ navigate, t }) => {
                 </p>
             </div>
 
-             <a href="#" onClick={handleWallClick} className="block cursor-pointer group relative mt-14">
+             <Link to="/games" className="block cursor-pointer group relative mt-14">
                 <div className="space-y-4 overflow-hidden">
                     {renderRow(row1, 'animate-marquee-right')}
                     {renderRow(row2, 'animate-marquee-left')}
@@ -86,7 +81,7 @@ const Wall: React.FC<WallProps> = ({ navigate, t }) => {
                 </div>
                 <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 </div>
-            </a>
+            </Link>
         </div>
     );
 };

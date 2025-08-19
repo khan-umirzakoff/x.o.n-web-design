@@ -1,6 +1,5 @@
 
 import React from 'react';
-import { NavigateOptions } from '../types';
 
 const SocialLink: React.FC<{ href: string; children: React.ReactNode; }> = ({ href, children }) => (
     <a href={href} target="_blank" rel="noopener noreferrer" className="inline-block bg-white/10 text-gray-200 hover:bg-white/20 hover:text-white transition-colors rounded-lg px-4 py-2 text-base">
@@ -10,7 +9,6 @@ const SocialLink: React.FC<{ href: string; children: React.ReactNode; }> = ({ hr
 
 interface AboutServicePageProps {
   t: (key: string) => string;
-  navigate: (page: string, options?: NavigateOptions) => void;
 }
 
 const AboutServicePage: React.FC<AboutServicePageProps> = ({ t }) => {

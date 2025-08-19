@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 import GuideSidebar from './guides/GuideSidebar';
 
 const Step: React.FC<{
@@ -32,21 +33,21 @@ const Step: React.FC<{
 );
 
 interface HowToStartPageProps {
-    navigate: (page: string) => void;
-    currentPage: string;
     t: (key: string) => string;
     onLoginClick?: () => void;
     onTopUpClick?: () => void;
     isLoggedIn?: boolean;
 }
 
-const HowToStartPage: React.FC<HowToStartPageProps> = ({ navigate, currentPage, t, onLoginClick, onTopUpClick, isLoggedIn }) => {
+const HowToStartPage: React.FC<HowToStartPageProps> = ({ t, onLoginClick, onTopUpClick, isLoggedIn }) => {
+  const navigate = useNavigate();
+
   return (
     <div className="bg-[#111]">
       <div className="container mx-auto px-4 py-8">
         <div className="flex flex-col lg:flex-row gap-8">
           <div className="lg:w-1/4 w-full flex-shrink-0">
-            <GuideSidebar navigate={navigate} currentPage={currentPage} platform="windows" t={t} />
+            <GuideSidebar t={t} />
           </div>
           <div className="lg:w-3/4 w-full text-gray-300">
             <div className="max-w-2xl">
@@ -83,7 +84,7 @@ const HowToStartPage: React.FC<HowToStartPageProps> = ({ navigate, currentPage, 
                   title={t('step3Title')}
                   description={t('step3Desc')}
                   buttonText={t('step3Btn')}
-                  onClick={() => navigate('download')}
+                  onClick={() => navigate('/download')}
                 />
                  <Step 
                   step={4}
@@ -95,7 +96,7 @@ const HowToStartPage: React.FC<HowToStartPageProps> = ({ navigate, currentPage, 
                   title={t('step5Title')}
                   description={t('step5Desc')}
                   buttonText={t('step5Btn')}
-                  onClick={() => navigate('games')}
+                  onClick={() => navigate('/games')}
                 />
               </div>
             </div>

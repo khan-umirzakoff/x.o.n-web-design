@@ -1,8 +1,8 @@
 
 import React from 'react';
+import { useNavigate } from 'react-router-dom';
 
 interface SupportPageProps {
-  navigate: (page: string) => void;
   t: (key: string) => string;
 }
 
@@ -18,7 +18,8 @@ const SupportCard: React.FC<{title: string, children: React.ReactNode, icon: str
 );
 
 
-const SupportPage: React.FC<SupportPageProps> = ({ navigate, t }) => {
+const SupportPage: React.FC<SupportPageProps> = ({ t }) => {
+  const navigate = useNavigate();
   return (
     <div className="bg-[#111] py-16 sm:py-10 text-gray-300 min-h-[calc(100vh-128px)]">
       <div className="container mx-auto px-4">
@@ -29,7 +30,7 @@ const SupportPage: React.FC<SupportPageProps> = ({ navigate, t }) => {
               title={t('supportFaqTitle')} 
               icon="/assets/images/icons/support/faq.svg"
               action={
-                <button onClick={() => navigate('guides')} className="bg-white/10 hover:bg-white/20 text-white font-medium py-2 px-6 rounded-lg transition-colors w-full md:w-auto">
+                <button onClick={() => navigate('/guides')} className="bg-white/10 hover:bg-white/20 text-white font-medium py-2 px-6 rounded-lg transition-colors w-full md:w-auto">
                     {t('viewGuides')}
                 </button>
               }

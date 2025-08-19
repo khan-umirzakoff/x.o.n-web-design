@@ -1,9 +1,8 @@
 
 import React from 'react';
-
+import { Link } from 'react-router-dom';
 
 interface DownloadPageProps {
-  navigate: (page: string) => void;
   t: (key: string) => string;
 }
 
@@ -23,7 +22,7 @@ const DownloadLink: React.FC<{
   </a>
 );
 
-const DownloadPage: React.FC<DownloadPageProps> = ({ navigate, t }) => {
+const DownloadPage: React.FC<DownloadPageProps> = ({ t }) => {
   return (
     <div className="bg-[#111] py-16 sm:py-10">
       <div className="container mx-auto px-4">
@@ -82,13 +81,12 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ navigate, t }) => {
               <p>{t('downloadDesc')}</p>
             </div>
             <div className="mt-4 text-sm">
-              <a 
-                href="#" 
-                onClick={(e) => { e.preventDefault(); navigate('system-requirements'); }} 
+              <Link
+                to="/system-requirements"
                 className="text-gray-400 hover:text-white underline"
               >
                 {t('sysReq')}
-              </a>
+              </Link>
             </div>
           </div>
           

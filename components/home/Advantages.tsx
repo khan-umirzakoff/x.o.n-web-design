@@ -17,21 +17,13 @@ const AdvantageCard = ({ title, description, actions, image, imageSide = 'right'
     </div>
 );
 
+import { Link } from 'react-router-dom';
+
 interface AdvantagesProps {
-    navigate: (page:string) => void;
     t: (key: string) => string;
 }
 
-const Advantages: React.FC<AdvantagesProps> = ({ navigate, t }) => {
-    const handleDownloadClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
-        navigate('download');
-    };
-
-    const handleSystemRequirementsClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-        e.preventDefault();
-        navigate('system-requirements');
-    };
+const Advantages: React.FC<AdvantagesProps> = ({ t }) => {
 
     const deviceIcons = [
       { src: '/assets/images/icons/os/windows.svg', name: 'Windows' },
@@ -49,9 +41,9 @@ const Advantages: React.FC<AdvantagesProps> = ({ navigate, t }) => {
                     title={t('adv1Title')}
                     description={t('adv1Desc')}
                     actions={
-                        <a href="#" onClick={handleSystemRequirementsClick} className="bg-white/90 text-black text-lg font-semibold rounded-lg px-8 py-4 hover:bg-white transition-colors transform hover:scale-105 sm:w-full sm:max-w-xs">
+                        <Link to="/system-requirements" className="bg-white/90 text-black text-lg font-semibold rounded-lg px-8 py-4 hover:bg-white transition-colors transform hover:scale-105 sm:w-full sm:max-w-xs">
                             {t('adv1Btn')}
-                        </a>
+                        </Link>
                     }
                     image={
                         <div className="grid grid-cols-2 sm:grid-cols-3 gap-4 lg:gap-6">
@@ -68,9 +60,9 @@ const Advantages: React.FC<AdvantagesProps> = ({ navigate, t }) => {
                     title={t('adv2Title')}
                     description={t('adv2Desc')}
                     actions={
-                        <a href="#" onClick={handleDownloadClick} className="bg-theme-gradient text-white text-lg font-semibold rounded-lg px-8 py-4 hover-glow transition-all transform hover:scale-105 sm:w-full sm:max-w-xs">
+                        <Link to="/download" className="bg-theme-gradient text-white text-lg font-semibold rounded-lg px-8 py-4 hover-glow transition-all transform hover:scale-105 sm:w-full sm:max-w-xs">
                             {t('adv2Btn2')}
-                        </a>
+                        </Link>
                     }
                     image={
                          <img src="/assets/images/misc/devices-xxl-xl.jpg" alt="Multiple devices" className="w-full h-auto rounded-lg shadow-2xl shadow-blue-500/10 fade-in-on-load" />

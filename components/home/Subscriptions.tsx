@@ -1,12 +1,12 @@
 
 
 import React, { useMemo } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { CheckIcon } from '../icons';
 import { translations } from '../../i18n';
 import { User } from '../../types';
 
 interface SubscriptionsProps {
-    navigate: (page: string) => void;
     t: (key: string) => string;
     onTopUpClick: () => void;
     currentUser: User | null;
@@ -44,7 +44,8 @@ const tiers = [
   }
 ];
 
-const Subscriptions: React.FC<SubscriptionsProps> = ({ navigate, t, onTopUpClick, currentUser, isLoggedIn, onLoginClick }) => {
+const Subscriptions: React.FC<SubscriptionsProps> = ({ t, onTopUpClick, currentUser, isLoggedIn, onLoginClick }) => {
+    const navigate = useNavigate();
     const balance = currentUser?.balance ?? 0;
 
     const timeSlots = useMemo(() => ([
@@ -59,7 +60,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({ navigate, t, onTopUpClick
             return;
         }
         if (currentUser && currentUser.balance > 0) {
-            navigate('games');
+            navigate('/games');
         } else {
             onTopUpClick();
         }

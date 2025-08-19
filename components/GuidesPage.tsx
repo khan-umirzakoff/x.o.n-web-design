@@ -1,20 +1,17 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface GuideCardProps {
   title: string;
   text: string;
   imgSrc: string;
-  onClick: () => void;
+  to: string;
 }
 
-const GuideCard: React.FC<GuideCardProps> = ({ title, text, imgSrc, onClick }) => (
-  <a
-    href="#"
-    onClick={(e) => {
-      e.preventDefault();
-      onClick();
-    }}
+const GuideCard: React.FC<GuideCardProps> = ({ title, text, imgSrc, to }) => (
+  <Link
+    to={to}
     className="guidesSelect__item group relative block overflow-hidden rounded-lg bg-[#222] p-6 text-white transition-colors hover:bg-[#333]"
   >
     <div className="guidesSelect__itemContent relative z-10">
@@ -25,40 +22,39 @@ const GuideCard: React.FC<GuideCardProps> = ({ title, text, imgSrc, onClick }) =
       <path d="M7 17L17 7M17 7V17M17 7H7" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round"></path>
     </svg>
     <img src={imgSrc} alt="" className="guidesSelect__itemImg absolute bottom-0 right-0 z-0 h-24 w-auto object-contain transition-transform group-hover:scale-110 fade-in-on-load" />
-  </a>
+  </Link>
 );
 
 interface GuidesPageProps {
-    navigate: (page: string) => void;
     t: (key: string) => string;
 }
 
-const GuidesPage: React.FC<GuidesPageProps> = ({ navigate, t }) => {
+const GuidesPage: React.FC<GuidesPageProps> = ({ t }) => {
 
   const guides = [
     {
       title: t('guide1Title'),
       text: t('guide1Text'),
       imgSrc: '/assets/images/guides/gamepad.png',
-      page: 'how-to-start'
+      to: '/how-to-start'
     },
     {
       title: t('guide2Title'),
       text: t('guide2Text'),
       imgSrc: '/assets/images/guides/puzzle.png',
-      page: 'support' // Changed to support page as it fits FAQ
+      to: '/support'
     },
     {
       title: t('guide3Title'),
       text: t('guide3Text'),
       imgSrc: '/assets/images/guides/lightning.png',
-      page: 'nvidia-tech'
+      to: '/nvidia-tech'
     },
     {
       title: t('guide4Title'),
       text: t('guide4Text'),
       imgSrc: '/assets/images/guides/cog.png',
-      page: 'system-requirements'
+      to: '/system-requirements'
     }
   ];
 
@@ -79,7 +75,7 @@ const GuidesPage: React.FC<GuidesPageProps> = ({ navigate, t }) => {
                 title={guide.title}
                 text={guide.text}
                 imgSrc={guide.imgSrc}
-                onClick={() => navigate(guide.page)}
+                to={guide.to}
               />
             ))}
           </div>

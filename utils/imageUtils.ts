@@ -48,8 +48,6 @@ export const checkImageExists = (imagePath: string): Promise<boolean> => {
 export const getImageSrc = async (
   _gameTitle: string,
   providedUrl: string,
-  _imageType: 'art' | 'wide_art' | 'screenshot',
-  _screenshotIndex?: number
 ): Promise<string> => {
   // The api now constructs correct content URLs, so just return it
   return providedUrl;
