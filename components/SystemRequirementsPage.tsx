@@ -1,12 +1,9 @@
 
 import React from 'react';
+import { useParams } from 'react-router-dom';
 import GuideSidebar from './guides/GuideSidebar';
-import { NavigateOptions } from '../types';
 
 interface SystemRequirementsPageProps {
-    navigate: (page: string, options?: NavigateOptions) => void;
-    currentPage: string;
-    platform: string;
     t: (key: string) => string;
 }
 
@@ -107,7 +104,7 @@ const TVRequirements: React.FC<{ t: (key: string) => string }> = ({ t }) => (
     </>
 );
 
-const platformComponents: {[key: string]: React.FC<{t: (key: string) => string}>} = {
+const platformComponents: {[key:string]: React.FC<{t: (key: string) => string}>} = {
     windows: WindowsRequirements,
     macos: MacOSRequirements,
     android: AndroidRequirements,
@@ -117,7 +114,8 @@ const platformComponents: {[key: string]: React.FC<{t: (key: string) => string}>
     tv: TVRequirements,
 };
 
-const SystemRequirementsPage: React.FC<SystemRequirementsPageProps> = ({ navigate, currentPage, platform, t }) => {
+const SystemRequirementsPage: React.FC<SystemRequirementsPageProps> = ({ t }) => {
+    const { platform = 'windows' } = useParams<{ platform: string }>();
     const PlatformComponent = platformComponents[platform] || WindowsRequirements;
 
     return (
@@ -125,7 +123,7 @@ const SystemRequirementsPage: React.FC<SystemRequirementsPageProps> = ({ navigat
             <div className="container mx-auto px-4 py-8">
                 <div className="flex flex-col lg:flex-row gap-8">
                     <div className="lg:w-1/4 w-full flex-shrink-0">
-                        <GuideSidebar navigate={navigate} currentPage={currentPage} platform={platform} t={t} />
+                        <GuideSidebar t={t} />
                     </div>
                     <div className="lg:w-3/4 w-full text-gray-300 space-y-8">
                         <PlatformComponent t={t} />

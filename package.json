@@ -14,9 +14,11 @@
     "type-check": "tsc --noEmit"
   },
   "dependencies": {
+    "@types/react-router-dom": "^5.3.3",
     "babel-plugin-react-compiler": "^19.0.0-beta-af1b7da-20250417",
     "react": "^19.1.0",
     "react-dom": "^19.1.0",
+    "react-router-dom": "^7.8.1",
     "swiper": "^11.2.10"
   },
   "devDependencies": {

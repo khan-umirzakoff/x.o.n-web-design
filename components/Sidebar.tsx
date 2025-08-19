@@ -1,31 +1,33 @@
 
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 import { LoginIcon, LogoutIcon } from './icons';
 import { User } from '../types';
 
 interface SidebarProps {
   isOpen: boolean;
   isLoggedIn: boolean;
-  navigate: (page: string, options?: object) => void;
   t: (key: string) => string;
   onLoginClick: () => void;
   onLogout: () => void;
   currentUser: User | null;
+  closeSidebar: () => void;
 }
 
 const Sidebar: React.FC<SidebarProps> = ({
     isOpen,
     isLoggedIn,
-    navigate,
     t,
     onLoginClick,
     onLogout,
-    currentUser
+    currentUser,
+    closeSidebar
 }) => {
-  const handleNavigate = (page: string) => {
-    navigate(page);
-  };
+  const handleLoginAndClose = () => {
+    onLoginClick();
+    closeSidebar();
+  }
     
   return (
     <div
@@ -36,11 +38,11 @@ const Sidebar: React.FC<SidebarProps> = ({
         <aside className="p-4 flex flex-col h-full overflow-y-auto overscroll-contain">
             {!isLoggedIn ? (
                 <div className="flex flex-col space-y-4 mb-4">
-                    <button onClick={onLoginClick} className="bg-white/10 text-white text-center py-2.5 rounded-lg font-medium hover-glow hover:bg-white/20 transition-all flex items-center justify-center gap-2">
+                    <button onClick={handleLoginAndClose} className="bg-white/10 text-white text-center py-2.5 rounded-lg font-medium hover-glow hover:bg-white/20 transition-all flex items-center justify-center gap-2">
                       <LoginIcon className="w-5 h-5" />
                       {t('login')}
                     </button>
-                    <button onClick={onLoginClick} className="bg-theme-gradient text-white text-center py-2.5 rounded-lg font-medium hover-glow transition-all">
+                    <button onClick={handleLoginAndClose} className="bg-theme-gradient text-white text-center py-2.5 rounded-lg font-medium hover-glow transition-all">
                       {t('registerAndPlay')}
                     </button>
                 </div>
@@ -51,11 +53,11 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
             )}
              <nav className="flex flex-col space-y-2 text-gray-300 flex-grow">
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigate('games'); }} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('games')}</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigate('download'); }} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('download')}</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigate('guides'); }} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('guides')}</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigate('about-service'); }} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('aboutService')}</a>
-                <a href="#" onClick={(e) => { e.preventDefault(); handleNavigate('support'); }} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('support')}</a>
+                <Link to="/games" onClick={closeSidebar} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('games')}</Link>
+                <Link to="/download" onClick={closeSidebar} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('download')}</Link>
+                <Link to="/guides" onClick={closeSidebar} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('guides')}</Link>
+                <Link to="/about-service" onClick={closeSidebar} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('aboutService')}</Link>
+                <Link to="/support" onClick={closeSidebar} className="p-3 hover:bg-white/5 rounded-md transition-colors">{t('support')}</Link>
              </nav>
              {isLoggedIn && (
                <div className="mt-auto">

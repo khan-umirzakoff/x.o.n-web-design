@@ -1,5 +1,6 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 const twitchIconDataUri = 'data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSIjOUNBM0FGIj48dGl0bGU+VHdpdGNoPC90aXRsZT48cGF0aCBkPSJNMTEuNTcxIDQuNzE0aDEuNzE1djUuMTQzSDExLjU3em00LjcxNCAwaDEuNzE1djUuMTQzaC0xLjcxNXpNNiAwTDIuNzE0IDQuMjg2djE1LjQyOGg1LjE0M1YyNGw0LjI4Ni00LjI4NmgzLjQyOEwyMi4yODYgMTJWMEg2em0xNC41NzEgMTEuMTQzbC0zLjQyOCAzLjQyOGgtMy40MjlsLTMgM3YtM0g4LjU3MVYxLjcxNGgxMnY5LjQyOXoiLz48L3N2Zz4=';
 
@@ -16,10 +17,9 @@ const socialIcons = [
 
 interface FooterBottomProps {
     t: (key: string) => string;
-    navigate: (page: string) => void;
 }
 
-const FooterBottom: React.FC<FooterBottomProps> = ({ t, navigate }) => {
+const FooterBottom: React.FC<FooterBottomProps> = ({ t }) => {
     return (
         <div className="bg-black border-t border-white/10 py-6">
             <div className="container mx-auto px-4">
@@ -27,13 +27,12 @@ const FooterBottom: React.FC<FooterBottomProps> = ({ t, navigate }) => {
                     <div className="text-gray-500 text-sm text-center md:text-left">
                         <p>
                             <span>{t('serviceProvidedBy')} </span>
-                            <a
-                                href="#"
-                                onClick={(e) => { e.preventDefault(); navigate('about-service'); }}
+                            <Link
+                                to="/about-service"
                                 className="text-gray-300 hover:text-white transition-colors underline"
                             >
                                 CLOUD PLAY Services
-                            </a>
+                            </Link>
                             . © 2025
                         </p>
                         <p className="mt-1">

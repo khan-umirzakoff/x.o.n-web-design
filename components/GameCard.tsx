@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { Game, Language } from '../types';
-import { useTranslation } from '../hooks/useTranslation';
-import { loggingService } from '../services/loggingService';
+import { Game } from '../types';
 
 // Store icon mapping (reused from GameDetailsPage)
 const STORE_ICON_MAP = {
@@ -24,14 +22,11 @@ const resolveStoreIcon = (store: string): string | undefined => {
 
 interface GameCardProps {
     game: Game;
-    onClick?: (game: Game) => void;
-    language?: Language;
 }
 
-const GameCard: React.FC<GameCardProps> = ({ game, onClick, language = 'ENG' }) => {
+const GameCard: React.FC<GameCardProps> = ({ game }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
-    const { t } = useTranslation(language);
     // Use local-first source for cover art
     const [imageSrc, setImageSrc] = useState<string>(game.image);
 
@@ -39,18 +34,11 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, language = 'ENG' }) 
         let canceled = false;
         (async () => {
             const { getImageSrc } = await import('../utils/imageUtils');
-            const src = await getImageSrc(game.title, game.image, 'art');
+            const src = await getImageSrc(game.title, game.image);
             if (!canceled) setImageSrc(src);
         })();
         return () => { canceled = true; };
     }, [game.title, game.image]);
-
-    const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-        e.preventDefault();
-        if (onClick) {
-            onClick(game);
-        }
-    };
 
     const handleImageLoad = () => {
         setImageLoaded(true);
@@ -62,17 +50,8 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, language = 'ENG' }) 
     };
 
     return (
-        <button onClick={handleClick} type="button"
+        <div
             className="gameCard group block relative rounded-lg overflow-hidden shrink-0 aspect-square cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 w-full"
-            
-            onKeyDown={(e) => {
-                if (e.key === 'Enter' || e.key === ' ') {
-                    e.preventDefault();
-                    if (onClick) {
-                        onClick(game);
-                    }
-                }
-            }}
             aria-label={`Play ${game.title} - ${game.genres.join(", ")}`}
         >
             <div className="absolute -inset-px bg-theme-gradient rounded-lg opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 z-0"></div>
@@ -137,7 +116,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick, language = 'ENG' }) 
                     </div>
                 </div>
             </div>
-        </button>
+        </div>
     );
 };
 

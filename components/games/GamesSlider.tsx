@@ -1,9 +1,9 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { NavigateOptions, User, Language, Banner } from '../../types';
+import { useNavigate } from 'react-router-dom';
+import { User, Language, Banner } from '../../types';
 import { api } from '../../services/api';
 
 interface GamesSliderProps {
-    navigate: (page: string, options?: NavigateOptions) => void;
     t: (key: string) => string;
     currentUser: User | null;
     isLoggedIn: boolean;
@@ -12,7 +12,8 @@ interface GamesSliderProps {
     language?: Language;
 }
 
-const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t, currentUser, isLoggedIn, onTopUpClick, onLoginClick, language = 'ENG' }) => {
+const GamesSlider: React.FC<GamesSliderProps> = ({ t, currentUser, isLoggedIn, onTopUpClick, onLoginClick, language = 'ENG' }) => {
+    const navigate = useNavigate();
     const [currentSlide, setCurrentSlide] = useState(0);
     const [banners, setBanners] = useState<Banner[]>([]);
 
@@ -48,8 +49,7 @@ const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t, currentUser, isL
         return () => clearInterval(timer);
     }, [nextSlide, sliderSlides.length]);
     
-    const handlePlayClick = async (e: React.MouseEvent<HTMLAnchorElement>, slide: typeof sliderSlides[0]) => {
-      e.preventDefault();
+    const handlePlayClick = async (slide: typeof sliderSlides[0]) => {
       if (!isLoggedIn) {
         onLoginClick();
         return;
@@ -61,10 +61,10 @@ const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t, currentUser, isL
       
       const game = await api.getGameByTitle(slide.gameTitle);
       if (game) {
-        navigate('game-details', { game });
+        navigate(`/game/${game.id}`);
       } else {
         console.warn(`Game "${slide.gameTitle}" not found for slider.`);
-        navigate('all-games', { search: slide.gameTitle });
+        navigate(`/all-games?search=${slide.gameTitle}`);
       }
     };
 
@@ -87,9 +87,9 @@ const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t, currentUser, isL
                                     {slide.label && <span className="catalogSliderItem__label text-xs sm:text-sm font-bold bg-green-500/80 px-2 py-1 rounded-md mb-2 inline-block">{slide.label}</span>}
                                     <h3 className="catalogSliderItem__title text-xl sm:text-2xl lg:text-3xl font-bold mb-2">{slide.title}</h3>
                                     {slide.text && <p className="catalogSliderItem__text text-gray-200 text-sm sm:text-base mb-4 hidden sm:block">{slide.text}</p>}
-                                    <a href="#" onClick={(e) => handlePlayClick(e, slide)} className="catalogSliderItem__action btn bg-white text-black font-bold py-2 px-6 rounded-md hover:bg-gray-200 transition-colors text-sm sm:text-base">
+                                    <button onClick={() => handlePlayClick(slide)} className="catalogSliderItem__action btn bg-white text-black font-bold py-2 px-6 rounded-md hover:bg-gray-200 transition-colors text-sm sm:text-base">
                                         {t('play')}
-                                    </a>
+                                    </button>
                                 </div>
                             </div>
                         </div>

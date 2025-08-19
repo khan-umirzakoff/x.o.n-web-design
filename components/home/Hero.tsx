@@ -1,12 +1,12 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface HeroProps {
-    navigate: (page: string) => void;
     t: (key: string) => string;
 }
 
-const Hero: React.FC<HeroProps> = ({ navigate, t }) => {
+const Hero: React.FC<HeroProps> = ({ t }) => {
     return (
         <div className="relative min-h-screen flex items-center justify-center text-center -mt-[72px] pt-[72px] overflow-hidden">
             <div 
@@ -24,9 +24,9 @@ const Hero: React.FC<HeroProps> = ({ navigate, t }) => {
                     {t('heroSubtitle')}
                 </p>
                 <div className="mt-12 flex justify-center">
-                     <a href="#" onClick={(e) => { e.preventDefault(); navigate('games'); }} className="bg-theme-gradient text-white font-bold text-lg rounded-lg px-10 py-4 hover-glow transition-all shadow-lg transform hover:scale-105">
+                     <Link to="/games" className="bg-theme-gradient text-white font-bold text-lg rounded-lg px-10 py-4 hover-glow transition-all shadow-lg transform hover:scale-105">
                         {t('registerAndPlay')}
-                    </a>
+                    </Link>
                 </div>
             </div>
         </div>

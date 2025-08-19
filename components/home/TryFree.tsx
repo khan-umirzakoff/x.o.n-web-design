@@ -1,12 +1,12 @@
 
 import React from 'react';
+import { Link } from 'react-router-dom';
 
 interface CtaProps {
-    navigate: (page: string) => void;
     t: (key: string) => string;
 }
 
-const CtaSection: React.FC<CtaProps> = ({ navigate, t }) => {
+const CtaSection: React.FC<CtaProps> = ({ t }) => {
     return (
         <div 
             className="relative bg-black min-h-[424px] py-24 md:py-24 flex items-center justify-center text-center" 
@@ -23,13 +23,12 @@ const CtaSection: React.FC<CtaProps> = ({ navigate, t }) => {
                 <p className="text-gray-300 mb-10 md:mb-8 max-w-xl mx-auto">
                     {t('ctaDesc')}
                 </p>
-                <a 
-                    href="#" 
-                    onClick={(e) => { e.preventDefault(); navigate('games'); }} 
+                <Link
+                    to="/games"
                     className="bg-theme-gradient text-white text-lg font-bold rounded-lg px-8 py-4 hover-glow transition-all transform hover:scale-105"
                 >
                     {t('ctaBtn')}
-                </a>
+                </Link>
             </div>
         </div>
     );

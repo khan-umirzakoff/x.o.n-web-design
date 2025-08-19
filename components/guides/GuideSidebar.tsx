@@ -1,24 +1,18 @@
 
 import React, { useState, useMemo } from 'react';
-import { NavigateOptions } from '../../types';
+import { Link, useLocation, useParams } from 'react-router-dom';
 
 interface SidebarSectionProps {
   title: string;
-  links: { page: string; text: string; platform?: string }[];
-  navigate: (page: string, options?: NavigateOptions) => void;
-  currentPage: string;
-  currentPlatform: string;
+  links: { path: string; text: string; platform?: string }[];
   defaultOpen?: boolean;
 }
 
-const SidebarSection: React.FC<SidebarSectionProps> = ({ title, links, navigate, currentPage, currentPlatform, defaultOpen = false }) => {
-    const isSectionActive = useMemo(() => links.some(l => l.page === currentPage), [links, currentPage]);
+const SidebarSection: React.FC<SidebarSectionProps> = ({ title, links, defaultOpen = false }) => {
+    const location = useLocation();
+    const { platform: currentPlatform } = useParams<{ platform: string }>();
+    const isSectionActive = useMemo(() => links.some(l => location.pathname.startsWith(l.path)), [links, location.pathname]);
     const [isOpen, setIsOpen] = useState(defaultOpen || isSectionActive);
-
-    const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, page: string, platform?: string) => {
-        e.preventDefault();
-        navigate(page, { platform });
-    };
 
     return (
         <li className="guideSidebar__item guideSidebar__itemWithList">
@@ -33,17 +27,19 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({ title, links, navigate,
             </button>
             {isOpen && (
                 <ul className="guideSidebar__childList pl-6 mt-1 space-y-1">
-                    {links.map(link => (
-                        <li key={link.page + link.text}>
-                            <a 
-                                href="#" 
-                                onClick={(e) => handleLinkClick(e, link.page, link.platform)} 
-                                className={`block py-1.5 px-3 rounded hover:bg-[#333] transition-colors ${currentPage === link.page && (!link.platform || currentPlatform === link.platform) ? 'bg-[#3a3a3a] text-white' : 'text-gray-400'}`}
-                            >
-                                {link.text}
-                            </a>
-                        </li>
-                    ))}
+                    {links.map(link => {
+                        const isActive = location.pathname === link.path && (!link.platform || currentPlatform === link.platform);
+                        return (
+                            <li key={link.path + link.text}>
+                                <Link
+                                    to={link.path}
+                                    className={`block py-1.5 px-3 rounded hover:bg-[#333] transition-colors ${isActive ? 'bg-[#3a3a3a] text-white' : 'text-gray-400'}`}
+                                >
+                                    {link.text}
+                                </Link>
+                            </li>
+                        );
+                    })}
                 </ul>
             )}
         </li>
@@ -51,40 +47,33 @@ const SidebarSection: React.FC<SidebarSectionProps> = ({ title, links, navigate,
 };
 
 interface GuideSidebarProps {
-    navigate: (page: string, options?: NavigateOptions) => void;
-    currentPage: string;
-    platform: string;
     t: (key: string) => string;
 }
 
-const GuideSidebar: React.FC<GuideSidebarProps> = ({ navigate, currentPage, platform, t }) => {
+const GuideSidebar: React.FC<GuideSidebarProps> = ({ t }) => {
+    const location = useLocation();
     const [isListOpen, setIsListOpen] = useState(true);
 
     const mainLinks = [
-        { page: 'how-to-start', text: t('guide1Title') },
-        { page: 'guides', text: t('guide2Title') },
+        { path: '/how-to-start', text: t('guide1Title') },
+        { path: '/guides', text: t('guide2Title') },
     ];
 
     const systemRequirementsLinks = useMemo(() => [
-        { page: 'system-requirements', text: t('sysReqWindows'), platform: 'windows' },
-        { page: 'system-requirements', text: t('sysReqMacOS'), platform: 'macos' },
-        { page: 'system-requirements', text: t('sysReqAndroid'), platform: 'android' },
-        { page: 'system-requirements', text: t('sysReqIOS'), platform: 'ios' },
-        { page: 'system-requirements', text: t('sysReqLinux'), platform: 'linux' },
-        { page: 'system-requirements', text: t('sysReqChrome'), platform: 'chrome' },
-        { page: 'system-requirements', text: t('sysReqTV'), platform: 'tv' },
+        { path: '/system-requirements/windows', text: t('sysReqWindows'), platform: 'windows' },
+        { path: '/system-requirements/macos', text: t('sysReqMacOS'), platform: 'macos' },
+        { path: '/system-requirements/android', text: t('sysReqAndroid'), platform: 'android' },
+        { path: '/system-requirements/ios', text: t('sysReqIOS'), platform: 'ios' },
+        { path: '/system-requirements/linux', text: t('sysReqLinux'), platform: 'linux' },
+        { path: '/system-requirements/chrome', text: t('sysReqChrome'), platform: 'chrome' },
+        { path: '/system-requirements/tv', text: t('sysReqTV'), platform: 'tv' },
     ], [t]);
 
     const nvidiaTechLinks = [
-        { page: 'nvidia-tech', text: 'RTX' },
-        { page: 'nvidia-tech', text: 'DLSS 2.0' },
-        { page: 'nvidia-tech', text: t('nvidiaServerTitle') },
+        { path: '/nvidia-tech', text: 'RTX' },
+        { path: '/nvidia-tech', text: 'DLSS 2.0' },
+        { path: '/nvidia-tech', text: t('nvidiaServerTitle') },
     ];
-
-    const handleLinkClick = (e: React.MouseEvent<HTMLAnchorElement>, page: string) => {
-        e.preventDefault();
-        navigate(page);
-    };
 
     return (
         <div className="guideSidebar w-full lg:max-w-xs">
@@ -103,28 +92,22 @@ const GuideSidebar: React.FC<GuideSidebarProps> = ({ navigate, currentPage, plat
                         <nav className="guideSidebar__nav">
                             <ul className="guideSidebar__list space-y-1 text-sm text-gray-400">
                                 {mainLinks.map(link => (
-                                    <li key={link.page} className="guideSidebar__item">
-                                        <a href="#" onClick={(e) => handleLinkClick(e, link.page)} 
-                                           className={`block py-2 px-3 rounded hover:bg-[#333] hover:text-white transition-colors ${currentPage === link.page ? 'bg-[#3a3a3a] text-white' : 'text-gray-400'}`}>
+                                    <li key={link.path} className="guideSidebar__item">
+                                        <Link to={link.path}
+                                           className={`block py-2 px-3 rounded hover:bg-[#333] hover:text-white transition-colors ${location.pathname === link.path ? 'bg-[#3a3a3a] text-white' : 'text-gray-400'}`}>
                                             {link.text}
-                                        </a>
+                                        </Link>
                                     </li>
                                 ))}
                                 <SidebarSection 
                                     title={t('guide4Title')} 
                                     links={systemRequirementsLinks} 
-                                    navigate={navigate} 
-                                    currentPage={currentPage} 
-                                    currentPlatform={platform}
-                                    defaultOpen={systemRequirementsLinks.some(l => l.page === currentPage)} 
+                                    defaultOpen={location.pathname.startsWith('/system-requirements')}
                                 />
                                 <SidebarSection 
                                     title={t('guide3Title')} 
                                     links={nvidiaTechLinks} 
-                                    navigate={navigate} 
-                                    currentPage={'nvidia-tech' === currentPage ? 'nvidia-tech' : currentPage} 
-                                    currentPlatform={platform} 
-                                    defaultOpen={'nvidia-tech' === currentPage}
+                                    defaultOpen={location.pathname.startsWith('/nvidia-tech')}
                                 />
                             </ul>
                         </nav>

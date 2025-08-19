@@ -1,4 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { Link } from 'react-router-dom';
 import { GlobeIcon, LoginIcon, MenuIcon, CloseIcon, ChevronDownIcon } from './icons';
 import { Language, User } from '../types';
 import Logo from './Logo';
@@ -7,7 +8,6 @@ interface HeaderProps {
     isSidebarOpen: boolean;
     setIsSidebarOpen: () => void;
     isLoggedIn: boolean;
-    navigate: (page: string, options?: object) => void;
     language: Language;
     setLanguage: React.Dispatch<React.SetStateAction<Language>>;
     t: (key: string) => string;
@@ -20,7 +20,6 @@ const Header: React.FC<HeaderProps> = ({
     isSidebarOpen,
     setIsSidebarOpen,
     isLoggedIn,
-    navigate,
     language,
     setLanguage,
     t,
@@ -74,12 +73,14 @@ const Header: React.FC<HeaderProps> = ({
         <header className="fixed top-0 left-0 w-full glass h-[72px] z-50">
             <div className="container mx-auto px-4 flex items-center justify-between w-full h-full">
                 <div className="flex items-center flex-grow min-w-0">
-                    <Logo onClick={() => navigate('home')} className="mr-6 text-2xl lg:text-xl" />
+                    <Link to="/">
+                        <Logo className="mr-6 text-2xl lg:text-xl" />
+                    </Link>
                     
                     <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('games'); }} className="text-gray-300 hover:text-white transition-colors">{t('games')}</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('download'); }} className="text-gray-300 hover:text-white transition-colors">{t('download')}</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('guides'); }} className="text-gray-300 hover:text-white transition-colors">{t('guides')}</a>
+                        <Link to="/games" className="text-gray-300 hover:text-white transition-colors">{t('games')}</Link>
+                        <Link to="/download" className="text-gray-300 hover:text-white transition-colors">{t('download')}</Link>
+                        <Link to="/guides" className="text-gray-300 hover:text-white transition-colors">{t('guides')}</Link>
                     </nav>
 
                 </div>

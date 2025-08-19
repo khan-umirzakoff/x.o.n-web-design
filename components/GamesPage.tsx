@@ -1,13 +1,13 @@
 import React, { useState, useEffect, useRef } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { useDebounce } from '../hooks/useDebounce';
-import { Game, User, NavigateOptions, Language } from '../types';
+import { Game, User, Language } from '../types';
 import { api } from '../services/api';
 import GamesSlider from './games/GamesSlider';
 import GenreCard from './games/GenreCard';
 import CatalogSection from './games/CatalogSection';
 
 interface GamesPageProps {
-    navigate: (page: string, options?: NavigateOptions) => void;
     t: (key: string) => string;
     currentUser: User | null;
     isLoggedIn: boolean;
@@ -16,7 +16,8 @@ interface GamesPageProps {
     language?: Language;
 }
 
-const GamesPage: React.FC<GamesPageProps> = ({ navigate, t, currentUser, isLoggedIn, onTopUpClick, onLoginClick, language }) => {
+const GamesPage: React.FC<GamesPageProps> = ({ t, currentUser, isLoggedIn, onTopUpClick, onLoginClick, language }) => {
+    const navigate = useNavigate();
     const [isSearchOpen, setIsSearchOpen] = useState(false);
     const [searchQuery, setSearchQuery] = useState('');
     const debouncedSearchQuery = useDebounce(searchQuery, 600);
@@ -59,7 +60,7 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t, currentUser, isLogge
                 if (searchInputRef.current) {
                     searchInputRef.current.focus();
                     const len = searchInputRef.current.value.length;
-                    try { searchInputRef.current.setSelectionRange(len, len); } catch {}
+                    try { searchInputRef.current.setSelectionRange(len, len); } catch (e) { console.error("Failed to set selection range", e); }
                 }
             }, 200);
             return () => window.clearTimeout(id);
@@ -129,16 +130,12 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t, currentUser, isLogge
 
     useEffect(() => {
         if (debouncedSearchQuery) {
-            navigate('all-games', { search: debouncedSearchQuery });
-        } else {
-            // Optionally clear search on all-games while staying on page
-            // navigate('all-games', { search: '' });
+            navigate(`/all-games?search=${debouncedSearchQuery}`);
         }
     }, [debouncedSearchQuery, navigate]);
 
-    const handleTagClick = (e: React.MouseEvent<HTMLAnchorElement>, originalFilter: string) => {
-        e.preventDefault();
-        navigate('all-games', { filter: originalFilter });
+    const handleTagClick = (originalFilter: string) => {
+        navigate(`/all-games?filter=${originalFilter}`);
     };
 
     return (
@@ -171,15 +168,14 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t, currentUser, isLogge
                         </button>
                         <div className="filters flex items-center space-x-2 overflow-x-auto no-scrollbar">
                             {availableFilters.map((tag, index) => (
-                                <a key={tag.key} href="#" onClick={(e) => handleTagClick(e, originalFilterNames[index])} className="catalogTags__item shrink-0 btn bg-[#333] text-gray-200 text-sm px-4 py-1.5 rounded-full hover:bg-gray-600 transition-colors">{tag.label}</a>
+                                <button key={tag.key} onClick={() => handleTagClick(originalFilterNames[index])} className="catalogTags__item shrink-0 btn bg-[#333] text-gray-200 text-sm px-4 py-1.5 rounded-full hover:bg-gray-600 transition-colors">{tag.label}</button>
                             ))}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <GamesSlider 
-                navigate={navigate} 
+            <GamesSlider
                 t={t}
                 currentUser={currentUser}
                 isLoggedIn={isLoggedIn}
@@ -188,14 +184,14 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t, currentUser, isLogge
                 language={language}
             />
 
-            <CatalogSection title={t('top10')} games={topGames} navigate={navigate} t={t} isTop10={true} />
+            <CatalogSection title={t('top10')} games={topGames} t={t} isTop10={true} />
             
             <section className="genres py-8 bg-black">
                 <div className="container mx-auto px-4">
                     <div className="relative">
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
                             {staticGenres.map(genre => (
-                                <GenreCard key={genre.title} genre={genre} onClick={() => navigate('all-games', { filter: genre.title })} />
+                                <GenreCard key={genre.title} genre={genre} onClick={() => navigate(`/all-games?filter=${genre.title}`)} />
                             ))}
                         </div>
                     </div>
@@ -204,17 +200,17 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t, currentUser, isLogge
 
             <div className="bg-black">
               {actionGames && actionGames.length > 0 && (
-                <CatalogSection title="Action" games={actionGames} navigate={navigate} t={t} />
+                <CatalogSection title="Action" games={actionGames} t={t} />
               )}
               {adventureGames && adventureGames.length > 0 && (
-                <CatalogSection title="Adventure" games={adventureGames} navigate={navigate} t={t} />
+                <CatalogSection title="Adventure" games={adventureGames} t={t} />
               )}
               {freeToPlayGames && freeToPlayGames.length > 0 && (
-                <CatalogSection title="Free-to-Play" games={freeToPlayGames} navigate={navigate} t={t} />
+                <CatalogSection title="Free-to-Play" games={freeToPlayGames} t={t} />
               )}
               {/* Dynamic category sections (only those with games) */}
               {extraSections.map(section => (
-                <CatalogSection key={section.title} title={section.title} games={section.games} navigate={navigate} t={t} />
+                <CatalogSection key={section.title} title={section.title} games={section.games} t={t} />
               ))}
             </div>
 

@@ -1,10 +1,8 @@
 
 import React from 'react';
-import { NavigateOptions } from '../types';
 
 interface DownloadModalProps {
   t: (key: string) => string;
-  navigate: (page: string, options?: NavigateOptions) => void;
 }
 
 const TechCard: React.FC<{ title: string; children: React.ReactNode; icon: string; }> = ({ title, children, icon }) => (

@@ -1,9 +1,11 @@
 
 
 import React, { useState, useEffect } from 'react';
-import { Game, User, NavigateOptions, Language } from '../types';
+import { useParams, Link } from 'react-router-dom';
+import { Game, User, Language } from '../types';
+import { api } from '../services/api';
 import { CloseIcon, ShareIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
-import { useToast } from './Toast';
+import { useToast } from '../hooks/useToast';
 
 // --- SUB-COMPONENTS ---
 
@@ -227,8 +229,6 @@ const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string }> = (
 
 // --- MAIN COMPONENT ---
 interface GameDetailsPageProps {
-    game: Game;
-    navigate: (page: string, options?: NavigateOptions) => void;
     t: (key: string) => string;
     language: Language;
     currentUser: User | null;
@@ -237,41 +237,42 @@ interface GameDetailsPageProps {
     onLoginClick: () => void;
 }
 
-const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ game, navigate, t, language, currentUser, isLoggedIn, onTopUpClick, onLoginClick }) => {
+const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentUser, isLoggedIn, onTopUpClick, onLoginClick }) => {
+  const { gameId } = useParams<{ gameId: string }>();
+  const [game, setGame] = useState<Game | null>(null);
+  const [loading, setLoading] = useState(true);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { addToast } = useToast();
 
-  const tags = [...game.genres];
-  
-  // Multi-language description logic
-  const getGameDescription = (game: Game, language: Language): string => {
-    // If multilingual descriptions are available, use the current language
-    if (game.descriptions && game.descriptions[language]) {
-      return game.descriptions[language];
-    }
-    
-    // Fallback to the original description if multilingual not available
-    if (game.description) {
-      return game.description;
-    }
-    
-    // Final fallback message in the current language (could be added to i18n)
-    return "No description available for this game. Explore the vast world and embark on an epic journey!";
-  };
-  
-  const descriptionText = getGameDescription(game, language);
+  useEffect(() => {
+    const fetchGame = async () => {
+      if (!gameId) return;
+      setLoading(true);
+      try {
+        const fetchedGame = await api.getGameById(gameId);
+        setGame(fetchedGame || null);
+      } catch (error) {
+        console.error("Failed to fetch game details:", error);
+        setGame(null); // Or redirect to a not-found page
+      } finally {
+        setLoading(false);
+      }
+    };
+    fetchGame();
+  }, [gameId]);
 
   // Local-first images
-  const [coverSrc, setCoverSrc] = useState<string>(game.image);
-  const [wideSrc, setWideSrc] = useState<string>(game.wideImage || game.image);
-  const [screenshotsSrc, setScreenshotsSrc] = useState<string[]>(game.screenshots || []);
+  const [coverSrc, setCoverSrc] = useState<string>('');
+  const [wideSrc, setWideSrc] = useState<string>('');
+  const [screenshotsSrc, setScreenshotsSrc] = useState<string[]>([]);
 
   useEffect(() => {
+    if (!game) return;
     let canceled = false;
     (async () => {
       const { getImageSrc, getLocalScreenshots } = await import('../utils/imageUtils');
-      const cover = await getImageSrc(game.title, game.image, 'art');
-      const wide = await getImageSrc(game.title, game.wideImage || game.image, 'wide_art');
+      const cover = await getImageSrc(game.title, game.image);
+      const wide = await getImageSrc(game.title, game.wideImage || game.image);
       const shots = await getLocalScreenshots(game.title, game.screenshots || []);
       if (!canceled) {
         setCoverSrc(cover);
@@ -280,10 +281,9 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ game, navigate, t, la
       }
     })();
     return () => { canceled = true; };
-  }, [game.title, game.image, game.wideImage, JSON.stringify(game.screenshots)]);
+  }, [game]);
 
-  const handlePlayClick = (e: React.MouseEvent<HTMLAnchorElement>) => {
-    e.preventDefault();
+  const handlePlayClick = () => {
     if (!isLoggedIn) {
         onLoginClick();
     } else if (currentUser && currentUser.balance > 0) {
@@ -292,6 +292,23 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ game, navigate, t, la
         onTopUpClick();
     }
   };
+
+  if (loading) {
+    return <div className="min-h-screen flex items-center justify-center">Loading...</div>;
+  }
+
+  if (!game) {
+    return <div className="min-h-screen flex items-center justify-center">Game not found.</div>;
+  }
+
+  const getGameDescription = (game: Game, language: Language): string => {
+    if (game.descriptions && game.descriptions[language]) return game.descriptions[language];
+    if (game.description) return game.description;
+    return "No description available.";
+  };
+
+  const descriptionText = getGameDescription(game, language);
+  const tags = [...game.genres];
 
   return (
     <div className="bg-[#0A0A10] text-white">
@@ -305,9 +322,9 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ game, navigate, t, la
       <div className="container mx-auto px-4 -mt-32 md:-mt-48 relative z-10">
         <nav className="breadcrumb text-sm text-gray-400 mb-6" aria-label="breadcrumb">
             <ol className="flex space-x-2 items-center">
-                <li><a href="#" onClick={(e) => { e.preventDefault(); navigate('home'); }} className="hover:underline hover:text-white">{t('cloudPlayBrandName')}</a></li>
+                <li><Link to="/" className="hover:underline hover:text-white">{t('cloudPlayBrandName')}</Link></li>
                 <li><span className="text-gray-600">/</span></li>
-                <li><a href="#" onClick={(e) => { e.preventDefault(); navigate('games'); }} className="hover:underline hover:text-white">{t('games')}</a></li>
+                <li><Link to="/games" className="hover:underline hover:text-white">{t('games')}</Link></li>
                 <li><span className="text-gray-600">/</span></li>
                 <li className="text-gray-200 truncate" aria-current="page">{game.title}</li>
             </ol>
@@ -322,23 +339,19 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ game, navigate, t, la
             <div className="flex items-center gap-4 mb-6 flex-wrap">
               <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
                 {tags.map(tag => (
-                    <a 
-                      href="#"
-                      key={tag} 
-                      onClick={(e: React.MouseEvent) => {
-                        e.preventDefault();
-                        navigate('all-games', { filter: tag });
-                      }}
+                    <Link
+                      key={tag}
+                      to={`/all-games?filter=${encodeURIComponent(tag)}`}
                       className="bg-white/10 text-gray-300 text-xs px-3 py-1.5 rounded-full shrink-0 hover:bg-white/20 hover:text-white transition-colors"
                     >
                       {tag}
-                    </a>
+                    </Link>
                 ))}
               </div>
             </div>
             
             <div className="flex items-center gap-4">
-              <a href="#" onClick={handlePlayClick} className="bg-theme-gradient text-white font-bold text-lg rounded-lg px-8 py-3 hover-glow transition-all shadow-lg transform hover:scale-105">{t('playNow')}</a>
+              <button onClick={handlePlayClick} className="bg-theme-gradient text-white font-bold text-lg rounded-lg px-8 py-3 hover-glow transition-all shadow-lg transform hover:scale-105">{t('playNow')}</button>
               <button onClick={() => setIsShareModalOpen(true)} className="bg-white/10 text-white rounded-lg p-3 hover:bg-white/20 transition-colors">
                 <ShareIcon className="w-6 h-6" />
               </button>
