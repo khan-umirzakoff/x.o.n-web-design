@@ -2,36 +2,38 @@ import React, { useMemo } from 'react';
 
 // Static image URLs for decorative purposes. These load instantly without API calls.
 const wallImages = [
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/genshin_impact_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/fortnite_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/counter_strike_4_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/dota_2_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/zenless_zone_zero_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/honkai:_star_rail_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/wuthering_waves_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/rust_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/war_thunder_s_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/path_of_exile_01_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/dead_by_daylight_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/cyberpunk_2077_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/marvel_rivals_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/s.t.a.l.k.e.r._2:_heart_of_chornobyl_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/dayz_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/baldurs_gate_3_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/alan_wake_2_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/the_witcher_3_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/apex_legends_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/league_of_legends_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/world_of_warcraft_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/overwatch_2_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/destiny_2_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/rocket_league_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/minecraft_dungeons_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/phasmophobia_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/valheim_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/among_us_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/stardew_valley_art.jpg',
-  'https://storage.googleapis.com/gfn-am-games-catalogue-assets/forza_horizon_5_art.jpg',
+  '/assets/images/wall/among_us_art.jpg',
+  '/assets/images/wall/apex_legends_art.jpg',
+  '/assets/images/wall/assassins_creed_04_art.jpg',
+  '/assets/images/wall/assetto_corsa_art.jpg',
+  '/assets/images/wall/black_myth__wukong_art.jpg',
+  '/assets/images/wall/blood_strike_art.jpg',
+  '/assets/images/wall/bodycam_art.jpg',
+  '/assets/images/wall/bright_memory__infinite_art.jpg',
+  '/assets/images/wall/counter_strike_3_art.jpg',
+  '/assets/images/wall/counter_strike_4_art.jpg',
+  '/assets/images/wall/crysis_1_remastered_art.jpg',
+  '/assets/images/wall/cyberpunk_2077_art.jpg',
+  '/assets/images/wall/dayz_art.jpg',
+  '/assets/images/wall/dead_by_daylight_art.jpg',
+  '/assets/images/wall/destiny_2_art.jpg',
+  '/assets/images/wall/dota_2_art.jpg',
+  '/assets/images/wall/fortnite_art.jpg',
+  '/assets/images/wall/forza_horizon_5_art.jpg',
+  '/assets/images/wall/genshin_impact_art.jpg',
+  '/assets/images/wall/marvel_rivals_art.jpg',
+  '/assets/images/wall/minecraft_dungeons_art.jpg',
+  '/assets/images/wall/overwatch_2_art.jpg',
+  '/assets/images/wall/path_of_exile_01_art.jpg',
+  '/assets/images/wall/phasmophobia_art.jpg',
+  '/assets/images/wall/rocket_league_art.jpg',
+  '/assets/images/wall/rust_art.jpg',
+  '/assets/images/wall/stardew_valley_art.jpg',
+  "/assets/images/wall/tom_clancy's_ghost_recon_future_soldier_art.jpg",
+  '/assets/images/wall/valheim_art.jpg',
+  '/assets/images/wall/war_thunder_s_art.jpg',
+  '/assets/images/wall/wuthering_waves_art.jpg',
+  '/assets/images/wall/zenless_zone_zero_art.jpg',
 ];
 
 interface WallProps {
@@ -44,9 +46,9 @@ const Wall: React.FC<WallProps> = ({ navigate, t }) => {
     const { row1, row2, row3 } = useMemo(() => {
         const shuffled = [...wallImages].sort(() => 0.5 - Math.random());
         return {
-            row1: shuffled.slice(0, 10),
-            row2: shuffled.slice(10, 20),
-            row3: shuffled.slice(20, 30),
+            row1: shuffled.slice(0, 11),
+            row2: shuffled.slice(11, 22),
+            row3: shuffled.slice(22, 32),
         }
     }, []);
 
@@ -74,19 +76,15 @@ const Wall: React.FC<WallProps> = ({ navigate, t }) => {
                 <p className="text-lg text-gray-400 mb-14 md:mb-10 sm:mb-8">
                     {t('wallDesc')}
                 </p>
-                <a href="#" onClick={(e) => { e.preventDefault(); navigate('games'); }} className="bg-theme-gradient text-white text-lg font-bold rounded-lg px-8 py-4 hover-glow transition-all">
-                    {t('wallBtn')}
-                </a>
             </div>
 
              <a href="#" onClick={handleWallClick} className="block cursor-pointer group relative mt-14">
-                <div className="space-y-4 overflow-hidden -mx-4">
+                <div className="space-y-4 overflow-hidden">
                     {renderRow(row1, 'animate-marquee-right')}
                     {renderRow(row2, 'animate-marquee-left')}
                     {renderRow(row3, 'animate-marquee-right')}
                 </div>
-                <div className="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                    <span className="text-white text-xl font-bold glass px-6 py-3 rounded-lg">{t('viewAllGames')}</span>
+                <div className="absolute inset-0 bg-black/20 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
                 </div>
             </a>
         </div>

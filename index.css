@@ -1,0 +1,124 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+.search-container {
+    transition: max-width 0.4s ease-in-out, opacity 0.3s ease-in-out;
+    max-width: 0;
+    opacity: 0;
+    overflow: hidden;
+    display: flex;
+    align-items: center;
+}
+
+.search-container.open {
+    max-width: 250px; /* Adjust as needed */
+    opacity: 1;
+}
+
+.search-form {
+    display: flex;
+    align-items: center;
+    width: 100%;
+}
+
+.search-input {
+    width: 100%;
+    background-color: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    color: white;
+    padding: 0.5rem 1rem;
+    border-radius: 9999px; /* pill shape */
+    font-size: 0.875rem;
+    transition: background-color 0.2s, border-color 0.2s;
+    outline: none;
+}
+
+.search-input::placeholder {
+    color: #9ca3af; /* gray-400 */
+}
+
+.search-input:focus {
+    background-color: rgba(255, 255, 255, 0.1);
+    border-color: #4f46e5; /* indigo-500, or your theme's primary color */
+    box-shadow: 0 0 0 2px rgba(79, 70, 229, 0.5);
+}
+
+/* Ensure the parent flex container doesn't shrink the search bar when it's open */
+.search-and-filters {
+    display: flex;
+    align-items: center;
+    flex-shrink: 1;
+    min-width: 0; /* Important for allowing children to shrink */
+}
+
+.filters {
+    flex-shrink: 1;
+    min-width: 0; /* Allows the filter list to shrink and scroll */
+}
+
+/* Container responsive configuration */
+@layer components {
+  .container {
+    width: 100%;
+    margin-left: auto;
+    margin-right: auto;
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  /* Tablet specific fixes */
+  @media (min-width: 640px) {
+    .container {
+      max-width: 100%;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+
+  /* Tablet optimization - ensure full width usage */
+  @media (min-width: 768px) and (max-width: 1023px) {
+    .container {
+      max-width: 100%;
+      padding-left: 1rem;
+      padding-right: 1rem;
+    }
+  }
+
+  @media (min-width: 1024px) {
+    .container {
+      max-width: 1200px;
+      padding-left: 2rem;
+      padding-right: 2rem;
+    }
+  }
+
+  @media (min-width: 1280px) {
+    .container {
+      max-width: 1280px;
+    }
+  }
+
+  @media (min-width: 1536px) {
+    .container {
+      max-width: 1536px;
+    }
+  }
+}
+
+/* Fix for tablet layout consistency */
+@media (min-width: 768px) and (max-width: 1023px) {
+  /* Ensure full width usage on tablets */
+  .tablet-fix {
+    padding-left: 1rem !important;
+    padding-right: 1rem !important;
+    max-width: 100% !important;
+  }
+
+  /* Override container behavior specifically for tablet range */
+  .container {
+    max-width: calc(100vw - 2rem) !important;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}

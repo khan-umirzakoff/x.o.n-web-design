@@ -1,0 +1,38 @@
+{
+  "id": 30808,
+  "title": "LOCKDOWN Protocol",
+  "genres": [
+    "Action",
+    "Shooter",
+    "Indie",
+    "Strategy",
+    "Co-op"
+  ],
+  "isFree": false,
+  "rtx": true,
+  "stores": [
+    "steam"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/2780980/LOCKDOWN_Protocol/"
+  },
+  "publisher": "Mirage Creative Lab",
+  "ageRating": "12",
+  "descriptions": {
+    "ENG": "LOCKDOWN Protocol is an intense first-person social deduction game designed for 3 to 8 players, where real-time action intertwines with crucial communication. In this high-stakes environment, most players act as innocent employees striving to complete a series of tasks within a limited timeframe to ensure victory. However, a cunning minority of dissidents lurk among them, dedicated to sabotaging their efforts and eliminating crew members without revealing their true identities. The game masterfully incorporates immersive voice chat with realistic sound propagation, adding a layer of strategic depth as players must carefully analyze conversations and ambient sounds to identify traitors or coordinate objectives effectively. This creates a gripping atmosphere of paranoia and suspicion, challenging players' deduction skills and ability to trust in a confined, high-tech facility under sudden lockdown. [1, 2, 6, 7, 10, 12, 13, 16, 20, 23, 30]",
+    "RUS": "LOCKDOWN Protocol — это напряженная социальная дедуктивная игра от первого лица, предназначенная для 3–8 игроков, где действие в реальном времени переплетается с важнейшим общением. В этой высокорисковой среде большинство игроков выступают в роли невинных сотрудников, стремящихся выполнить ряд задач в течение ограниченного времени для обеспечения победы. Однако среди них скрывается хитрое меньшинство диссидентов, которые посвятили себя саботажу их усилий и устранению членов экипажа, не раскрывая своих истинных личностей. Игра мастерски использует захватывающий голосовой чат с реалистичным распространением звука, добавляя уровень стратегической глубины, поскольку игроки должны тщательно анализировать разговоры и окружающие звуки, чтобы выявлять предателей или эффективно координировать цели. Это создает захватывающую атмосферу паранойи и подозрительности, проверяя дедуктивные способности игроков и их способность доверять в замкнутом, высокотехнологичном объекте, находящемся под внезапной блокировкой.",
+    "UZB": "LOCKDOWN Protocol — bu 3 dan 8 gacha o'yinchi uchun mo'ljallangan, birinchi shaxsdan o'ynaladigan, real vaqt rejimida harakat va muhim aloqani birlashtirgan jadal ijtimoiy deduksiya o'yini. Ushbu yuqori xavfli muhitda aksariyat o'yinchilar g'alaba qozonish uchun cheklangan vaqt ichida bir qator vazifalarni bajarishga intilayotgan begunoh xodimlar sifatida harakat qilishadi. Biroq, ular orasida o'zlarining haqiqiy shaxsiyatlarini oshkor qilmasdan, harakatlarini sabotaj qilish va jamoa a'zolarini yo'q qilishga intilayotgan, ayyor dissidentlarning ozchilik qismi yashirinib yuradi. O'yin ovozli chatni realistik ovoz tarqalishi bilan mahoratli tarzda birlashtiradi, bu strategik chuqurlikni oshiradi, chunki o'yinchilar xoinlarni aniqlash yoki maqsadlarni samarali muvofiqlashtirish uchun suhbatlar va atrof-muhit tovushlarini diqqat bilan tahlil qilishlari kerak. Bu to'satdan blokirovka qilingan yopiq, yuqori texnologiyali ob'ektda o'yinchilarning deduksiya ko'nikmalarini va ishonish qobiliyatini sinovdan o'tkazib, paranoyya va shubha muhitini yaratadi."
+  },
+  "assets": {
+    "coverArt": "lockdown_protocol_art.jpg",
+    "wideArt": "lockdown_protocol_wide_art.webp",
+    "screenshots": [
+      "lockdown_protocol_screenshot_1.jpg",
+      "lockdown_protocol_screenshot_2.jpg",
+      "lockdown_protocol_screenshot_3.jpg",
+      "lockdown_protocol_screenshot_4.jpg",
+      "lockdown_protocol_screenshot_5.jpg",
+      "lockdown_protocol_screenshot_6.jpg"
+    ]
+  }
+}

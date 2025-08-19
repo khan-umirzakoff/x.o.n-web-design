@@ -1,0 +1,134 @@
+{
+  "banners": [
+    {
+      "id": 1,
+      "gameTitle": "LOCKDOWN Protocol",
+      "key": "lockdown",
+      "label": {
+        "ENG": "NEW",
+        "RUS": "НОВАЯ",
+        "UZB": "YANGI"
+      },
+      "title": {
+        "ENG": "LOCKDOWN Protocol",
+        "RUS": "LOCKDOWN Protocol",
+        "UZB": "LOCKDOWN Protocol"
+      },
+      "text": {
+        "ENG": "Experience the ultimate survival game",
+        "RUS": "Почувствуйте окончательную игру на выживание",
+        "UZB": "Eng yuqori omon qolish o'yinini his qiling"
+      },
+      "isActive": true,
+      "order": 1,
+      "assets": {
+        "desktop": "lockdown_desktop.webp",
+        "mobile": "lockdown_mobile.jpg"
+      }
+    },
+    {
+      "id": 2,
+      "gameTitle": "Forza Horizon 5",
+      "key": "forza",
+      "label": {
+        "ENG": "RACING",
+        "RUS": "ГОНКИ",
+        "UZB": "POYGA"
+      },
+      "title": {
+        "ENG": "Forza Horizon 5",
+        "RUS": "Forza Horizon 5",
+        "UZB": "Forza Horizon 5"
+      },
+      "text": {
+        "ENG": "Master the open world racing adventure",
+        "RUS": "Покорите гоночное приключение в открытом мире",
+        "UZB": "Ochiq dunyo poyga sarguzashtini egallang"
+      },
+      "isActive": true,
+      "order": 2,
+      "assets": {
+        "desktop": "forza_desktop.jpg",
+        "mobile": "forza_mobile.jpg"
+      }
+    },
+    {
+      "id": 3,
+      "gameTitle": "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+      "key": "stalker",
+      "label": {
+        "ENG": "FEATURED",
+        "RUS": "РЕКОМЕНДУЕМ",
+        "UZB": "TAVSIYA"
+      },
+      "title": {
+        "ENG": "S.T.A.L.K.E.R. 2: Heart of Chornobyl",
+        "RUS": "S.T.A.L.K.E.R. 2: Сердце Чернобыля",
+        "UZB": "S.T.A.L.K.E.R. 2: Chernobil yurak"
+      },
+      "text": {
+        "ENG": "Enter the Zone and discover deadly anomalies",
+        "RUS": "Войдите в Зону и откройте смертельные аномалии",
+        "UZB": "Zonaga kiring va halokatli anomaliyalarni kashf eting"
+      },
+      "isActive": true,
+      "order": 3,
+      "assets": {
+        "desktop": "stalker-desktop.jpg",
+        "mobile": "stalker-mobile.jpg"
+      }
+    },
+    {
+      "id": 4,
+      "gameTitle": "Warhammer 40,000: Space Marine 2",
+      "key": "warhammer",
+      "label": {
+        "ENG": "ACTION",
+        "RUS": "ЭКШЕН",
+        "UZB": "JANG"
+      },
+      "title": {
+        "ENG": "Warhammer 40,000: Space Marine 2",
+        "RUS": "Warhammer 40,000: Space Marine 2",
+        "UZB": "Warhammer 40,000: Space Marine 2"
+      },
+      "text": {
+        "ENG": "Defend humanity as a Space Marine",
+        "RUS": "Защитите человечество как космический морпех",
+        "UZB": "Insoniyatni kosmik dengizchi sifatida himoya qiling"
+      },
+      "isActive": true,
+      "order": 4,
+      "assets": {
+        "desktop": "warhammer-desktop.jpg",
+        "mobile": "warhammer-mobile.jpg"
+      }
+    },
+    {
+      "id": 5,
+      "gameTitle": "Counter-Strike 2",
+      "key": "cs2",
+      "label": {
+        "ENG": "FPS",
+        "RUS": "ШУТЕР",
+        "UZB": "OTISHMA"
+      },
+      "title": {
+        "ENG": "Counter-Strike 2",
+        "RUS": "Counter-Strike 2",
+        "UZB": "Counter-Strike 2"
+      },
+      "text": {
+        "ENG": "The next chapter in competitive gaming",
+        "RUS": "Следующая глава в соревновательных играх",
+        "UZB": "Raqobatbardosh o'yinlarda keyingi bob"
+      },
+      "isActive": true,
+      "order": 5,
+      "assets": {
+        "desktop": "cs2-desktop.jpg",
+        "mobile": "cs2-mobile.jpg"
+      }
+    }
+  ]
+}

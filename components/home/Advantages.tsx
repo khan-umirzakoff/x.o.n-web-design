@@ -34,12 +34,12 @@ const Advantages: React.FC<AdvantagesProps> = ({ navigate, t }) => {
     };
 
     const deviceIcons = [
-      { src: 'https://gfn.am/img/index/advantages/windows.svg', name: 'Windows' },
-      { src: 'https://gfn.am/img/index/advantages/apple.svg', name: 'iOS' },
-      { src: 'https://gfn.am/img/index/advantages/chrome.svg', name: 'Chrome' },
-      { src: 'https://gfn.am/img/index/advantages/macos.svg', name: 'macOS' },
-      { src: 'https://gfn.am/img/index/advantages/android.svg', name: 'Android' },
-      { src: 'https://gfn.am/img/index/advantages/linux.svg', name: 'Linux' }
+      { src: '/assets/images/icons/os/windows.svg', name: 'Windows' },
+      { src: '/assets/images/icons/os/apple.svg', name: 'iOS' },
+      { src: '/assets/images/icons/os/chrome.svg', name: 'Chrome' },
+      { src: '/assets/images/icons/os/macos.svg', name: 'macOS' },
+      { src: '/assets/images/icons/os/android.svg', name: 'Android' },
+      { src: '/assets/images/icons/os/linux.svg', name: 'Linux' }
     ];
 
     return (
@@ -73,7 +73,7 @@ const Advantages: React.FC<AdvantagesProps> = ({ navigate, t }) => {
                         </a>
                     }
                     image={
-                         <img src="https://gfn.am/img/index/advantages/devices-xxl-xl.jpg" alt="Multiple devices" className="w-full h-auto rounded-lg shadow-2xl shadow-blue-500/10 fade-in-on-load" />
+                         <img src="/assets/images/misc/devices-xxl-xl.jpg" alt="Multiple devices" className="w-full h-auto rounded-lg shadow-2xl shadow-blue-500/10 fade-in-on-load" />
                     }
                     imageSide="left"
                 />
@@ -84,14 +84,14 @@ const Advantages: React.FC<AdvantagesProps> = ({ navigate, t }) => {
                     actions={<></>}
                     image={
                         <div className="relative">
-                            <img src="https://gfn.am/img/index/advantages/hexogon-xxl-xl.png" alt="Hexagon background" className="w-full opacity-30 fade-in-on-load" />
+                            <img src="/assets/images/misc/hexogon-xxl-xl.png" alt="Hexagon background" className="w-full opacity-30 fade-in-on-load" />
                             <div className="absolute inset-0 flex items-center justify-center -translate-y-4">
                                 <div className="relative w-[85%]">
-                                     <img src="https://gfn.am/img/index/advantages/laptop-xxl-xl.png" alt="Laptop" className="w-full fade-in-on-load" />
-                                     <div className="absolute top-[3%] left-[16%] w-[68%] h-[80%] overflow-hidden rounded-t-md">
+                                     <img src="/assets/images/misc/laptop-xxl-xl.png" alt="Laptop" className="w-full fade-in-on-load" />
+                                     <div className="absolute top-[2.1%] left-[16.8%] w-[67%] h-[79%] overflow-hidden rounded-t-md">
                                         <video className="absolute w-full h-full object-cover" autoPlay muted loop playsInline>
-                                            <source src="https://gfn.am/img/index/advantages/genshin-screen.webm" type="video/webm" />
-                                            <source src="https://gfn.am/img/index/advantages/genshin-screen.mp4" type="video/mp4" />
+                                            <source src="/assets/videos/genshin-screen.webm" type="video/webm" />
+                                            <source src="/assets/videos/genshin-screen.mp4" type="video/mp4" />
                                         </video>
                                      </div>
                                 </div>

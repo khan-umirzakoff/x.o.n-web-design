@@ -64,7 +64,7 @@ export const AndroidIcon: React.FC<{ className?: string }> = ({ className = "w-1
 
 export const LinuxIcon: React.FC<{ className?: string }> = ({ className = "w-12 h-12" }) => (
     <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12,2A10,10 0 0,0 2,12C2,16.42 5.58,20 10,20H14C18.42,20 22,16.42 22,12A10,10 0 0,0 12,2M10.4,4A1.6,1.6 0 0,1 12,5.6C12,6.5 11.28,7.2 10.4,7.2C9.52,7.2 8.8,6.5 8.8,5.6C8.8,4.72 9.52,4 10.4,4M15.2,5.2A1.2,1.2 0 0,1 16.4,6.4C16.4,7.08 15.88,7.6 15.2,7.6C14.52,7.6 14,7.08 14,6.4C14,5.72 14.52,5.2 15.2,5.2M10,10H14V11.5C14,12.33 13.33,13 12.5,13H11.5C10.67,13 10,12.33 10,11.5V10M12,15A4,4 0 0,1 8,19C8,20.1 8.9,21 10,21H14C15.1,21 16,20.1 16,19A4,4 0 0,1 12,15Z" />
+        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8zm-4.9-5.9l4.9-2.1 2.1 4.9L9.2 16l4.9-11.4-11.4 4.9 2.1 4.9z" />
     </svg>
 );
 
@@ -125,11 +125,7 @@ export const LgIcon: React.FC<{ className?: string }> = ({ className = "w-12 h-1
     </svg>
 );
 
-export const SteamDeckIcon: React.FC<{ className?: string }> = ({ className = "w-12 h-12" }) => (
-    <svg className={className} viewBox="0 0 24 24" fill="currentColor">
-        <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.41 0-8-3.59-8-8s3.59-8 8-8 8 3.59 8 8-3.59 8-8 8zm-2.5-3.5c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm5 0c-.83 0-1.5-.67-1.5-1.5s.67-1.5 1.5-1.5 1.5.67 1.5 1.5-.67 1.5-1.5 1.5zm-5.22-6.5h-1.56v-2h1.56c.94 0 1.72.78 1.72 1.72v.28h-1.72v-1zm5 0h-1.72v1h1.72v-1z" />
-    </svg>
-);
+
 
 export const SafariIcon: React.FC<{ className?: string }> = ({ className = "w-12 h-12" }) => (
 

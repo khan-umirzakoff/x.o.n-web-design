@@ -1,79 +1,64 @@
 import React, { useState, useEffect, useCallback, useMemo } from 'react';
-import { NavigateOptions } from '../../types';
+import { NavigateOptions, User, Language, Banner } from '../../types';
 import { api } from '../../services/api';
-import { translations } from '../../translations';
-
-const sliderGameData = [
-  {
-    gameTitle: 'S.T.A.L.K.E.R. 2: Heart of Chornobyl',
-    key: 'stalker',
-    image: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-stalker-xxl-xl.jpg',
-    mobileImage: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-stalker-xs.jpg'
-  },
-  {
-    gameTitle: 'Forza Horizon 5',
-    key: 'forza',
-    image: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-forza-xxl-xl.jpg',
-    mobileImage: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-forza-xs.jpg'
-  },
-  {
-    gameTitle: 'Warhammer 40,000: Space Marine 2',
-    key: 'warhammer',
-    image: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-space-marine-xxl-xl.jpg',
-    mobileImage: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-space-marine-xs.jpg'
-  },
-  {
-    gameTitle: 'World of Warcraft',
-    key: 'wow',
-    image: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-wow-xxl-xl.jpg',
-    mobileImage: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-wow-xs.jpg'
-  },
-  {
-    gameTitle: "Baldur's Gate 3",
-    key: 'baldursgate',
-    image: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-baldursgate-xxl-xl.jpg',
-    mobileImage: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/dashboard-banner-baldursgate-xs.jpg'
-  },
-  {
-    gameTitle: 'Counter-Strike 2',
-    key: 'cs2',
-    image: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/banner-cs2-xxl-xl.jpg',
-    mobileImage: 'https://gfn.am/games/wp-content/themes/gfngames/img/home/slider/banner-cs2-xs.jpg'
-  }
-];
 
 interface GamesSliderProps {
     navigate: (page: string, options?: NavigateOptions) => void;
     t: (key: string) => string;
+    currentUser: User | null;
+    isLoggedIn: boolean;
+    onTopUpClick: () => void;
+    onLoginClick: () => void;
+    language?: Language;
 }
 
-const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t }) => {
+const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t, currentUser, isLoggedIn, onTopUpClick, onLoginClick, language = 'ENG' }) => {
     const [currentSlide, setCurrentSlide] = useState(0);
+    const [banners, setBanners] = useState<Banner[]>([]);
 
-    const sliderSlides = useMemo(() => sliderGameData.map(slide => ({
+    useEffect(() => {
+        let mounted = true;
+        (async () => {
+            const data = await api.getBanners();
+            if (mounted) setBanners(data);
+        })();
+        return () => { mounted = false; };
+    }, []);
+
+    const sliderSlides = useMemo(() => banners.map(slide => ({
         ...slide,
-        label: t(String('slider_' + slide.key + '_label') as keyof typeof translations.ENG),
-        title: t(String('slider_' + slide.key + '_title') as keyof typeof translations.ENG),
-        text: t(String('slider_' + slide.key + '_text') as keyof typeof translations.ENG),
-    })), [t]);
+        label: slide.label?.[language],
+        title: slide.title[language] ?? slide.gameTitle,
+        text: slide.text[language] ?? '',
+    })), [banners, language]);
 
     const nextSlide = useCallback(() => {
-        setCurrentSlide(prev => (prev + 1) % sliderSlides.length);
+        setCurrentSlide(prev => (prev + 1) % (sliderSlides.length || 1));
     }, [sliderSlides.length]);
 
     const prevSlide = () => {
-        setCurrentSlide(prev => (prev - 1 + sliderSlides.length) % sliderSlides.length);
+        setCurrentSlide(prev => (prev - 1 + (sliderSlides.length || 1)) % (sliderSlides.length || 1));
     };
 
     useEffect(() => {
+        if (sliderSlides.length === 0) return;
         const timer = setInterval(() => {
             nextSlide();
         }, 5000);
         return () => clearInterval(timer);
-    }, [nextSlide]);
+    }, [nextSlide, sliderSlides.length]);
     
     const handlePlayClick = async (e: React.MouseEvent<HTMLAnchorElement>, slide: typeof sliderSlides[0]) => {
       e.preventDefault();
+      if (!isLoggedIn) {
+        onLoginClick();
+        return;
+      }
+      if (currentUser && currentUser.balance <= 0) {
+        onTopUpClick();
+        return;
+      }
+      
       const game = await api.getGameByTitle(slide.gameTitle);
       if (game) {
         navigate('game-details', { game });
@@ -92,7 +77,7 @@ const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t }) => {
                         className={`absolute inset-0 transition-opacity duration-1000 ease-in-out ${index === currentSlide ? 'opacity-100 z-10' : 'opacity-0'}`}
                     >
                         <picture>
-                            <source media="(max-width: 575.98px)" srcSet={slide.mobileImage} />
+                            <source media="(max-width: 575.98px)" srcSet={slide.mobileImage || slide.image} />
                             <img src={slide.image} alt={slide.title} className="w-full h-full object-cover fade-in-on-load" />
                         </picture>
                         <div className="absolute inset-0 bg-black/30"></div>
@@ -101,7 +86,7 @@ const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t }) => {
                                 <div className="catalogSliderItem__content text-white">
                                     {slide.label && <span className="catalogSliderItem__label text-xs sm:text-sm font-bold bg-green-500/80 px-2 py-1 rounded-md mb-2 inline-block">{slide.label}</span>}
                                     <h3 className="catalogSliderItem__title text-xl sm:text-2xl lg:text-3xl font-bold mb-2">{slide.title}</h3>
-                                    <p className="catalogSliderItem__text text-gray-200 text-sm sm:text-base mb-4 hidden sm:block">{slide.text}</p>
+                                    {slide.text && <p className="catalogSliderItem__text text-gray-200 text-sm sm:text-base mb-4 hidden sm:block">{slide.text}</p>}
                                     <a href="#" onClick={(e) => handlePlayClick(e, slide)} className="catalogSliderItem__action btn bg-white text-black font-bold py-2 px-6 rounded-md hover:bg-gray-200 transition-colors text-sm sm:text-base">
                                         {t('play')}
                                     </a>
@@ -110,6 +95,9 @@ const GamesSlider: React.FC<GamesSliderProps> = ({ navigate, t }) => {
                         </div>
                     </div>
                 ))}
+                {sliderSlides.length === 0 && (
+                    <div className="absolute inset-0 flex items-center justify-center text-white/80">{t('loading')}...</div>
+                )}
             </div>
             
             <button onClick={prevSlide} className="absolute top-1/2 left-4 -translate-y-1/2 z-20 p-2 bg-black/50 rounded-full text-white hover:bg-black/80 transition-opacity">

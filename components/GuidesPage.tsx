@@ -39,25 +39,25 @@ const GuidesPage: React.FC<GuidesPageProps> = ({ navigate, t }) => {
     {
       title: t('guide1Title'),
       text: t('guide1Text'),
-      imgSrc: 'https://gfn.am/img/guides/gamepad.png',
+      imgSrc: '/assets/images/guides/gamepad.png',
       page: 'how-to-start'
     },
     {
       title: t('guide2Title'),
       text: t('guide2Text'),
-      imgSrc: 'https://gfn.am/img/guides/puzzle.png',
+      imgSrc: '/assets/images/guides/puzzle.png',
       page: 'support' // Changed to support page as it fits FAQ
     },
     {
       title: t('guide3Title'),
       text: t('guide3Text'),
-      imgSrc: 'https://gfn.am/img/guides/lightning.png',
+      imgSrc: '/assets/images/guides/lightning.png',
       page: 'nvidia-tech'
     },
     {
       title: t('guide4Title'),
       text: t('guide4Text'),
-      imgSrc: 'https://gfn.am/img/guides/cog.png',
+      imgSrc: '/assets/images/guides/cog.png',
       page: 'system-requirements'
     }
   ];

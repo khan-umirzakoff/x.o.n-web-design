@@ -74,9 +74,9 @@ const GameCarousel: React.FC<GameCarouselProps> = ({ children }) => {
     
     return (
         <div className="relative group/carousel">
-            <div 
-                ref={scrollContainerRef} 
-                className="flex space-x-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar"
+            <div
+                ref={scrollContainerRef}
+                className="flex space-x-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar px-4"
             >
                 {children}
             </div>

@@ -2,7 +2,7 @@
 import React from 'react';
 import { NavigateOptions } from '../types';
 
-interface NvidiaTechPageProps {
+interface DownloadModalProps {
   t: (key: string) => string;
   navigate: (page: string, options?: NavigateOptions) => void;
 }
@@ -17,7 +17,7 @@ const TechCard: React.FC<{ title: string; children: React.ReactNode; icon: strin
     </div>
 );
 
-const NvidiaTechPage: React.FC<NvidiaTechPageProps> = ({ t }) => {
+const DownloadModal: React.FC<DownloadModalProps> = ({ t }) => {
   return (
     <div className="bg-[#111] py-16 sm:py-10 text-gray-300 min-h-[calc(100vh-128px)]">
       <div className="container mx-auto px-4">
@@ -56,4 +56,4 @@ const NvidiaTechPage: React.FC<NvidiaTechPageProps> = ({ t }) => {
   );
 };
 
-export default NvidiaTechPage;
+export default DownloadModal;

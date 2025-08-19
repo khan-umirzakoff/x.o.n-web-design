@@ -1,8 +1,6 @@
 
 import React from 'react';
-import {
-  LinuxIcon,
-} from './icons';
+
 
 interface DownloadPageProps {
   navigate: (page: string) => void;
@@ -39,13 +37,13 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ navigate, t }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <DownloadLink
                   href="https://apps.microsoft.com/detail/9MW1BS08ZBTH?hl=en-us&gl=US&ocid=pdpshare"
-                  icon={<img src="https://gfn.am/img/index/advantages/windows.svg" alt="Windows" className="w-8 h-8 fade-in-on-load" />}
+                  icon={<img src="/assets/images/icons/os/windows.svg" alt="Windows" className="w-8 h-8 fade-in-on-load" />}
                 >
                   {t('downloadForWindows')}
                 </DownloadLink>
                 <DownloadLink
                   href="https://apps.apple.com/us/app/moonlight-game-streaming/id1000551566"
-                  icon={<img src="https://gfn.am/img/index/advantages/macos.svg" alt="macOS" className="w-8 h-8 fade-in-on-load" />}
+                  icon={<img src="/assets/images/icons/os/macos.svg" alt="macOS" className="w-8 h-8 fade-in-on-load" />}
                 >
                   {t('downloadForMacOS')}
                 </DownloadLink>
@@ -53,13 +51,13 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ navigate, t }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <DownloadLink
                   href="https://play.google.com/store/apps/details?id=com.limelight"
-                  icon={<img src="https://gfn.am/img/index/advantages/android.svg" alt="Android" className="w-8 h-8 fade-in-on-load" />}
+                  icon={<img src="/assets/images/icons/os/android.svg" alt="Android" className="w-8 h-8 fade-in-on-load" />}
                 >
                   {t('downloadForAndroid')}
                 </DownloadLink>
                 <DownloadLink
                   href="https://apps.apple.com/us/app/moonlight-game-streaming/id1000551566"
-                  icon={<img src="https://gfn.am/img/index/advantages/apple.svg" alt="iOS / tvOS" className="w-8 h-8 fade-in-on-load" />}
+                  icon={<img src="/assets/images/icons/os/apple.svg" alt="iOS / tvOS" className="w-8 h-8 fade-in-on-load" />}
                 >
                   {t('downloadForIos')}
                 </DownloadLink>
@@ -67,13 +65,13 @@ const DownloadPage: React.FC<DownloadPageProps> = ({ navigate, t }) => {
               <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                 <DownloadLink
                   href="https://flathub.org/apps/com.moonlight_stream.Moonlight"
-                  icon={<LinuxIcon className="w-8 h-8" />}
+                  icon={<img src="/assets/images/icons/os/steamdeck.svg" alt="Steam Deck" className="w-8 h-8 fade-in-on-load" />}
                 >
                   {t('downloadForSteamDeck')}
                 </DownloadLink>
                 <DownloadLink
                   href="https://chromewebstore.google.com/detail/moonlight-game-streaming/gemamigbbenahjlfnmlfdjhdnkagmcna"
-                  icon={<img src="https://gfn.am/img/index/advantages/chrome.svg" alt="Chrome" className="w-8 h-8 fade-in-on-load" />}
+                  icon={<img src="/assets/images/icons/os/chrome.svg" alt="Chrome" className="w-8 h-8 fade-in-on-load" />}
                 >
                   {t('downloadForChrome')}
                 </DownloadLink>

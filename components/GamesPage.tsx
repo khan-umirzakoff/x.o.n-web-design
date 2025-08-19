@@ -1,23 +1,71 @@
-import React, { useState, useEffect } from 'react';
-import { Game } from '../types';
+import React, { useState, useEffect, useRef } from 'react';
+import { useDebounce } from '../hooks/useDebounce';
+import { Game, User, NavigateOptions, Language } from '../types';
 import { api } from '../services/api';
 import GamesSlider from './games/GamesSlider';
 import GenreCard from './games/GenreCard';
 import CatalogSection from './games/CatalogSection';
 
-interface NavigateOptions {
-  game?: Game;
-  filter?: string;
-  search?: string;
-}
-
 interface GamesPageProps {
     navigate: (page: string, options?: NavigateOptions) => void;
     t: (key: string) => string;
+    currentUser: User | null;
+    isLoggedIn: boolean;
+    onTopUpClick: () => void;
+    onLoginClick: () => void;
+    language?: Language;
 }
 
-const GamesPage: React.FC<GamesPageProps> = ({ navigate, t }) => {
-    const [searchValue, setSearchValue] = useState('');
+const GamesPage: React.FC<GamesPageProps> = ({ navigate, t, currentUser, isLoggedIn, onTopUpClick, onLoginClick, language }) => {
+    const [isSearchOpen, setIsSearchOpen] = useState(false);
+    const [searchQuery, setSearchQuery] = useState('');
+    const debouncedSearchQuery = useDebounce(searchQuery, 600);
+
+    const searchContainerRef = useRef<HTMLDivElement | null>(null);
+    const searchToggleRef = useRef<HTMLButtonElement | null>(null);
+    const searchInputRef = useRef<HTMLInputElement | null>(null);
+
+    // Close search on outside click or Escape
+    useEffect(() => {
+        if (!isSearchOpen) return;
+        const handleClickOutside = (event: MouseEvent) => {
+            const target = event.target as Node;
+            if (
+                searchContainerRef.current &&
+                !searchContainerRef.current.contains(target) &&
+                searchToggleRef.current &&
+                !searchToggleRef.current.contains(target)
+            ) {
+                setIsSearchOpen(false);
+            }
+        };
+        const handleKeyDown = (event: KeyboardEvent) => {
+            if (event.key === 'Escape') {
+                setIsSearchOpen(false);
+            }
+        };
+        document.addEventListener('mousedown', handleClickOutside);
+        document.addEventListener('keydown', handleKeyDown);
+        return () => {
+            document.removeEventListener('mousedown', handleClickOutside);
+            document.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [isSearchOpen]);
+
+    // Focus input after opening (slight delay to allow expand animation)
+    useEffect(() => {
+        if (isSearchOpen) {
+            const id = window.setTimeout(() => {
+                if (searchInputRef.current) {
+                    searchInputRef.current.focus();
+                    const len = searchInputRef.current.value.length;
+                    try { searchInputRef.current.setSelectionRange(len, len); } catch {}
+                }
+            }, 200);
+            return () => window.clearTimeout(id);
+        }
+    }, [isSearchOpen]);
+
     const [availableFilters, setAvailableFilters] = useState<{key: string, label: string}[]>([]);
     const [originalFilterNames, setOriginalFilterNames] = useState<string[]>([]);
     const [topGames, setTopGames] = useState<Game[]>([]);
@@ -25,6 +73,8 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t }) => {
     const [adventureGames, setAdventureGames] = useState<Game[]>([]);
     const [freeToPlayGames, setFreeToPlayGames] = useState<Game[]>([]);
     const [staticGenres, setStaticGenres] = useState<{ title: string; icon: string; slug: string; }[]>([]);
+    // New: dynamic sections for all other categories with at least one game
+    const [extraSections, setExtraSections] = useState<{ title: string; games: Game[] }[]>([]);
 
     useEffect(() => {
         const fetchData = async () => {
@@ -58,17 +108,33 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t }) => {
                 return { key: filter, label: filter };
             });
             setAvailableFilters(translatedFilters);
+
+            // Build dynamic sections for remaining categories (excluding the ones already shown)
+            const excluded = new Set(['Action', 'Adventure', 'Free-to-Play']);
+            const dynamicGenres = availableGenreFilters.filter(g => !excluded.has(g));
+            if (dynamicGenres.length) {
+                const sections = await Promise.all(
+                    dynamicGenres.map(async (g) => {
+                        const items = await api.getGames({ genre: g, limit: 10 });
+                        return { title: g, games: items };
+                    })
+                );
+                setExtraSections(sections.filter(s => s.games && s.games.length > 0));
+            } else {
+                setExtraSections([]);
+            }
         };
         fetchData();
     }, [t]);
 
-
-    const handleSearch = (e: React.FormEvent) => {
-        e.preventDefault();
-        if (searchValue.trim()) {
-            navigate('all-games', { search: searchValue.trim() });
+    useEffect(() => {
+        if (debouncedSearchQuery) {
+            navigate('all-games', { search: debouncedSearchQuery });
+        } else {
+            // Optionally clear search on all-games while staying on page
+            // navigate('all-games', { search: '' });
         }
-    };
+    }, [debouncedSearchQuery, navigate]);
 
     const handleTagClick = (e: React.MouseEvent<HTMLAnchorElement>, originalFilter: string) => {
         e.preventDefault();
@@ -77,33 +143,50 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t }) => {
 
     return (
         <div className="bg-[#111] text-white min-h-screen">
-            <div className="catalogNav bg-[#1a1a1a] py-3 sticky top-[72px] lg:top-[56px] z-30">
-                <div className="container mx-auto px-4">
-                    <div className="flex items-center gap-4">
-                        <form onSubmit={handleSearch} className="catalogSearch flex-grow relative">
-                            <input 
-                                type="search" 
-                                value={searchValue}
-                                onChange={(e) => setSearchValue(e.target.value)}
-                                className="bg-[#2b2b2b] border border-gray-600 text-white placeholder-gray-400 text-sm rounded-lg focus:ring-green-500 focus:border-green-500 block w-full p-2.5 pl-10" 
-                                placeholder={t('searchPlaceholder')}
-                            />
-                            <div className="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
-                                <svg className="w-5 h-5 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path></svg>
-                            </div>
-                        </form>
-                    </div>
-                     <div className="catalogTags mt-3">
-                        <div className="flex space-x-2 pb-2 overflow-x-auto no-scrollbar">
-                           {availableFilters.map((tag, index) => (
-                            <a key={tag.key} href="#" onClick={(e) => handleTagClick(e, originalFilterNames[index])} className="catalogTags__item shrink-0 btn bg-[#333] text-gray-200 text-sm px-4 py-1.5 rounded-full hover:bg-gray-600 transition-colors">{tag.label}</a>
-                           ))}
+            <div className="catalogNav bg-[#1a1a1a] py-3 sticky top-[72px] z-30">
+                <div className="catalogTags">
+                    <div className="search-and-filters flex items-center gap-2 overflow-hidden ml-1 md:ml-2">
+                        <div ref={searchContainerRef} className={`search-container ${isSearchOpen ? 'open' : ''} ml-1 md:ml-2`}>
+                            <form onSubmit={(e) => e.preventDefault()} className="search-form">
+                                <input
+                                    ref={searchInputRef}
+                                    type="text"
+                                    value={searchQuery}
+                                    onChange={(e) => setSearchQuery(e.target.value)}
+                                    placeholder={t('searchGames')}
+                                    className="search-input"
+                                />
+                            </form>
+                        </div>
+                        <button
+                            ref={searchToggleRef}
+                            onClick={() => setIsSearchOpen(!isSearchOpen)}
+                            className="p-2 bg-white/5 hover:bg-white/10 rounded-full text-gray-300 hover:text-white transition-colors duration-200 shrink-0 ml-1 md:ml-2"
+                            aria-label={isSearchOpen ? 'Close search' : 'Open search'}
+                            type="button"
+                        >
+                            <svg xmlns="http://www.w3.org/2000/svg" className="h-5 w-5" viewBox="0 0 20 20" fill="currentColor">
+                                <path fillRule="evenodd" d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z" clipRule="evenodd" />
+                            </svg>
+                        </button>
+                        <div className="filters flex items-center space-x-2 overflow-x-auto no-scrollbar">
+                            {availableFilters.map((tag, index) => (
+                                <a key={tag.key} href="#" onClick={(e) => handleTagClick(e, originalFilterNames[index])} className="catalogTags__item shrink-0 btn bg-[#333] text-gray-200 text-sm px-4 py-1.5 rounded-full hover:bg-gray-600 transition-colors">{tag.label}</a>
+                            ))}
                         </div>
                     </div>
                 </div>
             </div>
 
-            <GamesSlider navigate={navigate} t={t} />
+            <GamesSlider 
+                navigate={navigate} 
+                t={t}
+                currentUser={currentUser}
+                isLoggedIn={isLoggedIn}
+                onTopUpClick={onTopUpClick}
+                onLoginClick={onLoginClick}
+                language={language}
+            />
 
             <CatalogSection title={t('top10')} games={topGames} navigate={navigate} t={t} isTop10={true} />
             
@@ -111,18 +194,28 @@ const GamesPage: React.FC<GamesPageProps> = ({ navigate, t }) => {
                 <div className="container mx-auto px-4">
                     <div className="relative">
                         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-                           {staticGenres.map(genre => (
+                            {staticGenres.map(genre => (
                                 <GenreCard key={genre.title} genre={genre} onClick={() => navigate('all-games', { filter: genre.title })} />
-                           ))}
+                            ))}
                         </div>
                     </div>
                 </div>
             </section>
 
             <div className="bg-black">
-              <CatalogSection title="Action" games={actionGames} navigate={navigate} t={t} />
-              <CatalogSection title="Adventure" games={adventureGames} navigate={navigate} t={t} />
-              <CatalogSection title="Free-to-Play" games={freeToPlayGames} navigate={navigate} t={t} />
+              {actionGames && actionGames.length > 0 && (
+                <CatalogSection title="Action" games={actionGames} navigate={navigate} t={t} />
+              )}
+              {adventureGames && adventureGames.length > 0 && (
+                <CatalogSection title="Adventure" games={adventureGames} navigate={navigate} t={t} />
+              )}
+              {freeToPlayGames && freeToPlayGames.length > 0 && (
+                <CatalogSection title="Free-to-Play" games={freeToPlayGames} navigate={navigate} t={t} />
+              )}
+              {/* Dynamic category sections (only those with games) */}
+              {extraSections.map(section => (
+                <CatalogSection key={section.title} title={section.title} games={section.games} navigate={navigate} t={t} />
+              ))}
             </div>
 
         </div>

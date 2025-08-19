@@ -1,4 +1,3 @@
-
 import React, { useState, useEffect, useRef } from 'react';
 import { GlobeIcon, LoginIcon, MenuIcon, CloseIcon, ChevronDownIcon } from './icons';
 import { Language, User } from '../types';
@@ -27,7 +26,7 @@ const Header: React.FC<HeaderProps> = ({
     t,
     onLoginClick,
     onLogout,
-    currentUser
+    currentUser,
 }) => {
     const [isLangMenuOpen, setIsLangMenuOpen] = useState(false);
     const [isUserMenuOpen, setIsUserMenuOpen] = useState(false);
@@ -39,6 +38,7 @@ const Header: React.FC<HeaderProps> = ({
         { code: 'RUS', name: 'Русский' },
         { code: 'UZB', name: 'O‘zbekcha' },
     ];
+    
 
     const handleLanguageChange = (langCode: Language) => {
         setLanguage(langCode);
@@ -69,22 +69,22 @@ const Header: React.FC<HeaderProps> = ({
         return () => document.removeEventListener('keydown', handleEscapeKey);
     }, []);
 
+
     return (
-        <header className="fixed top-0 left-0 w-full glass h-[72px] px-6 lg:px-4 z-50">
-            <div className="flex items-center justify-between w-full h-full">
-                <div className="flex items-center">
-                    <Logo onClick={() => navigate('home')} className="mr-10 text-2xl lg:text-xl" />
+        <header className="fixed top-0 left-0 w-full glass h-[72px] z-50">
+            <div className="container mx-auto px-4 flex items-center justify-between w-full h-full">
+                <div className="flex items-center flex-grow min-w-0">
+                    <Logo onClick={() => navigate('home')} className="mr-6 text-2xl lg:text-xl" />
                     
-                    <nav className="hidden lg:flex items-center space-x-6">
+                    <nav className="hidden md:flex items-center space-x-4 lg:space-x-6">
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('games'); }} className="text-gray-300 hover:text-white transition-colors">{t('games')}</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('download'); }} className="text-gray-300 hover:text-white transition-colors">{t('download')}</a>
                         <a href="#" onClick={(e) => { e.preventDefault(); navigate('guides'); }} className="text-gray-300 hover:text-white transition-colors">{t('guides')}</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('about-service'); }} className="text-gray-300 hover:text-white transition-colors">{t('aboutService')}</a>
-                        <a href="#" onClick={(e) => { e.preventDefault(); navigate('support'); }} className="text-gray-300 hover:text-white transition-colors">{t('support')}</a>
                     </nav>
+
                 </div>
 
-                <div className="flex items-center">
+                <div className="flex items-center shrink-0 ml-4">
                     <div className="flex items-center space-x-2 md:space-x-4">
                          <div className="relative" ref={langMenuRef}>
                             <button
@@ -96,7 +96,7 @@ const Header: React.FC<HeaderProps> = ({
                                 aria-label="Tilni tanlash"
                             >
                                 <GlobeIcon className="w-5 h-5" />
-                                <span className="font-medium text-sm">{language}</span>
+                                <span className="font-medium text-sm hidden sm:inline">{language}</span>
                                 <ChevronDownIcon className={`w-4 h-4 text-gray-400 transition-transform ${isLangMenuOpen ? 'rotate-180' : ''}`} />
                             </button>
                             {isLangMenuOpen && (
@@ -140,7 +140,7 @@ const Header: React.FC<HeaderProps> = ({
                                          <ul className="py-1">
                                              <li>
                                                  <button
-                                                     onClick={onLogout}
+                                                     onClick={() => { onLogout(); setIsUserMenuOpen(false); }}
                                                      className="w-full text-left px-4 py-2 text-sm text-red-400 hover:bg-red-500/20 transition-colors"
                                                  >
                                                      {t('logout')}

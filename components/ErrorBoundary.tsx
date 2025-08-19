@@ -1,6 +1,6 @@
 import { Component, ReactNode } from 'react';
 import { Language } from '../types';
-import { translations } from '../translations';
+import { translations } from '../i18n';
 
 interface Props {
   children: ReactNode;

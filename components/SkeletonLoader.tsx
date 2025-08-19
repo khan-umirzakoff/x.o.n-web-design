@@ -1,6 +1,6 @@
 import React from 'react';
 import { Language } from '../types';
-import { translations, Translation } from '../translations';
+import { translations, Translation } from '../i18n';
 
 interface SkeletonLoaderProps {
   className?: string;

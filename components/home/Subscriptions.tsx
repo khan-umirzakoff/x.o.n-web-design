@@ -1,11 +1,17 @@
 
-import React, { useState, useMemo } from 'react';
+
+import React, { useMemo } from 'react';
 import { CheckIcon } from '../icons';
-import { translations } from '../../translations';
+import { translations } from '../../i18n';
+import { User } from '../../types';
 
 interface SubscriptionsProps {
     navigate: (page: string) => void;
     t: (key: string) => string;
+    onTopUpClick: () => void;
+    currentUser: User | null;
+    isLoggedIn: boolean;
+    onLoginClick: () => void;
 }
 
 const tiers = [
@@ -38,14 +44,26 @@ const tiers = [
   }
 ];
 
-const Subscriptions: React.FC<SubscriptionsProps> = ({ navigate, t }) => {
-    const [balance] = useState(25000);
+const Subscriptions: React.FC<SubscriptionsProps> = ({ navigate, t, onTopUpClick, currentUser, isLoggedIn, onLoginClick }) => {
+    const balance = currentUser?.balance ?? 0;
 
     const timeSlots = useMemo(() => ([
         { key: 'day', name: t('dayTime'), time: '06:00 - 18:00' },
         { key: 'evening', name: t('eveningTime'), time: '18:00 - 00:00' },
         { key: 'night', name: t('nightTime'), time: '00:00 - 06:00' },
     ]), [t]);
+    
+    const handlePlayClick = () => {
+        if (!isLoggedIn) {
+            onLoginClick();
+            return;
+        }
+        if (currentUser && currentUser.balance > 0) {
+            navigate('games');
+        } else {
+            onTopUpClick();
+        }
+    };
 
     return (
         <section className="py-24 md:py-16 bg-[#0A0A10]">
@@ -59,7 +77,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({ navigate, t }) => {
                         <p className="text-gray-400 text-sm">{t('yourBalance')}</p>
                         <p className="text-white text-2xl font-bold">{balance.toLocaleString('uz-UZ')} so&apos;m</p>
                     </div>
-                    <button className="bg-theme-gradient text-white font-bold py-2 px-6 rounded-lg hover-glow transition-all w-full sm:w-auto sm:ml-auto">
+                    <button onClick={isLoggedIn ? onTopUpClick : onLoginClick} className="bg-theme-gradient text-white font-bold py-2 px-6 rounded-lg hover-glow transition-all w-full sm:w-auto sm:ml-auto">
                         {t('topUp')}
                     </button>
                 </div>
@@ -98,7 +116,7 @@ const Subscriptions: React.FC<SubscriptionsProps> = ({ navigate, t }) => {
                                     </div>
                                 </div>
                                
-                                <button onClick={() => navigate('games')} className={`w-full text-center text-white font-bold py-3 rounded-lg transition-all transform hover:scale-105 hover-glow
+                                <button onClick={handlePlayClick} className={`w-full text-center text-white font-bold py-3 rounded-lg transition-all transform hover:scale-105 hover-glow
                                     ${tier.name === 'premium' ? 'bg-theme-gradient' : 'bg-blue-600 hover:bg-blue-500'}`}>
                                     {t('startPlaying')}
                                 </button>

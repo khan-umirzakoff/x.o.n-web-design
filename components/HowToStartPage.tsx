@@ -35,9 +35,12 @@ interface HowToStartPageProps {
     navigate: (page: string) => void;
     currentPage: string;
     t: (key: string) => string;
+    onLoginClick?: () => void;
+    onTopUpClick?: () => void;
+    isLoggedIn?: boolean;
 }
 
-const HowToStartPage: React.FC<HowToStartPageProps> = ({ navigate, currentPage, t }) => {
+const HowToStartPage: React.FC<HowToStartPageProps> = ({ navigate, currentPage, t, onLoginClick, onTopUpClick, isLoggedIn }) => {
   return (
     <div className="bg-[#111]">
       <div className="container mx-auto px-4 py-8">
@@ -61,19 +64,19 @@ const HowToStartPage: React.FC<HowToStartPageProps> = ({ navigate, currentPage, 
               </div>
 
               <div className="flex flex-col">
-                <Step 
+                <Step
                   step={1}
                   title={t('step1Title')}
                   description={t('step1Desc')}
                   buttonText={t('step1Btn')}
-                  onClick={() => navigate('games')}
+                  onClick={() => onLoginClick && onLoginClick()}
                 />
-                <Step 
+                <Step
                   step={2}
                   title={t('step2Title')}
                   description={t('step2Desc')}
                   buttonText={t('step2Btn')}
-                  onClick={() => navigate('home')}
+                  onClick={() => isLoggedIn && onTopUpClick ? onTopUpClick() : onLoginClick && onLoginClick()}
                 />
                  <Step 
                   step={3}

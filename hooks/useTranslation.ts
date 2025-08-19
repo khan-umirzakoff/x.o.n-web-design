@@ -1,4 +1,4 @@
-import { translations, Translation } from '../translations';
+import { translations, Translation } from '../i18n';
 import { Language } from '../types';
 
 export const useTranslation = (language: Language) => {

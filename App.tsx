@@ -1,4 +1,3 @@
-
 import React, { useState, useCallback, useEffect } from 'react';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider, useToast } from './components/Toast';
@@ -8,7 +7,6 @@ import AuthModal from './components/AuthModal';
 import Hero from './components/home/Hero';
 import StartToPlay from './components/home/StartToPlay';
 import Advantages from './components/home/Advantages';
-import Subscriptions from './components/home/Subscriptions';
 import Wall from './components/home/Wall';
 import CtaSection from './components/home/TryFree';
 import Footer from './components/Footer';
@@ -22,12 +20,14 @@ import GuidesPage from './components/GuidesPage';
 import GameDetailsPage from './components/GameDetailsPage';
 import AboutServicePage from './components/AboutServicePage';
 import SupportPage from './components/SupportPage';
-import NvidiaTechPage from './components/DownloadModal';
+import DownloadModal from './components/DownloadModal';
+import TopUpModal from './components/TopUpModal'; // Yangi modalni import qilish
 import { Game, Language, User, NavigateOptions } from './types';
-import { translations } from './translations';
+import { translations } from './i18n';
 import { useLocalStorage } from './hooks/useLocalStorage';
 import { api } from './services/api';
 import { loggingService } from './services/loggingService'; // Import loggingService
+import Subscriptions from './components/home/Subscriptions';
 
 type TranslationKey = keyof typeof translations.ENG;
 
@@ -60,22 +60,37 @@ interface HistoryState {
 
 // Get initial page from URL hash or default to home
 const getInitialPage = (): string => {
-  const hash = window.location.hash.slice(1); // Remove #
+  const hash = window.location.hash.slice(1); 
   return hash || 'home';
 };
 
 const AppContent: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
   const [isAuthModalOpen, setIsAuthModalOpen] = useState(false);
+  const [isTopUpModalOpen, setIsTopUpModalOpen] = useState(false); 
   const [isLoggedIn, setIsLoggedIn] = useLocalStorage('isLoggedIn', false);
   const [currentUser, setCurrentUser] = useLocalStorage<User | null>('currentUser', null);
   const [currentPage, setCurrentPage] = useState(getInitialPage());
   const [language, setLanguage] = useLocalStorage<Language>('appLanguage', getInitialLanguage());
   const [selectedGame, setSelectedGame] = useState<Game | null>(null);
   const [activeGameFilter, setActiveGameFilter] = useState('All Games');
-  const [searchQuery, setSearchQuery] = useState('');
   const [activePlatform, setActivePlatform] = useState('windows');
+  const [activeSearch, setActiveSearch] = useState<string>('');
   const { addToast } = useToast();
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+        const loader = document.getElementById('initial-loader');
+        if (loader) {
+            loader.classList.add('hidden');
+            loader.addEventListener('transitionend', () => {
+                loader.remove();
+            }, { once: true });
+        }
+    }, 100);
+
+    return () => clearTimeout(timer);
+  }, []);
 
   const handleLogin = async (email: string, password: string) => {
     try {
@@ -110,6 +125,28 @@ const AppContent: React.FC = () => {
     setIsLoggedIn(false);
     setCurrentUser(null);
   };
+  
+  const handleTopUp = async (amount: number) => {
+    if (!currentUser) return;
+    try {
+      type StoredUser = User & { password?: string };
+      const users = JSON.parse(sessionStorage.getItem('mock_users_db') || '{}') as Record<string, StoredUser>;
+      const freshUser = Object.values(users).find(u => u.id === currentUser.id);
+
+      if (!freshUser) {
+        throw new Error('userNotFound');
+      }
+
+      const updatedUser = await api.updateBalance(freshUser.id, Number(amount));
+      setCurrentUser(updatedUser);
+      addToast(t('topUpSuccessMessage'), 'success');
+      setIsTopUpModalOpen(false);
+    } catch (error) {
+      addToast(t('topUpFailed'), 'error');
+      loggingService.logError(error);
+      throw error;
+    }
+  };
 
   // Handle browser back/forward buttons
   useEffect(() => {
@@ -119,8 +156,8 @@ const AppContent: React.FC = () => {
         setCurrentPage(state.page);
         if (state.game) setSelectedGame(state.game);
         if (state.filter) setActiveGameFilter(state.filter);
-        if (state.search) setSearchQuery(state.search);
         if (state.platform) setActivePlatform(state.platform);
+        if (state.search !== undefined) setActiveSearch(state.search);
       } else {
         // Fallback to hash-based routing
         const hash = window.location.hash.slice(1);
@@ -132,11 +169,17 @@ const AppContent: React.FC = () => {
     return () => window.removeEventListener('popstate', handlePopState);
   }, []);
 
-  // Update URL hash when page changes
+  // Update URL hash when page changes (only if not triggered by navigation)
   useEffect(() => {
     const hash = currentPage === 'home' ? '' : currentPage;
-    if (window.location.hash.slice(1) !== hash) {
-      window.location.hash = hash;
+    const currentHash = window.location.hash.slice(1);
+    if (currentHash !== hash) {
+      // Don't update if we're already at the correct URL
+      const targetUrl = currentPage === 'home' ? '/' : `/#${currentPage}`;
+      const currentUrl = window.location.pathname + window.location.hash;
+      if (currentUrl !== targetUrl) {
+        window.location.hash = hash;
+      }
     }
   }, [currentPage]);
 
@@ -146,16 +189,18 @@ const AppContent: React.FC = () => {
   }, [language]);
 
   const navigate = useCallback((page: string, options: NavigateOptions = {}) => {
-    const { game, filter, search, platform } = options;
+    const { game, filter, platform, search } = options as any;
     
     // Update state
     if (page === 'game-details' && game) {
       setSelectedGame(game);
     }
+
     if (page === 'all-games') {
       setActiveGameFilter(filter || 'All Games');
-      setSearchQuery(search || '');
+      if (search !== undefined) setActiveSearch(search);
     }
+    
     if (page === 'system-requirements' && platform) {
       setActivePlatform(platform);
     }
@@ -165,18 +210,29 @@ const AppContent: React.FC = () => {
       page,
       ...(game && { game }),
       ...(filter && { filter }),
-      ...(search && { search }),
-      ...(platform && { platform })
+      ...(platform && { platform }),
+      ...(search !== undefined ? { search } : {}),
     };
     
     // Update browser history
     const url = page === 'home' ? '/' : `/#${page}`;
-    window.history.pushState(historyState, '', url);
+    const currentUrl = window.location.pathname + window.location.hash;
+    if (currentUrl !== url && currentPage !== page) {
+        window.history.pushState(historyState, '', url);
+    } else {
+        // Replace state when staying on same URL but changing options like search/filter
+        window.history.replaceState(historyState, '', url);
+    }
     
-    setCurrentPage(page);
-    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Only update current page and scroll when the page actually changes
+    if (page !== currentPage) {
+      setCurrentPage(page);
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
     setIsSidebarOpen(false);
-  }, []);
+  }, [currentPage]);
+  
+  const onLoginClick = () => setIsAuthModalOpen(true);
 
   const renderCurrentPage = useCallback(() => {
     switch (currentPage) {
@@ -185,17 +241,25 @@ const AppContent: React.FC = () => {
       case 'system-requirements':
         return <SystemRequirementsPage navigate={navigate} currentPage={currentPage} platform={activePlatform} t={t} />;
       case 'games':
-        return <GamesPage navigate={navigate} t={t} />;
+        return <GamesPage 
+                  navigate={navigate} 
+                  t={t} 
+                  currentUser={currentUser}
+                  isLoggedIn={isLoggedIn}
+                  onTopUpClick={() => setIsTopUpModalOpen(true)}
+                  onLoginClick={onLoginClick}
+                  language={language}
+                />;
       case 'all-games':
-        return <AllGamesPage navigate={navigate} initialFilter={activeGameFilter} searchQuery={searchQuery} t={t} />;
+        return <AllGamesPage navigate={navigate} filter={activeGameFilter} t={t} search={activeSearch} />;
       case 'game-details':
-        return selectedGame ? <GameDetailsPage game={selectedGame} navigate={navigate} t={t} /> : <GamesPage navigate={navigate} t={t} />;
+        return selectedGame ? <GameDetailsPage game={selectedGame} navigate={navigate} t={t} language={language} currentUser={currentUser} isLoggedIn={isLoggedIn} onTopUpClick={() => setIsTopUpModalOpen(true)} onLoginClick={onLoginClick} /> : <GamesPage navigate={navigate} t={t} currentUser={currentUser} isLoggedIn={isLoggedIn} onTopUpClick={() => setIsTopUpModalOpen(true)} onLoginClick={onLoginClick} language={language} />;
       case 'how-to-start':
-        return <HowToStartPage navigate={navigate} currentPage={currentPage} t={t} />;
+        return <HowToStartPage navigate={navigate} currentPage={currentPage} t={t} onLoginClick={onLoginClick} onTopUpClick={() => setIsTopUpModalOpen(true)} isLoggedIn={isLoggedIn} />;
       case 'guides':
         return <GuidesPage navigate={navigate} t={t}/>;
        case 'nvidia-tech':
-        return <NvidiaTechPage navigate={navigate} t={t} />;
+        return <DownloadModal navigate={navigate} t={t} />;
       case 'about-service':
         return <AboutServicePage navigate={navigate} t={t} />;
       case 'support':
@@ -207,17 +271,26 @@ const AppContent: React.FC = () => {
             <Hero navigate={navigate} t={t} />
             <StartToPlay navigate={navigate} t={t} />
             <Advantages navigate={navigate} t={t} />
-            <Subscriptions navigate={navigate} t={t} />
+            {/* Removed GamesPage section from Home */}
+            <Subscriptions
+              navigate={navigate}
+              t={t}
+              onTopUpClick={() => setIsTopUpModalOpen(true)}
+              currentUser={currentUser}
+              isLoggedIn={isLoggedIn}
+              onLoginClick={onLoginClick}
+            />
+            {/* End Subscriptions section */}
             <Wall navigate={navigate} t={t} />
             <CtaSection navigate={navigate} t={t} />
           </div>
         );
     }
-  }, [currentPage, navigate, t, activePlatform, activeGameFilter, searchQuery, selectedGame]);
+  }, [currentPage, navigate, t, activePlatform, activeGameFilter, selectedGame, currentUser, isLoggedIn, onLoginClick, handleTopUp, language]);
 
   return (
     <>
-        <div className="bg-[#0A0A10] text-gray-200 overflow-x-hidden">
+        <div className="bg-[#0A0A10] text-gray-200 min-h-screen">
           <Header
             isSidebarOpen={isSidebarOpen}
             setIsSidebarOpen={() => setIsSidebarOpen(!isSidebarOpen)}
@@ -226,7 +299,7 @@ const AppContent: React.FC = () => {
             setLanguage={setLanguage}
             navigate={navigate}
             t={t}
-            onLoginClick={() => setIsAuthModalOpen(true)}
+            onLoginClick={onLoginClick}
             onLogout={handleLogout}
             currentUser={currentUser}
           />
@@ -235,7 +308,7 @@ const AppContent: React.FC = () => {
             isLoggedIn={isLoggedIn}
             navigate={navigate}
             t={t}
-            onLoginClick={() => setIsAuthModalOpen(true)}
+            onLoginClick={onLoginClick}
             onLogout={handleLogout}
             currentUser={currentUser}
           />
@@ -266,10 +339,15 @@ const AppContent: React.FC = () => {
           onRegister={handleRegister}
           t={t}
         />
+        <TopUpModal
+          isOpen={isTopUpModalOpen}
+          onClose={() => setIsTopUpModalOpen(false)}
+          onConfirm={handleTopUp}
+          t={t}
+        />
     </>
   );
 };
-
 const App: React.FC = () => (
   <ErrorBoundary language={getInitialLanguage()}>
     <ToastProvider>

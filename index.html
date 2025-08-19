@@ -48,6 +48,25 @@
         box-shadow: 0 0 15px rgba(59, 130, 246, 0.5), 0 0 20px rgba(168, 85, 247, 0.3);
       }
       
+      .sheen-hover {
+        position: relative;
+        overflow: hidden;
+      }
+      .sheen-hover::before {
+        content: '';
+        position: absolute;
+        top: 0;
+        left: -100%;
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(120deg, rgba(255, 255, 255, 0) 20%, rgba(255, 255, 255, 0.2) 50%, rgba(255, 255, 255, 0) 80%);
+        transform: skewX(-25deg);
+        transition: left 0.6s ease;
+      }
+      .sheen-hover:hover::before {
+        left: 100%;
+      }
+
       @keyframes marquee-left {
         0% { transform: translateX(0); }
         100% { transform: translateX(-50%); }
@@ -73,20 +92,77 @@
       .fade-in-on-load {
         animation: fadeInOnLoad 0.5s ease-in-out;
       }
+
+      /* Initial Loader Styles */
+      .initial-loader {
+        position: fixed;
+        inset: 0;
+        background-color: #0A0A10;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        z-index: 9999;
+        transition: opacity 1s ease-in-out; /* Slower fade-out as requested */
+        opacity: 1;
+      }
+      .initial-loader.hidden {
+        opacity: 0;
+        pointer-events: none;
+      }
+      .loader-text {
+        font-size: 3.75rem;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 0.05em;
+        color: #D1D5DB; /* Metallic-like gray */
+        position: relative;
+        overflow: hidden;
+      }
+      .loader-text::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        transform: translateX(-100%);
+        width: 100%;
+        height: 100%;
+        background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+        animation: metallic-sheen 2.5s infinite;
+      }
+      @media (min-width: 768px) {
+        .loader-text {
+          font-size: 5rem;
+        }
+      }
+      @keyframes metallic-sheen {
+        0% {
+          transform: translateX(-100%) skewX(-25deg);
+        }
+        100% {
+          transform: translateX(100%) skewX(-25deg);
+        }
+      }
     </style>
   <script type="importmap">
 {
   "imports": {
     "react": "https://esm.sh/react@^19.1.0",
     "react-dom/": "https://esm.sh/react-dom@^19.1.0/",
-    "react/": "https://esm.sh/react@^19.1.0/"
+    "react/": "https://esm.sh/react@^19.1.0/",
+    "vite": "https://esm.sh/vite@^7.0.5",
+    "@vitejs/plugin-react": "https://esm.sh/@vitejs/plugin-react@^4.7.0"
   }
 }
 </script>
 <link rel="stylesheet" href="/index.css">
 </head>
   <body>
-    <div id="root"></div>
+    <div id="root">
+      <div id="initial-loader" class="initial-loader">
+        <h1 class="loader-text font-orbitron">
+          CLOUDPLAY
+        </h1>
+      </div>
+    </div>
   <script type="module" src="/index.tsx"></script>
 </body>
 </html>

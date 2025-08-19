@@ -57,8 +57,41 @@ export interface Game {
     rtx?: boolean;
     isFree?: boolean;
     stores?: ('steam' | 'epicgames' | 'gog' | 'uplay' | 'battlenet')[];
+    // New: optional mapping of store name -> external link
+    storeLinks?: Record<string, string>;
     publisher?: string;
     ageRating?: string;
     description?: string;
+    descriptions?: Record<Language, string>; // Multi-language descriptions
     screenshots?: string[];
+}
+
+export interface Banner {
+    id: number;
+    gameTitle: string;
+    key: string;
+    image: string;
+    mobileImage?: string;
+    label?: Record<Language, string>;
+    title: Record<Language, string>;
+    text: Record<Language, string>;
+    isActive?: boolean;
+    order?: number;
+}
+
+export interface BannerManifest {
+    banners: Array<{
+        id: number;
+        gameTitle: string;
+        key: string;
+        label?: Record<Language, string>;
+        title: Record<Language, string>;
+        text: Record<Language, string>;
+        isActive?: boolean;
+        order?: number;
+        assets?: {
+            desktop?: string; // default: {key}-desktop.jpg
+            mobile?: string; // default: {key}-mobile.jpg
+        };
+    }>;
 }

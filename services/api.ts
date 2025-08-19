@@ -1,4 +1,140 @@
-import { Game, User } from '../types';
+import { Game, User, Language, Banner, BannerManifest } from '../types';
+import { sanitizeGameTitle } from '../utils/imageUtils';
+
+// --- Content-based games loader (MVP)
+// If you add JSON manifests under content/games/**/game.json, we will auto-load them at build/runtime
+// and map assets to content folder paths directly.
+interface GameManifest {
+  id?: number;
+  title: string;
+  genres: string[];
+  isFree?: boolean;
+  rtx?: boolean;
+  stores?: ('steam' | 'epicgames' | 'gog' | 'uplay' | 'battlenet')[];
+  // New: allow external store links per store
+  storeLinks?: Record<string, string>;
+  publisher?: string;
+  ageRating?: string;
+  description?: string;
+  descriptions?: Record<Language, string>;
+  assets?: {
+    coverArt?: string; // default: {folder}_art.jpg
+    wideArt?: string; // default: {folder}_wide_art.jpg
+    screenshots?: string[]; // default: {folder}_screenshot_1.jpg ...
+  };
+}
+
+// Banner content loader
+interface BannerManifestFile {
+  banners: Array<{
+    id: number;
+    gameTitle: string;
+    key: string;
+    label?: Record<Language, string>;
+    title: Record<Language, string>;
+    text: Record<Language, string>;
+    isActive?: boolean;
+    order?: number;
+    assets?: {
+      desktop?: string; // default: {key}-desktop.jpg
+      mobile?: string; // default: {key}-mobile.jpg
+    };
+  }>;
+}
+
+const loadBannersFromContent = (): Banner[] => {
+  try {
+    const modules = import.meta.glob('../content/banners/*.json', { eager: true, import: 'default' }) as Record<string, unknown>;
+    const entries = Object.entries(modules) as Array<[string, BannerManifestFile]>;
+    if (!entries || entries.length === 0) return [];
+
+    // We currently support a single file home.json, but support multiple files and merge
+    const all: Banner[] = [];
+    for (const [path, mf] of entries) {
+      const normalized = path.replace(/\\/g, '/');
+      const baseDirMatch = normalized.match(/(.*)\/[^/]+\.json$/);
+      const baseDir = baseDirMatch ? baseDirMatch[1].replace(/^\.\./, '') : '../content/banners';
+
+      mf.banners
+        .filter(b => b.isActive !== false)
+        .sort((a, b) => (a.order ?? 0) - (b.order ?? 0))
+        .forEach(b => {
+          const desktop = b.assets?.desktop ?? `${b.key}-desktop.jpg`;
+          const mobile = b.assets?.mobile ?? `${b.key}-mobile.jpg`;
+          const base = `${baseDir}`.replace('..', '');
+          const banner: Banner = {
+            id: b.id,
+            gameTitle: b.gameTitle,
+            key: b.key,
+            image: `${base}/${desktop}`.replace('/content', '/content'),
+            mobileImage: `${base}/${mobile}`.replace('/content', '/content'),
+            label: b.label,
+            title: b.title,
+            text: b.text,
+            isActive: b.isActive ?? true,
+            order: b.order,
+          };
+          all.push(banner);
+        });
+    }
+    return all;
+  } catch (e) {
+    return [];
+  }
+};
+
+const CONTENT_BANNERS: Banner[] = loadBannersFromContent();
+const loadGamesFromContent = (): Game[] => {
+  try {
+    // Glob all manifests if any exist. If none, this returns an empty object.
+    const modules = import.meta.glob('../content/games/**/game.json', { eager: true, import: 'default' }) as Record<string, unknown>;
+
+    const entries = Object.entries(modules) as Array<[string, GameManifest]>;
+    if (!entries || entries.length === 0) return [];
+
+    // Map to Game[]
+    const games: Game[] = entries.map(([path, mf], idx) => {
+      // Extract folder name from path: e.g. ../content/games/lockdown_protocol/game.json -> lockdown_protocol
+      const normalized = path.replace(/\\/g, '/');
+      const m = normalized.match(/content\/games\/([^/]+)\/game\.json$/);
+      const folder = m ? m[1] : sanitizeGameTitle(mf.title);
+
+       const base = `/content/games/${folder}`;
+      const cover = mf.assets?.coverArt ? `${base}/${mf.assets.coverArt}` : `${base}/${folder}_art.jpg`;
+      const wide = mf.assets?.wideArt ? `${base}/${mf.assets.wideArt}` : `${base}/${folder}_wide_art.jpg`;
+      const screenshots = (mf.assets?.screenshots && mf.assets.screenshots.length > 0)
+        ? mf.assets.screenshots.map(name => `${base}/${name}`)
+        : Array.from({ length: 6 }, (_, i) => `${base}/${folder}_screenshot_${i + 1}.jpg`);
+
+      const game: Game = {
+        id: mf.id ?? (idx + 1),
+        title: mf.title,
+        genres: mf.genres,
+        image: cover,
+        wideImage: wide,
+        rtx: mf.rtx,
+        isFree: mf.isFree,
+        stores: mf.stores,
+        // propagate storeLinks if provided by manifest
+        storeLinks: mf.storeLinks,
+        publisher: mf.publisher,
+        ageRating: mf.ageRating,
+        description: mf.description,
+        descriptions: mf.descriptions,
+        screenshots,
+      };
+      return game;
+    });
+    return games;
+  } catch (e) {
+    // On any error (e.g., path not found), silently fallback to static data
+    return [];
+  }
+};
+
+const CONTENT_GAMES: Game[] = loadGamesFromContent();
+// Use ONLY local content games throughout the app
+const ACTIVE_GAMES: Game[] = CONTENT_GAMES;
 
 // --- Mock User Database ---
 // In a real app, this would be a database. We use sessionStorage for better security.
@@ -9,8 +145,21 @@ type StoredUser = User & { password?: string };
 
 const getMockUsers = (): Record<string, StoredUser> => {
   try {
-    const users = sessionStorage.getItem(MOCK_USERS_KEY);
-    return users ? JSON.parse(users) : {};
+    let users = sessionStorage.getItem(MOCK_USERS_KEY);
+    if (!users) {
+      const defaultUser: StoredUser = {
+        id: 1,
+        username: 'testuser',
+        email: 'test@example.com',
+        password: hashPassword('password'),
+        balance: 10000,
+        createdAt: new Date().toISOString(),
+      };
+      const initialUsers = { [defaultUser.email]: defaultUser };
+      users = JSON.stringify(initialUsers);
+      sessionStorage.setItem(MOCK_USERS_KEY, users);
+    }
+    return JSON.parse(users);
   } catch {
     return {};
   }
@@ -89,11 +238,11 @@ const topGamesData: Game[] = [
 ];
 
 const genresData = [
-  { title: 'Action', icon: 'https://gfn.am/games/wp-content/themes/gfngames/img/genres/action.svg', slug: 'action' },
-  { title: 'Adventure', icon: 'https://gfn.am/games/wp-content/themes/gfngames/img/genres/adventures.svg', slug: 'adventure' },
-  { title: 'Racing', icon: 'https://gfn.am/games/wp-content/themes/gfngames/img/genres/racing.svg', slug: 'racing' },
-  { title: 'Simulation', icon: 'https://gfn.am/games/wp-content/themes/gfngames/img/genres/simulator.svg', slug: 'simulation' },
-  { title: 'Strategy', icon: 'https://gfn.am/games/wp-content/themes/gfngames/img/genres/strategy.svg', slug: 'strategy' },
+  { title: 'Action', icon: '/assets/images/icons/genres/action.svg', slug: 'action' },
+  { title: 'Adventure', icon: '/assets/images/icons/genres/adventures.svg', slug: 'adventure' },
+  { title: 'Racing', icon: '/assets/images/icons/genres/racing.svg', slug: 'racing' },
+  { title: 'Simulation', icon: '/assets/images/icons/genres/simulator.svg', slug: 'simulation' },
+  { title: 'Strategy', icon: '/assets/images/icons/genres/strategy.svg', slug: 'strategy' },
 ];
 
 const otherGames: Game[] = [
@@ -105,7 +254,7 @@ const otherGames: Game[] = [
     { id: 16, title: "Baldur's Gate 3", genres: ['Adventure', 'RPG', 'Strategy'], image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/baldurs_gate_3_art.jpg', rtx: false, stores: ['steam', 'gog'] },
     { id: 17, title: "Alan Wake 2", genres: ['Adventure', 'Action', 'Horror'], image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/alan_wake_2_art.jpg', rtx: true, stores: ['epicgames'] },
     { id: 18, title: "The Witcher 3: Wild Hunt", genres: ['Adventure', 'RPG'], image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/the_witcher_3_art.jpg', rtx: true, stores: ['steam', 'gog', 'epicgames'] },
-    { id: 19, title: "Apex Legends", genres: ['Action', 'Shooter'], isFree: true, image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/apex_legends_art.jpg', stores: ['steam'] },
+    { id: 19, title: "Apex Legends", genres: ['Action', 'Shooter', 'MMO'], isFree: true, image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/apex_legends_art.jpg', stores: ['steam'] },
     { id: 20, title: "League of Legends", genres: ['Action', 'MOBA'], isFree: true, image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/league_of_legends_art.jpg', stores: [] },
     { id: 21, title: "World of Warcraft", genres: ['MMO', 'RPG'], image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/world_of_warcraft_art.jpg', stores: ['battlenet'] },
     { id: 22, title: "Overwatch 2", genres: ['Action', 'Shooter'], isFree: true, image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/overwatch_2_art.jpg', stores: ['battlenet'] },
@@ -117,7 +266,7 @@ const otherGames: Game[] = [
     { id: 28, title: "Among Us", genres: ['Indie'], image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/among_us_art.jpg', stores: ['steam', 'epicgames'] },
     { id: 29, title: "Stardew Valley", genres: ['Indie', 'RPG', 'Simulation'], image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/stardew_valley_art.jpg', stores: ['steam', 'gog'] },
     { id: 30, title: "Forza Horizon 5", genres: ['Racing', 'Simulation'], image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/forza_horizon_5_art.jpg', rtx: true, stores: ['steam'] },
-    { id: 31, title: 'Warhammer 40,000: Space Marine 2', genres: ['Action', 'Shooter'], image: 'https://image.api.playstation.com/vulcan/ap/rnd/202308/1715/056972457d420c82cf5180f68d290623a31e8c25f4639909.png', stores: ['steam'] },
+    { id: 31, title: 'Warhammer 40,000: Space Marine 2', genres: ['Action', 'Shooter'], image: 'https://storage.googleapis.com/gfn-am-games-catalogue-assets/warhammer_40,000_space_marine_2_art.jpg', stores: ['steam'] },
 ];
 
 const uniqueGames = new Map<number, Game>();
@@ -135,28 +284,27 @@ export const api = {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
-          let games: Game[] = [...allGamesData];
+          let games: Game[] = [...ACTIVE_GAMES];
 
-          if (options?.search) {
-              const lowercasedQuery = options.search.toLowerCase();
-              games = games.filter(game => 
-                  game.title.toLowerCase().includes(lowercasedQuery) ||
-                  game.genres.some(genre => genre.toLowerCase().includes(lowercasedQuery))
-              );
-          } else if (options?.filter) {
-              if (options.filter === 'Free-to-Play') {
+          // Handle filtering (from both filter and genre options for different pages)
+          const activeFilter = options?.filter || options?.genre;
+          if (activeFilter) {
+              if (activeFilter === 'Free-to-Play') {
                   games = games.filter(game => game.isFree);
-              } else if (options.filter !== 'All Games') {
-                  games = games.filter(game => game.genres.includes(options.filter!));
+              } else if (activeFilter !== 'All Games') {
+                  games = games.filter(game => game.genres.includes(activeFilter));
               }
           }
-          
-          if (options?.genre) {
-            if (options.genre === 'Free-to-Play') {
-              games = games.filter(g => g.isFree);
-            } else {
-              games = games.filter(g => g.genres.includes(options.genre!));
-            }
+
+          // Handle searching on the (potentially) filtered list
+          if (options?.search) {
+              const lowercasedQuery = options.search.toLowerCase().trim();
+              if (lowercasedQuery) {
+                games = games.filter(game => 
+                    game.title.toLowerCase().includes(lowercasedQuery) ||
+                    game.genres.some(genre => genre.toLowerCase().includes(lowercasedQuery))
+                );
+              }
           }
           
           if (options?.sort) {
@@ -183,7 +331,8 @@ export const api = {
     return new Promise((resolve, reject) => {
       setTimeout(() => {
         try {
-          resolve([...topGamesData]);
+          // Return top (first 10) from local content games only
+          resolve([...ACTIVE_GAMES].slice(0, 10));
         } catch (error) {
           reject(new Error('Failed to fetch top games'));
         }
@@ -207,7 +356,7 @@ export const api = {
     return new Promise((resolve, reject) => {
         setTimeout(() => {
             try {
-              const game = allGamesData.find(g => g.title === title);
+              const game = ACTIVE_GAMES.find(g => g.title === title);
               resolve(game);
             } catch (error) {
               reject(new Error('Failed to fetch game'));
@@ -221,7 +370,7 @@ export const api = {
         setTimeout(() => {
             try {
               const genreSet = new Set<string>();
-              allGamesData.forEach(game => game.genres.forEach(g => genreSet.add(g.trim())));
+              ACTIVE_GAMES.forEach(game => game.genres.forEach(g => genreSet.add(g.trim())));
               resolve(Array.from(genreSet).sort());
             } catch (error) {
               reject(new Error('Failed to fetch filters'));
@@ -287,5 +436,37 @@ async login(email: string, password: string): Promise<User> {
         resolve();
       }, DEMO_LATENCY);
     });
-  }
+  },
+
+  async updateBalance(userId: number, topUpAmount: number): Promise<User> {
+    return new Promise((resolve, reject) => {
+      setTimeout(() => {
+        try {
+          const users = getMockUsers();
+          const userEmail = Object.keys(users).find(email => users[email].id === userId);
+
+          if (userEmail && users[userEmail]) {
+            users[userEmail].balance = (users[userEmail].balance || 0) + topUpAmount;
+            saveMockUsers(users);
+
+            const userToReturn = { ...users[userEmail] };
+            delete userToReturn.password;
+            resolve(userToReturn);
+          } else {
+            reject(new Error('userNotFound'));
+          }
+        } catch(error) {
+          reject(error instanceof Error ? error : new Error('Failed to update balance'));
+        }
+      }, DEMO_LATENCY * 3);
+    });
+  },
+
+  async getBanners(): Promise<Banner[]> {
+    return new Promise((resolve) => {
+      setTimeout(() => {
+        resolve(CONTENT_BANNERS);
+      }, DEMO_LATENCY);
+    });
+  },
 };

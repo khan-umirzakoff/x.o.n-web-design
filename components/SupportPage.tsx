@@ -27,7 +27,7 @@ const SupportPage: React.FC<SupportPageProps> = ({ navigate, t }) => {
           <div className="space-y-8">
             <SupportCard 
               title={t('supportFaqTitle')} 
-              icon="https://gfn.am/img/icons/faq.svg"
+              icon="/assets/images/icons/support/faq.svg"
               action={
                 <button onClick={() => navigate('guides')} className="bg-white/10 hover:bg-white/20 text-white font-medium py-2 px-6 rounded-lg transition-colors w-full md:w-auto">
                     {t('viewGuides')}
@@ -38,7 +38,7 @@ const SupportPage: React.FC<SupportPageProps> = ({ navigate, t }) => {
             </SupportCard>
             <SupportCard 
               title={t('supportContactTitle')} 
-              icon="https://gfn.am/img/icons/contact.svg"
+              icon="/assets/images/icons/support/contact.svg"
               action={
                 <a href="https://t.me/cloudplay_gg" target="_blank" rel="noopener noreferrer" className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg transition-colors block text-center w-full md:w-auto">
                     {t('openTelegram')}
@@ -49,7 +49,7 @@ const SupportPage: React.FC<SupportPageProps> = ({ navigate, t }) => {
             </SupportCard>
              <SupportCard 
                 title={t('supportStatusTitle')} 
-                icon="https://gfn.am/img/icons/status.svg"
+                icon="/assets/images/icons/support/status.svg"
                 action={
                     <div className="flex items-center justify-center gap-2 bg-green-500/10 text-green-400 font-medium py-2 px-4 rounded-lg w-full md:w-auto">
                         <div className="w-3 h-3 bg-green-500 rounded-full animate-pulse"></div>
