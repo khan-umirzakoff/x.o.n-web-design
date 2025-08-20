@@ -1,15 +1,22 @@
 import globals from "globals";
 import tseslint from "typescript-eslint";
-import pluginReactConfig from "eslint-plugin-react/configs/recommended.js";
+import reactPlugin from "eslint-plugin-react";
 import reactHooks from "eslint-plugin-react-hooks";
-import pluginReactRefresh from "eslint-plugin-react-refresh";
+import reactRefresh from "eslint-plugin-react-refresh";
 
 export default [
   { files: ["**/*.{js,mjs,cjs,ts,jsx,tsx}"] },
   { languageOptions: { globals: globals.browser } },
   ...tseslint.configs.recommended,
   {
-    ...pluginReactConfig,
+    plugins: {
+      react: reactPlugin
+    },
+    rules: {
+      ...reactPlugin.configs.recommended.rules,
+      "react/react-in-jsx-scope": "off",
+      "react/prop-types": "off"
+    },
     settings: {
       react: {
         version: "detect"
@@ -17,30 +24,24 @@ export default [
     }
   },
   {
-    plugins: {
-      'react-hooks': reactHooks
-    },
+    plugins: { "react-hooks": reactHooks },
     rules: {
-      ...reactHooks.configs.recommended.rules,
-      'react-hooks/react-compiler': 'error'
+      "react-hooks/rules-of-hooks": "error",
+      "react-hooks/exhaustive-deps": "warn"
     }
   },
   {
-    plugins: {
-      'react-refresh': pluginReactRefresh
-    },
+    plugins: { "react-refresh": reactRefresh },
     rules: {
-      'react-refresh/only-export-components': [
-        'warn',
-        { allowConstantExport: true },
+      "react-refresh/only-export-components": [
+        "warn",
+        { allowConstantExport: true }
       ]
     }
   },
   {
     rules: {
-      'react/react-in-jsx-scope': 'off',
-      'react/prop-types': 'off',
-      '@typescript-eslint/no-explicit-any': 'warn'
+      "@typescript-eslint/no-explicit-any": "warn"
     }
   },
   {
