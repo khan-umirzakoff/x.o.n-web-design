@@ -6,6 +6,7 @@ import { Game, User, Language } from '../types';
 import { api } from '../services/api';
 import { CloseIcon, ShareIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
 import { useToast } from '../hooks/useToast';
+import { resolveStoreIcon } from '../utils/imageUtils';
 
 // --- SUB-COMPONENTS ---
 
@@ -45,30 +46,6 @@ const InfoBlock: React.FC<{ label: string; value?: string | string[]; }> = ({ la
             <p className="text-base text-gray-200">{Array.isArray(value) ? value.join(', ') : value}</p>
         </div>
     );
-};
-
-const STORE_ICON_MAP = {
-  steam: '/assets/images/icons/support/steam.svg',
-  epicgames: '/assets/images/icons/support/epicgames.svg',
-  gog: '/assets/images/icons/support/gog.svg',
-  eaapp: '/assets/images/icons/support/eaapp.svg',
-  origin: '/assets/images/icons/support/eaapp.svg',
-  uplay: '/assets/images/icons/support/uplay.svg',
-  ubisoft: '/assets/images/icons/support/uplay.svg',
-  battlenet: '/assets/images/icons/support/battlenet.svg',
-  xbox: '/assets/images/icons/support/xbox.svg',
-} as const;
-
-const resolveStoreIcon = (store: string): string | undefined => {
-  const s = store.toLowerCase();
-  if (s.includes('steam')) return STORE_ICON_MAP.steam;
-  if (s.includes('epic')) return STORE_ICON_MAP.epicgames;
-  if (s.includes('gog')) return STORE_ICON_MAP.gog;
-  if (s.includes('ea') || s.includes('origin')) return STORE_ICON_MAP.eaapp;
-  if (s.includes('uplay') || s.includes('ubisoft')) return STORE_ICON_MAP.uplay;
-  if (s.includes('battle') || s.includes('blizzard')) return STORE_ICON_MAP.battlenet;
-  if (s.includes('xbox')) return STORE_ICON_MAP.xbox;
-  return undefined;
 };
 
 const StoreTag: React.FC<{ store: string; url?: string }> = ({ store, url }) => {

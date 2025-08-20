@@ -56,7 +56,7 @@ const TopUpModal: React.FC<TopUpModalProps> = ({ isOpen, onClose, t, onConfirm }
     try {
       await onConfirm(Number(amount));
       // Parent component will handle closing the modal and showing success message.
-    } catch (err) {
+    } catch {
       // The parent will show a toast, but we can show a local error message too.
       setError(t('topUpFailed'));
     } finally {

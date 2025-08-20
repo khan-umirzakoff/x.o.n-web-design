@@ -78,7 +78,7 @@ const loadBannersFromContent = (): Banner[] => {
         });
     }
     return all;
-  } catch (e) {
+  } catch {
     return [];
   }
 };
@@ -126,7 +126,7 @@ const loadGamesFromContent = (): Game[] => {
       return game;
     });
     return games;
-  } catch (e) {
+  } catch {
     // On any error (e.g., path not found), silently fallback to static data
     return [];
   }
@@ -229,7 +229,7 @@ export const api = {
           }
 
           resolve(games);
-        } catch (error) {
+        } catch {
           reject(new Error('Failed to fetch games'));
         }
       }, DEMO_LATENCY);
@@ -242,7 +242,7 @@ export const api = {
         try {
           // Return top (first 10) from local content games only
           resolve([...ACTIVE_GAMES].slice(0, 10));
-        } catch (error) {
+        } catch {
           reject(new Error('Failed to fetch top games'));
         }
       }, DEMO_LATENCY);
@@ -254,7 +254,7 @@ export const api = {
         setTimeout(() => {
             try {
               resolve([...genresData]);
-            } catch (error) {
+            } catch {
               reject(new Error('Failed to fetch genres'));
             }
         }, DEMO_LATENCY);
@@ -267,7 +267,7 @@ export const api = {
             try {
               const game = ACTIVE_GAMES.find(g => g.id.toString() === id);
               resolve(game);
-            } catch (error) {
+            } catch {
               reject(new Error('Failed to fetch game'));
             }
         }, DEMO_LATENCY);
@@ -280,7 +280,7 @@ export const api = {
             try {
               const game = ACTIVE_GAMES.find(g => g.title === title);
               resolve(game);
-            } catch (error) {
+            } catch {
               reject(new Error('Failed to fetch game'));
             }
         }, DEMO_LATENCY);
@@ -294,7 +294,7 @@ export const api = {
               const genreSet = new Set<string>();
               ACTIVE_GAMES.forEach(game => game.genres.forEach(g => genreSet.add(g.trim())));
               resolve(Array.from(genreSet).sort());
-            } catch (error) {
+            } catch {
               reject(new Error('Failed to fetch filters'));
             }
         }, DEMO_LATENCY);
@@ -377,8 +377,8 @@ async login(email: string, password: string): Promise<User> {
           } else {
             reject(new Error('userNotFound'));
           }
-        } catch(error) {
-          reject(error instanceof Error ? error : new Error('Failed to update balance'));
+        } catch {
+          reject(new Error('Failed to update balance'));
         }
       }, DEMO_LATENCY * 3);
     });
