@@ -15,31 +15,28 @@ export const sanitizeGameTitle = (title: string): string => {
 /**
  * Generate local image path from game title (content folder)
  */
-export const getLocalImagePath = (
-  gameTitle: string,
-  imageType: 'art' | 'wide_art' | 'screenshot',
-  screenshotIndex?: number
-): string => {
-  const safeName = sanitizeGameTitle(gameTitle);
-  const base = `/content/games/${safeName}`;
+export const STORE_ICON_MAP = {
+    steam: '/assets/images/icons/support/steam.svg',
+    epicgames: '/assets/images/icons/support/epicgames.svg',
+    gog: '/assets/images/icons/support/gog.svg',
+    eaapp: '/assets/images/icons/support/eaapp.svg',
+    origin: '/assets/images/icons/support/eaapp.svg',
+    uplay: '/assets/images/icons/support/uplay.svg',
+    ubisoft: '/assets/images/icons/support/uplay.svg',
+    battlenet: '/assets/images/icons/support/battlenet.svg',
+    xbox: '/assets/images/icons/support/xbox.svg',
+} as const;
 
-  if (imageType === 'screenshot' && screenshotIndex !== undefined) {
-    return `${base}/${safeName}_screenshot_${screenshotIndex + 1}.jpg`;
-  }
-
-  return `${base}/${safeName}_${imageType}.jpg`;
-};
-
-/**
- * Check if local image exists by trying to load it
- */
-export const checkImageExists = (imagePath: string): Promise<boolean> => {
-  return new Promise((resolve) => {
-    const img = new Image();
-    img.onload = () => resolve(true);
-    img.onerror = () => resolve(false);
-    img.src = imagePath;
-  });
+export const resolveStoreIcon = (store: string): string | undefined => {
+    const s = store.toLowerCase();
+    if (s.includes('steam')) return STORE_ICON_MAP.steam;
+    if (s.includes('epic')) return STORE_ICON_MAP.epicgames;
+    if (s.includes('gog')) return STORE_ICON_MAP.gog;
+    if (s.includes('ea') || s.includes('origin')) return STORE_ICON_MAP.eaapp;
+    if (s.includes('uplay') || s.includes('ubisoft')) return STORE_ICON_MAP.uplay;
+    if (s.includes('battle') || s.includes('blizzard')) return STORE_ICON_MAP.battlenet;
+    if (s.includes('xbox')) return STORE_ICON_MAP.xbox;
+    return undefined;
 };
 
 /**

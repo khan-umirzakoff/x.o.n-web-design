@@ -1,24 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Game } from '../types';
-
-// Store icon mapping (reused from GameDetailsPage)
-const STORE_ICON_MAP = {
-    steam: '/assets/images/icons/support/steam.svg',
-    epicgames: '/assets/images/icons/support/epicgames.svg',
-    gog: '/assets/images/icons/support/gog.svg',
-    eaapp: '/assets/images/icons/support/eaapp.svg',
-    origin: '/assets/images/icons/support/eaapp.svg',
-    uplay: '/assets/images/icons/support/uplay.svg',
-    ubisoft: '/assets/images/icons/support/uplay.svg',
-    battlenet: '/assets/images/icons/support/battlenet.svg',
-    xbox: '/assets/images/icons/support/xbox.svg',
-} as const;
-
-const resolveStoreIcon = (store: string): string | undefined => {
-    const normalized = store.toLowerCase().replace(/[\s-_]/g, '');
-    return STORE_ICON_MAP[normalized as keyof typeof STORE_ICON_MAP] || 
-           STORE_ICON_MAP[store.toLowerCase() as keyof typeof STORE_ICON_MAP];
-};
+import { resolveStoreIcon } from '../utils/imageUtils';
 
 interface GameCardProps {
     game: Game;
