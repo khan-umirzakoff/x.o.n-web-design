@@ -4,9 +4,10 @@ import { resolveStoreIcon } from '../utils/imageUtils';
 
 interface GameCardProps {
     game: Game;
+    onClick?: () => void;
 }
 
-const GameCard: React.FC<GameCardProps> = ({ game }) => {
+const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
     const [imageLoaded, setImageLoaded] = useState(false);
     const [imageError, setImageError] = useState(false);
     // Use local-first source for cover art
@@ -31,10 +32,22 @@ const GameCard: React.FC<GameCardProps> = ({ game }) => {
         setImageLoaded(true);
     };
 
+    const handleKeyDown = (e: React.KeyboardEvent<HTMLDivElement>) => {
+        if (!onClick) return;
+        if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            onClick();
+        }
+    };
+
     return (
         <div
             className="gameCard group block relative rounded-lg overflow-hidden shrink-0 aspect-square cursor-pointer focus:outline-none focus:ring-2 focus:ring-primary focus:ring-offset-2 w-full"
             aria-label={`Play ${game.title} - ${game.genres.join(", ")}`}
+            role="button"
+            tabIndex={0}
+            onClick={onClick}
+            onKeyDown={handleKeyDown}
         >
             <div className="absolute -inset-px bg-theme-gradient rounded-lg opacity-0 group-hover:opacity-100 group-focus:opacity-100 transition-opacity duration-300 z-0"></div>
             <div className="relative w-full h-full bg-surface-variant rounded-md">
