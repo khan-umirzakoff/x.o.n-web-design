@@ -1,6 +1,6 @@
 
 
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import { useParams, Link } from 'react-router-dom';
 import { Game, User, Language } from '../types';
 import { api } from '../services/api';
@@ -67,7 +67,110 @@ const StoreTag: React.FC<{ store: string; url?: string }> = ({ store, url }) => 
     return <span className={className}>{content}</span>;
 };
 
-const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string }> = ({ screenshots, title }) => {
+const ScreenshotLightbox: React.FC<{
+  screenshots: string[];
+  startIndex: number;
+  onClose: () => void;
+  title: string;
+}> = ({ screenshots, startIndex, onClose, title }) => {
+  const [currentIndex, setCurrentIndex] = useState(startIndex);
+  const [animationState, setAnimationState] = useState<'entering' | 'entered' | 'exiting'>('entering');
+
+  const handleClose = useCallback(() => {
+    setAnimationState('exiting');
+    setTimeout(onClose, 300); // Match transition duration
+  }, [onClose]);
+
+  const goToNext = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex + 1) % screenshots.length);
+  }, [screenshots.length]);
+
+  const goToPrev = useCallback(() => {
+    setCurrentIndex((prevIndex) => (prevIndex - 1 + screenshots.length) % screenshots.length);
+  }, [screenshots.length]);
+
+  useEffect(() => {
+    // Trigger the enter animation
+    const timer = requestAnimationFrame(() => setAnimationState('entered'));
+    
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key === 'Escape') handleClose();
+      if (e.key === 'ArrowRight') goToNext();
+      if (e.key === 'ArrowLeft') goToPrev();
+    };
+    
+    window.addEventListener('keydown', handleKeyDown);
+    document.body.style.overflow = 'hidden';
+
+    return () => {
+      cancelAnimationFrame(timer);
+      window.removeEventListener('keydown', handleKeyDown);
+      document.body.style.overflow = 'auto';
+    };
+  }, [handleClose, goToNext, goToPrev]);
+  
+  const backdropClasses = animationState === 'entered' ? 'opacity-100' : 'opacity-0';
+  const imageContainerClasses = animationState === 'entered' ? 'opacity-100 scale-100' : 'opacity-0 scale-95';
+
+  return (
+    <div
+      className={`fixed inset-0 bg-black/80 backdrop-blur-sm z-50 flex items-center justify-center transition-opacity duration-300 ease-in-out ${backdropClasses}`}
+      onClick={handleClose}
+      role="dialog"
+      aria-modal="true"
+      aria-label={`${title} screenshot gallery`}
+    >
+      <button
+        onClick={handleClose}
+        className="absolute top-4 right-4 text-white/70 hover:text-white transition-colors z-50"
+        aria-label="Close gallery"
+      >
+        <CloseIcon className="w-8 h-8" />
+      </button>
+
+      <div className="relative w-full h-full flex items-center justify-center p-4 md:p-8">
+        <button
+          onClick={(e) => { e.stopPropagation(); goToPrev(); }}
+          className="absolute left-2 md:left-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white transition-colors z-50"
+          aria-label="Previous screenshot"
+        >
+          <ChevronLeftIcon className="w-8 h-8" />
+        </button>
+
+        <div 
+          className={`relative max-w-screen-lg max-h-[90vh] w-full transform transition-all duration-300 ease-in-out ${imageContainerClasses}`}
+          onClick={(e) => e.stopPropagation()}
+        >
+           <div className="relative aspect-video bg-black/20 rounded-lg overflow-hidden">
+                {screenshots.map((src, index) => (
+                    <img
+                        key={src}
+                        src={src}
+                        alt={`${title} screenshot ${index + 1}`}
+                        className={`absolute inset-0 w-full h-full object-contain transition-opacity duration-300 ease-in-out ${currentIndex === index ? 'opacity-100' : 'opacity-0'}`}
+                        style={{ backfaceVisibility: 'hidden' }}
+                    />
+                ))}
+            </div>
+            <div className="text-center text-white/80 mt-2 text-sm">
+                {currentIndex + 1} / {screenshots.length}
+            </div>
+        </div>
+
+        <button
+          onClick={(e) => { e.stopPropagation(); goToNext(); }}
+          className="absolute right-2 md:right-4 top-1/2 -translate-y-1/2 p-2 rounded-full bg-black/50 hover:bg-black/80 text-white transition-colors z-50"
+          aria-label="Next screenshot"
+        >
+          <ChevronRightIcon className="w-8 h-8" />
+        </button>
+      </div>
+    </div>
+  );
+};
+
+
+const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string, onScreenshotClick: (index: number) => void }> = ({ screenshots, title, onScreenshotClick }) => {
     const [canScrollLeft, setCanScrollLeft] = React.useState(false);
     const [canScrollRight, setCanScrollRight] = React.useState(false);
     const scrollerRef = React.useRef<HTMLDivElement | null>(null);
@@ -86,7 +189,6 @@ const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string }> = (
         if (!el) return;
         updateScrollState();
 
-        // Recalculate after a short delay to account for lazy image sizing
         const t1 = setTimeout(updateScrollState, 50);
         const t2 = setTimeout(updateScrollState, 200);
 
@@ -102,7 +204,6 @@ const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string }> = (
     }, [screenshots?.length, updateScrollState]);
 
     React.useEffect(() => {
-        // Cleanup any ongoing animation if component unmounts
         return () => {
             if (animRef.current !== null) {
                 cancelAnimationFrame(animRef.current);
@@ -146,16 +247,15 @@ const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string }> = (
     const scrollByAmount = (dir: 1 | -1) => {
         const el = scrollerRef.current;
         if (!el) return;
-        const cardWidth = 320; // w-80
-        const spacing = 16;    // space-x-4
+        const cardWidth = 320;
+        const spacing = 16;
         const base = cardWidth + spacing;
-        const scrollDistance = base * 1.25 * dir; // step ~1.25 cards
+        const scrollDistance = base * 1.25 * dir;
         animateScrollBy(scrollDistance, 500);
     };
 
     return (
         <div className="py-8 relative">
-            {/* Edge fades */}
             {canScrollLeft && (
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#0A0A10] to-transparent z-10" />
             )}
@@ -163,7 +263,6 @@ const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string }> = (
                 <div className="pointer-events-none absolute inset-y-0 right-0 w-16 bg-gradient-to-l from-[#0A0A10] to-transparent z-10" />
             )}
 
-            {/* Navigation buttons */}
             <button
                 type="button"
                 aria-label="Previous screenshots"
@@ -183,21 +282,26 @@ const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string }> = (
                 <ChevronRightIcon className="w-5 h-5" />
             </button>
 
-            {/* Scroller */}
             <div
                 ref={scrollerRef}
                 className="flex overflow-x-auto space-x-4 no-scrollbar py-2"
             >
                 {screenshots.map((src, index) => (
-                    <div key={index} className="flex-shrink-0 w-80 h-44 rounded-lg overflow-hidden">
+                    <button
+                        type="button"
+                        key={index}
+                        className="flex-shrink-0 w-80 h-44 rounded-lg overflow-hidden group focus:outline-none focus-visible:ring-2 focus-visible:ring-white/50"
+                        onClick={() => onScreenshotClick(index)}
+                        aria-label={`View screenshot ${index + 1} of ${title} in fullscreen`}
+                    >
                         <img
                             src={src}
                             alt={`${title} screenshot ${index + 1}`}
-                            className="w-full h-full object-cover"
+                            className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-105"
                             loading="lazy"
                             onLoad={updateScrollState}
                         />
-                    </div>
+                    </button>
                 ))}
             </div>
         </div>
@@ -220,6 +324,7 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
   const [loading, setLoading] = useState(true);
   const [isShareModalOpen, setIsShareModalOpen] = useState(false);
   const { addToast } = useToast();
+  const [lightboxIndex, setLightboxIndex] = useState<number | null>(null);
 
   useEffect(() => {
     const fetchGame = async () => {
@@ -230,7 +335,7 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
         setGame(fetchedGame || null);
       } catch (error) {
         console.error("Failed to fetch game details:", error);
-        setGame(null); // Or redirect to a not-found page
+        setGame(null);
       } finally {
         setLoading(false);
       }
@@ -238,7 +343,6 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
     fetchGame();
   }, [gameId]);
 
-  // Local-first images
   const [coverSrc, setCoverSrc] = useState<string>('');
   const [wideSrc, setWideSrc] = useState<string>('');
   const [screenshotsSrc, setScreenshotsSrc] = useState<string[]>([]);
@@ -290,6 +394,14 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
   return (
     <div className="bg-[#0A0A10] text-white">
       {isShareModalOpen && <ShareModal url={window.location.href} onClose={() => setIsShareModalOpen(false)} t={t} />}
+      {lightboxIndex !== null && screenshotsSrc.length > 0 && (
+          <ScreenshotLightbox
+            screenshots={screenshotsSrc}
+            startIndex={lightboxIndex}
+            onClose={() => setLightboxIndex(null)}
+            title={game.title}
+          />
+      )}
       
       <div className="relative h-64 md:h-96 w-full">
         <img src={wideSrc} alt={`${game.title} background`} className="absolute inset-0 w-full h-full object-cover opacity-20" />
@@ -360,7 +472,7 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
             </div>
         </div>
 
-        <ScreenshotGallery screenshots={screenshotsSrc} title={game.title} />
+        <ScreenshotGallery screenshots={screenshotsSrc} title={game.title} onScreenshotClick={setLightboxIndex} />
 
       </div>
     </div>

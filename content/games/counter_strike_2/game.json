@@ -1,0 +1,38 @@
+{
+  "id": 730,
+  "title": "Counter-Strike 2",
+  "genres": [
+    "Action"
+  ],
+  "isFree": true,
+  "rtx": false,
+  "stores": [
+    "steam"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/730/CounterStrike_2/"
+  },
+  "publisher": "Valve",
+  "ageRating": "18",
+  "descriptions": {
+    "ENG": "Counter-Strike 2 is a tactical first-person shooter and the latest installment in the long-running Counter-Strike series. Developed by Valve, it is a free upgrade to its predecessor, Counter-Strike: Global Offensive, and utilizes the Source 2 engine for significant graphical and technical improvements. [1, 2, 3] The core gameplay remains a 5v5, objective-based competition between two teams: the Terrorists and the Counter-Terrorists. [6] Game modes include the classic Bomb Defusal and Hostage Rescue. [4] A major technical enhancement is the introduction of a sub-tick server architecture, which makes player movement and shooting more responsive. [1, 4] The game also features dynamic smoke grenades that can be momentarily dispersed by gunfire and explosions, adding a new tactical layer. [1] All cosmetic items from CS:GO are carried over to Counter-Strike 2. [2]",
+    "RUS": "Counter-Strike 2 — это тактический шутер от первого лица, являющийся последней частью многолетней серии Counter-Strike. [14] Разработанная Valve, она представляет собой бесплатное обновление для своей предшественницы, Counter-Strike: Global Offensive, и использует движок Source 2 для значительных графических и технических улучшений. [14] Основной игровой процесс представляет собой соревнование 5 на 5 с выполнением задач между двумя командами: террористами и контртеррористами. Режимы игры включают классическое обезвреживание бомбы и спасение заложников. [20] Важным техническим усовершенствованием является введение подтиковой архитектуры серверов, что делает передвижение и стрельбу игроков более отзывчивыми. В игре также представлены динамические дымовые гранаты, которые могут быть временно рассеяны выстрелами и взрывами, добавляя новый тактический элемент. [24] Все косметические предметы из CS:GO перенесены в Counter-Strike 2.",
+    "UZB": "Counter-Strike 2 — bu taktik birinchi shaxs otishmasi va uzoq davom etgan Counter-Strike seriyasining soʻnggi qismi. Valve tomonidan ishlab chiqilgan boʻlib, u oʻzidan oldingi Counter-Strike: Global Offensive uchun bepul yangilanishdir va muhim grafik va texnik yaxshilanishlar uchun Source 2 dvigatelidan foydalanadi. [1] Asosiy oʻyin jarayoni ikki jamoa: Terroristlar va Qarshi-Terroristlar oʻrtasidagi 5v5, maqsadga asoslangan musobaqa boʻlib qoladi. [1] Oʻyin rejimlari klassik Bomba Zararsizlantirish va Garovdagilarni Qutqarishni oʻz ichiga oladi. [1] Muhim texnik takomillashtirish — bu oʻyinchi harakati va otishmasini yanada sezgir qiladigan past-belgili server arxitekturasining joriy etilishi. Oʻyinda, shuningdek, otishma va portlashlar bilan vaqtincha tarqatilishi mumkin boʻlgan dinamik tutunli granatalar mavjud boʻlib, bu yangi taktik qatlamni qoʻshadi. CS:GO'dagi barcha kosmetik buyumlar Counter-Strike 2 ga o'tkaziladi."
+  },
+  "assets": {
+    "coverArt": "counter_strike_2_art.jpg",
+    "wideArt": "counter_strike_2_wide_art.jpg",
+    "screenshots": [
+      "counter_strike_2_screenshot_1.jpg",
+      "counter_strike_2_screenshot_2.jpg",
+      "counter_strike_2_screenshot_3.jpg",
+      "counter_strike_2_screenshot_4.jpg",
+      "counter_strike_2_screenshot_5.jpg",
+      "counter_strike_2_screenshot_6.jpg",
+      "counter_strike_2_screenshot_7.jpg",
+      "counter_strike_2_screenshot_8.jpg",
+      "counter_strike_2_screenshot_9.jpg",
+      "counter_strike_2_screenshot_10.jpg"
+    ]
+  }
+}

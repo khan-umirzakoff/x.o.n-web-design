@@ -1,0 +1,45 @@
+{
+  "id": 2669320,
+  "title": "EA SPORTS FC 25",
+  "genres": [
+    "Sports",
+    "Simulation"
+  ],
+  "isFree": false,
+  "rtx": true,
+  "stores": [
+    "steam",
+    "epicgames",
+    "eaapp",
+    "xbox",
+    "playstation"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/2669320/EA_SPORTS_FC_25/",
+    "epicgames": "https://store.epicgames.com/en-US/p/ea-sports-fc-25",
+    "eaapp": "https://www.ea.com/games/ea-sports-fc/fc-25/buy",
+    "xbox": "https://www.xbox.com/en-US/games/store/ea-sports-fc-25-standard-edition-xbox-one-xbox-series-x-s/9P2261N6V1Q7",
+    "playstation": "https://store.playstation.com/en-us/product/UP0006-PPSA20759_00-EASPORTSFC25STDE"
+  },
+  "publisher": "Electronic Arts",
+  "ageRating": "3",
+  "descriptions": {
+    "ENG": "EA SPORTS FC 25 is a football simulation video game that marks the second installment in the EA Sports FC series. The game features a new 'FC IQ' system which is a comprehensive overhaul of the tactical system, allowing for greater strategic control. This includes player roles and AI behaviors that mirror real-world football tactics. A new 5v5 'Rush' mode has been introduced, available in Ultimate Team, Clubs, and Kick-Off, offering a fast-paced, small-sided gameplay experience. For the first time, the game includes a full Women's Career mode, allowing players to manage or play in five of the top women's leagues. The game boasts unrivaled authenticity with over 19,000 licensed players, 700+ clubs, and more than 30 leagues, including exclusive access to competitions like the UEFA Champions League.",
+    "RUS": "EA SPORTS FC 25 — это футбольный симулятор, являющийся второй частью в серии EA Sports FC. В игре представлена новая система «FC IQ», которая представляет собой комплексный пересмотр тактической системы, обеспечивающий больший стратегический контроль. Это включает в себя роли игроков и поведение ИИ, отражающие реальную футбольную тактику. Представлен новый режим «Rush» 5 на 5, доступный в Ultimate Team, Clubs и Kick-Off, предлагающий динамичный геймплей на уменьшенном поле. Впервые в игре появился полноценный режим женской карьеры, позволяющий игрокам управлять или играть в пяти ведущих женских лигах. Игра может похвастаться непревзойденной аутентичностью с более чем 19 000 лицензированных игроков, 700+ клубами и более чем 30 лигами, включая эксклюзивный доступ к таким соревнованиям, как Лига чемпионов УЕФА.",
+    "UZB": "EA SPORTS FC 25 — bu EA Sports FC seriyasidagi ikkinchi qism bo'lgan futbol simulyatsiyasi video o'yini. O'yinda taktik tizimni har tomonlama qayta ko'rib chiqish bo'lgan va kattaroq strategik nazoratni ta'minlaydigan yangi \"FC IQ\" tizimi mavjud. Bunga haqiqiy dunyo futbol taktikalarini aks ettiruvchi o'yinchi rollari va sun'iy intellekt xulq-atvori kiradi. Ultimate Team, Clubs va Kick-Off rejimlarida mavjud bo'lgan yangi 5v5 \"Rush\" rejimi taqdim etilgan bo'lib, u tez sur'atli, kichik maydondagi o'yin tajribasini taklif etadi. O'yinda birinchi marta to'liq Ayollar Karyerasi rejimi mavjud bo'lib, u o'yinchilarga beshta eng yaxshi ayollar ligalarida boshqarish yoki o'ynash imkonini beradi. O'yin 19 000 dan ortiq litsenziyalangan o'yinchilar, 700 dan ortiq klublar va 30 dan ortiq ligalar bilan, shu jumladan UEFA Chempionlar Ligasi kabi musobaqalarga eksklyuziv kirish huquqi bilan misli ko'rilmagan haqiqiylikka ega."
+  },
+  "assets": {
+    "coverArt": "ea_sports_fc_25_art.jpg",
+    "wideArt": "ea_sports_fc_25_wide_art.webp",
+    "screenshots": [
+      "ea_sports_fc_25_screenshot_1.jpg",
+      "ea_sports_fc_25_screenshot_2.jpg",
+      "ea_sports_fc_25_screenshot_3.jpg",
+      "ea_sports_fc_25_screenshot_4.jpg",
+      "ea_sports_fc_25_screenshot_5.jpg",
+      "ea_sports_fc_25_screenshot_6.jpg",
+      "ea_sports_fc_25_screenshot_7.jpg",
+      "ea_sports_fc_25_screenshot_8.jpg"
+    ]
+  }
+}

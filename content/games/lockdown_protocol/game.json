@@ -3,10 +3,12 @@
   "title": "LOCKDOWN Protocol",
   "genres": [
     "Action",
-    "Shooter",
+    "Casual",
     "Indie",
+    "Multiplayer",
+    "Sci-fi",
     "Strategy",
-    "Co-op"
+    "Social Deduction"
   ],
   "isFree": false,
   "rtx": true,

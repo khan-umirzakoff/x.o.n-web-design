@@ -1,0 +1,55 @@
+{
+  "id": 211500,
+  "title": "RaceRoom Racing Experience",
+  "genres": [
+    "Racing",
+    "Simulation",
+    "Sports"
+  ],
+  "isFree": true,
+  "rtx": false,
+  "stores": [
+    "steam"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/211500/RaceRoom_Racing_Experience/"
+  },
+  "publisher": "KW Studios, RaceRoom Entertainment AG",
+  "ageRating": "3",
+  "descriptions": {
+    "ENG": "RaceRoom Racing Experience is a free-to-play racing simulator for PC, developed by KW Studios and published by RaceRoom Entertainment AG. [3] The game aims to provide an authentic racing experience with detailed car and track models, as well as realistic vehicle handling and sounds. [3] A selection of free cars and tracks is available from the start in both single-player and multiplayer modes. Sponsored competitions and other free events allow players to experience premium content at no cost. Additional cars, tracks, and liveries can be purchased in the in-game store.",
+    "RUS": "RaceRoom Racing Experience (R3E) — это профессиональный гоночный симулятор от Sector3 Studios, отличающийся широким ассортиментом лицензированных автомобилей и трасс, а также высокой степенью реализма. [10] RaceRoom Racing Experience — это гоночный автосимулятор, разработанный компанией Sector3 Studios (ранее известные как SimBin Studios). [13] Игра предлагает вам множество официальных гоночных серий, в том числе DTM, WTCC, ADAC GT MASTERS и другие, множество известных трасс по всему миру, мультиплеерный и однопользовательский режимы. [13] Над физической моделью разработчики работают совместно с известными пилотами. [13]",
+    "UZB": "RaceRoom Racing Experience - bu KW Studios tomonidan ishlab chiqilgan va RaceRoom Entertainment AG tomonidan nashr etilgan kompyuter uchun bepul poyga simulyatori. [3] O'yin batafsil avtomobil va trassa modellari, shuningdek, avtomobilni real boshqarish va ovozlar bilan haqiqiy poyga tajribasini taqdim etishga qaratilgan. [3] Bepul avtomobillar va trassalar tanlovi boshidanoq yakkalik va ko'p o'yinchi rejimlarida mavjud. Homponsorlik qilingan musobaqalar va boshqa bepul tadbirlar o'yinchilarga premium kontentni bepul sinab ko'rish imkonini beradi. Qo'shimcha mashinalar, treklar va liveriyalarni o'yin ichidagi do'kondan sotib olish mumkin."
+  },
+  "assets": {
+    "coverArt": "raceroom_racing_experience_art.jpg",
+    "wideArt": "raceroom_racing_experience_wide_art.png",
+    "screenshots": [
+      "raceroom_racing_experience_screenshot_1.jpg",
+      "raceroom_racing_experience_screenshot_2.jpg",
+      "raceroom_racing_experience_screenshot_3.jpg",
+      "raceroom_racing_experience_screenshot_4.jpg",
+      "raceroom_racing_experience_screenshot_5.jpg",
+      "raceroom_racing_experience_screenshot_6.jpg",
+      "raceroom_racing_experience_screenshot_7.jpg",
+      "raceroom_racing_experience_screenshot_8.jpg",
+      "raceroom_racing_experience_screenshot_9.jpg",
+      "raceroom_racing_experience_screenshot_10.jpg",
+      "raceroom_racing_experience_screenshot_11.jpg",
+      "raceroom_racing_experience_screenshot_12.jpg",
+      "raceroom_racing_experience_screenshot_13.jpg",
+      "raceroom_racing_experience_screenshot_14.jpg",
+      "raceroom_racing_experience_screenshot_15.jpg",
+      "raceroom_racing_experience_screenshot_16.jpg",
+      "raceroom_racing_experience_screenshot_17.jpg",
+      "raceroom_racing_experience_screenshot_18.jpg",
+      "raceroom_racing_experience_screenshot_19.jpg",
+      "raceroom_racing_experience_screenshot_20.jpg",
+      "raceroom_racing_experience_screenshot_21.jpg",
+      "raceroom_racing_experience_screenshot_22.jpg",
+      "raceroom_racing_experience_screenshot_23.jpg",
+      "raceroom_racing_experience_screenshot_24.jpg",
+      "raceroom_racing_experience_screenshot_25.jpg"
+    ]
+  }
+}

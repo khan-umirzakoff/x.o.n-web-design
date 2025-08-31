@@ -3,7 +3,7 @@ import { Link, useSearchParams, useNavigate } from 'react-router-dom';
 import GameCard from './GameCard';
 import { Game } from '../types';
 import { api } from '../services/api';
-import { ChevronDownIcon, ChevronLeftIcon } from './icons';
+import { ChevronDownIcon, ChevronLeftIcon, ChevronRightIcon } from './icons';
 import { GameCardSkeleton } from './SkeletonLoader';
 import { useDebounce } from '../hooks/useDebounce';
 
@@ -12,6 +12,28 @@ const ITEMS_PER_PAGE = 24;
 interface AllGamesPageProps {
     t: (key: string) => string;
 }
+
+const smoothScrollBy = (element: HTMLElement, distance: number, duration: number = 400) => {
+    const start = element.scrollLeft;
+    const startTime = performance.now();
+
+    // ease-out cubic function: starts fast, decelerates to a halt
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const animateScroll = (currentTime: number) => {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+
+        element.scrollLeft = start + distance * easedProgress;
+
+        if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+        }
+    };
+    requestAnimationFrame(animateScroll);
+};
+
 
 const AllGamesPage: React.FC<AllGamesPageProps> = ({ t }) => {
     const navigate = useNavigate();
@@ -29,6 +51,10 @@ const AllGamesPage: React.FC<AllGamesPageProps> = ({ t }) => {
     const lastGameElementRef = useRef<HTMLDivElement>(null);
     const gamesPerPage = ITEMS_PER_PAGE;
     const [page, setPage] = useState(1);
+    
+    const filtersContainerRef = useRef<HTMLDivElement | null>(null);
+    const [isAtStart, setIsAtStart] = useState(true);
+    const [isAtEnd, setIsAtEnd] = useState(false);
 
     // Search state and refs
     const [searchQuery, setSearchQuery] = useState<string>(search || '');
@@ -131,6 +157,39 @@ const AllGamesPage: React.FC<AllGamesPageProps> = ({ t }) => {
         const currentFilter = filterOptions.find(f => f.key === filter);
         return currentFilter ? currentFilter.label : filter;
     }, [filter, filterOptions]);
+    
+    const checkScrollButtons = useCallback(() => {
+        const container = filtersContainerRef.current;
+        if (container) {
+            const { scrollLeft, scrollWidth, clientWidth } = container;
+            const scrollEndReached = scrollLeft + clientWidth >= scrollWidth - 2;
+            setIsAtStart(scrollLeft <= 2);
+            setIsAtEnd(scrollEndReached);
+        }
+    }, []);
+
+    useEffect(() => {
+        const container = filtersContainerRef.current;
+        if (container) {
+            checkScrollButtons();
+            container.addEventListener('scroll', checkScrollButtons, { passive: true });
+            const resizeObserver = new ResizeObserver(checkScrollButtons);
+            resizeObserver.observe(container);
+            return () => {
+                container.removeEventListener('scroll', checkScrollButtons);
+                resizeObserver.disconnect();
+            };
+        }
+    }, [checkScrollButtons, filterOptions]);
+
+    const handleScroll = (direction: 'left' | 'right') => {
+        if (filtersContainerRef.current) {
+            const container = filtersContainerRef.current;
+            const scrollAmount = 250; // Adjusted for 1-2 buttons
+            const distance = direction === 'left' ? -scrollAmount : scrollAmount;
+            smoothScrollBy(container, distance, 500); // Slower animation
+        }
+    };
 
     return (
         <div className="bg-[#0A0A10] text-white min-h-screen">
@@ -186,8 +245,11 @@ const AllGamesPage: React.FC<AllGamesPageProps> = ({ t }) => {
                 </div>
 
                 <div className="controls flex items-center justify-between flex-wrap gap-4 mb-8">
-                     <div className="w-full md:w-auto md:flex-grow overflow-hidden">
-                        <div className="flex items-center space-x-2 pb-2 overflow-x-auto no-scrollbar px-4 -mx-4">
+                    <div className="relative flex-1 min-w-0">
+                        <div
+                            ref={filtersContainerRef}
+                            className="flex items-center space-x-2 pb-2 overflow-x-auto no-scrollbar scroll-smooth pr-8 md:pr-0"
+                        >
                            {filterOptions.map((filterOpt) => (
                                 <button
                                     key={filterOpt.key}
@@ -198,6 +260,27 @@ const AllGamesPage: React.FC<AllGamesPageProps> = ({ t }) => {
                                 </button>
                             ))}
                         </div>
+
+                        <div className={`pointer-events-none absolute inset-y-0 left-0 w-12 bg-gradient-to-r from-[#0A0A10] to-transparent transition-opacity duration-300 ${!isAtStart ? 'opacity-100' : 'opacity-0'}`} />
+                        <div className={`pointer-events-none absolute inset-y-0 right-0 w-12 bg-gradient-to-l from-[#0A0A10] to-transparent transition-opacity duration-300 ${!isAtEnd ? 'opacity-100' : 'opacity-0'}`} />
+
+                        <button
+                            type="button"
+                            aria-label="Scroll left"
+                            onClick={() => handleScroll('left')}
+                            className={`absolute hidden md:inline-flex -left-1 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-6 h-6 rounded-full bg-gray-800/80 border border-white/10 text-white hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 transition-opacity duration-300 ${!isAtStart ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                        >
+                            <ChevronLeftIcon className="w-4 h-4" />
+                        </button>
+                        <button
+                            type="button"
+                            aria-label="Scroll right"
+                            onClick={() => handleScroll('right')}
+                            className={`absolute hidden md:inline-flex -right-1 top-1/2 -translate-y-1/2 z-10 items-center justify-center w-6 h-6 rounded-full bg-gray-800/80 border border-white/10 text-white hover:bg-gray-700 focus:outline-none focus-visible:ring-2 focus-visible:ring-white/30 transition-opacity duration-300 ${!isAtEnd ? 'opacity-100' : 'opacity-0 pointer-events-none'}`}
+                        >
+                            <ChevronRightIcon className="w-4 h-4" />
+                        </button>
+
                     </div>
                     <div className="sort relative ml-auto md:ml-4">
                         <button onClick={() => setIsSortOpen(!isSortOpen)} className="bg-white/5 hover:bg-white/10 text-gray-200 px-4 py-2 rounded-md flex items-center gap-2">

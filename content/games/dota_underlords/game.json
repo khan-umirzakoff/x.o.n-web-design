@@ -1,0 +1,37 @@
+{
+  "id": 1046930,
+  "title": "Dota Underlords",
+  "genres": [
+    "Strategy",
+    "Auto Battler",
+    "Casual",
+    "Multiplayer",
+    "Tactical"
+  ],
+  "isFree": true,
+  "rtx": false,
+  "stores": [
+    "steam"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/1046930/Dota_Underlords/"
+  },
+  "publisher": "Valve",
+  "ageRating": "12",
+  "descriptions": {
+    "ENG": "Dota Underlords is a stand-alone strategy game developed by Valve, set in the Dota 2 universe. Players compete against seven opponents, building and upgrading a crew of heroes who then battle on their own. The game emphasizes strategic decision-making over fast reflexes. Each hero has unique abilities and can form alliances with other heroes to unlock powerful bonuses. Players can also choose an Underlord to lead their crew, each with their own distinct playstyle and abilities. The game features cross-play between PC and mobile devices, allowing players to start a match on one platform and finish it on another. Dota Underlords includes various game modes, such as Standard, the fast-paced Knockout, and a co-op Duos mode.",
+    "RUS": "Dota Underlords — это самостоятельная стратегическая игра от Valve, действие которой происходит во вселенной Dota 2. Игроки соревнуются с семью противниками, собирая и улучшая команду героев, которые затем сражаются сами по себе. В игре упор делается на принятие стратегических решений, а не на быструю реакцию. У каждого героя есть уникальные способности, и он может вступать в союзы с другими героями, чтобы открывать мощные бонусы. Игроки также могут выбрать Лорда, который возглавит их команду, каждый со своим особым стилем игры и способностями. В игре есть кросс-плей между ПК и мобильными устройствами, что позволяет игрокам начинать матч на одной платформе и заканчивать его на другой. Dota Underlords включает в себя различные игровые режимы, такие как «Стандарт», быстрый «Вышибалы» и совместный режим «Дуэты».",
+    "UZB": "Dota Underlords — bu Valve tomonidan ishlab chiqilgan, Dota 2 olamida bo'lib o'tadigan mustaqil strategiya o'yini. O'yinchilar yetti nafar raqibga qarshi kurashadilar, qahramonlar guruhini tuzadilar va takomillashtiradilar, keyin esa ular o'z-o'zidan jang qiladilar. O'yin tezkor reflekslardan ko'ra strategik qarorlar qabul qilishga urg'u beradi. Har bir qahramonning o'ziga xos qobiliyatlari bor va kuchli bonuslarni ochish uchun boshqa qahramonlar bilan ittifoq tuzishi mumkin. O'yinchilar, shuningdek, o'z guruhlariga rahbarlik qilish uchun har biri o'ziga xos o'yin uslubi va qobiliyatiga ega bo'lgan Underlordni tanlashlari mumkin. O'yinda kompyuter va mobil qurilmalar o'rtasida o'zaro o'ynash imkoniyati mavjud bo'lib, bu o'yinchilarga bitta platformada o'yinni boshlash va boshqasida tugatish imkonini beradi. Dota Underlords turli xil o'yin rejimlarini o'z ichiga oladi, masalan, Standart, tezkor Nokaut va hamkorlikdagi Duos rejimi."
+  },
+  "assets": {
+    "coverArt": "dota_underlords_art.png",
+    "wideArt": "dota_underlords_wide_art.jpg",
+    "screenshots": [
+      "dota_underlords_screenshot_1.jpg",
+      "dota_underlords_screenshot_2.jpg",
+      "dota_underlords_screenshot_3.jpg",
+      "dota_underlords_screenshot_4.jpg",
+      "dota_underlords_screenshot_5.jpg"
+    ]
+  }
+}

@@ -80,28 +80,28 @@
     },
     {
       "id": 4,
-      "gameTitle": "Warhammer 40,000: Space Marine 2",
-      "key": "warhammer",
+      "gameTitle": "RaceRoom Racing Experience",
+      "key": "raceroom",
       "label": {
-        "ENG": "ACTION",
-        "RUS": "ЭКШЕН",
-        "UZB": "JANG"
+        "ENG": "RACING",
+        "RUS": "ГОНКИ",
+        "UZB": "POYGA"
       },
       "title": {
-        "ENG": "Warhammer 40,000: Space Marine 2",
-        "RUS": "Warhammer 40,000: Space Marine 2",
-        "UZB": "Warhammer 40,000: Space Marine 2"
+        "ENG": "RaceRoom Racing Experience",
+        "RUS": "RaceRoom Racing Experience",
+        "UZB": "RaceRoom Racing Experience"
       },
       "text": {
-        "ENG": "Defend humanity as a Space Marine",
-        "RUS": "Защитите человечество как космический морпех",
-        "UZB": "Insoniyatni kosmik dengizchi sifatida himoya qiling"
+        "ENG": "Feel the realism of competitive racing",
+        "RUS": "Ощути реализм соревновательных гонок",
+        "UZB": "Raqobatbardosh poygalarning realizmini his qiling"
       },
       "isActive": true,
       "order": 4,
       "assets": {
-        "desktop": "warhammer-desktop.jpg",
-        "mobile": "warhammer-mobile.jpg"
+        "desktop": "raceroom-desctop.jpg",
+        "mobile": "raceroom-desctop.jpg"
       }
     },
     {

@@ -1,5 +1,22 @@
 import React, { useState, useRef, useEffect, useCallback } from 'react';
 
+const smoothScrollBy = (element: HTMLElement, distance: number, duration: number = 400) => {
+    const start = element.scrollLeft;
+    const startTime = performance.now();
+    const easeOutCubic = (t: number) => 1 - Math.pow(1 - t, 3);
+
+    const animateScroll = (currentTime: number) => {
+        const elapsedTime = currentTime - startTime;
+        const progress = Math.min(elapsedTime / duration, 1);
+        const easedProgress = easeOutCubic(progress);
+        element.scrollLeft = start + distance * easedProgress;
+        if (progress < 1) {
+            requestAnimationFrame(animateScroll);
+        }
+    };
+    requestAnimationFrame(animateScroll);
+};
+
 const PrevButton: React.FC<{ onClick: () => void; disabled: boolean }> = ({ onClick, disabled }) => (
     <button 
         onClick={onClick} 
@@ -49,13 +66,14 @@ const GameCarousel: React.FC<GameCarouselProps> = ({ children }) => {
     useEffect(() => {
         const container = scrollContainerRef.current;
         if (container) {
-            container.addEventListener('scroll', checkScrollPosition, { passive: true });
+            const handleScroll = () => checkScrollPosition();
+            container.addEventListener('scroll', handleScroll, { passive: true });
             const resizeObserver = new ResizeObserver(checkScrollPosition);
             resizeObserver.observe(container);
             checkScrollPosition(); // Initial check
             
             return () => {
-                container.removeEventListener('scroll', checkScrollPosition);
+                container.removeEventListener('scroll', handleScroll);
                 resizeObserver.disconnect();
             };
         }
@@ -64,23 +82,22 @@ const GameCarousel: React.FC<GameCarouselProps> = ({ children }) => {
 
     const scroll = (direction: 'left' | 'right') => {
         if (scrollContainerRef.current) {
-            const scrollAmount = scrollContainerRef.current.clientWidth * 0.8; // Scroll by 80% of visible width
-            scrollContainerRef.current.scrollBy({
-                left: direction === 'left' ? -scrollAmount : scrollAmount,
-                behavior: 'smooth',
-            });
+            const container = scrollContainerRef.current;
+            const scrollAmount = container.clientWidth * 0.8; // Scroll by 80% of visible width
+            const distance = direction === 'left' ? -scrollAmount : scrollAmount;
+            smoothScrollBy(container, distance, 400);
         }
     };
     
     return (
-        <div className="relative group/carousel">
+        <div className="relative">
             <div
                 ref={scrollContainerRef}
                 className="flex space-x-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar px-4"
             >
                 {children}
             </div>
-             <div className="hidden md:block opacity-0 group-hover/carousel:opacity-100 transition-opacity duration-300">
+             <div className="hidden md:block">
                 <PrevButton onClick={() => scroll('left')} disabled={isAtStart} />
                 <NextButton onClick={() => scroll('right')} disabled={isAtEnd} />
             </div>

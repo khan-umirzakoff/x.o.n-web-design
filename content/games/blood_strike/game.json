@@ -1,0 +1,40 @@
+{
+  "id": 3199170,
+  "title": "Blood Strike",
+  "genres": [
+    "Action",
+    "Adventure",
+    "Massively Multiplayer",
+    "Strategy",
+    "Battle Royale",
+    "Shooter"
+  ],
+  "isFree": true,
+  "rtx": false,
+  "stores": [
+    "steam"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/3199170/Blood_Strike/"
+  },
+  "publisher": "NetEase Games",
+  "ageRating": "16",
+  "descriptions": {
+    "ENG": "Gather your friends and dive into the action-packed Battle Royale, Squad Fight, or Hot Zone. [1] Blood Strike is a fast-paced battle royale mobile FPS, optimized for low-end devices for a smooth combat experience. [6] It offers a wide range of playable Strikers, each with a unique active and passive ability. [1] You can customize your weapons and team up to prove you have what it takes to come out on top. The ESRB rating is T for Teen, due to violence and blood. [1, 2]",
+    "RUS": "BloodStrike — это королевская битва от NetEase Games. [4] В игре вас ждет широкий выбор бойцов с уникальными активными и пассивными способностями, которые могут вызывать дроны, возводить стены из щитов и многое другое. [5] Игра предлагает несколько режимов, включая «Королевская битва», «Битва отрядов» и «Горячая зона». [13] Благодаря плавной оптимизации и динамичным боям, игра завоевала сердца почти 100 миллионов игроков по всему миру. [13]",
+    "UZB": "Blood Strike - bu bir nechta platformalarda mavjud bo'lgan qirollik jangi o'yini. [15] O'zining tezkor o'yinlari, silliq optimallashtirilishi va o'ziga xos qobiliyatlarga ega personajlari bilan o'yin butun dunyo bo'ylab 100 millionga yaqin o'yinchining mehrini qozondi. [8] O'yinchilar dronlarni ishga tushirish, qalqon devorlarini o'rnatish va boshqa ko'p narsalarga imkon beruvchi noyob faol va passiv qobiliyatlarga ega bo'lgan turli xil hujumchilarni tanlashlari mumkin. Qurolingizni o'zingizga yoqqan tarzda sozlang va g'alaba qozonish uchun nima kerakligini isbotlashga tayyorlaning."
+  },
+  "assets": {
+    "coverArt": "blood_strike_art.png",
+    "wideArt": "blood_strike_wide_art.jpg",
+    "screenshots": [
+      "blood_strike_screenshot_1.jpg",
+      "blood_strike_screenshot_2.jpg",
+      "blood_strike_screenshot_3.jpg",
+      "blood_strike_screenshot_4.jpg",
+      "blood_strike_screenshot_5.jpg",
+      "blood_strike_screenshot_6.jpg",
+      "blood_strike_screenshot_7.jpg"
+    ]
+  }
+}
