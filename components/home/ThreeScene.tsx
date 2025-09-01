@@ -208,7 +208,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
                 }
                 const bolt: LightningBolt = {
                     isActive: false, startTime: 0, duration: 0,
-                    startPoint: new THREE.Vector3(), endPoint: new THREE.Vector3(),
                     path: null, materials,
                     meshes: {
                         main: new THREE.Mesh(new THREE.BufferGeometry(), materials.core),
@@ -223,28 +222,29 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
 
             let flashIntensity = 0;
 
-            const triggerLightning = () => {
-                const bolt = lightningPool.current.find(b => !b.isActive);
-                if (!bolt || logoGroup.children.length === 0) return;
-                const part = logoGroup.children[Math.floor(Math.random() * logoGroup.children.length)] as THREE.Mesh;
-                if (!part.geometry.attributes.position) return;
-                const positionAttribute = part.geometry.attributes.position;
-                const vertexIndex = Math.floor(Math.random() * positionAttribute.count);
-                const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, vertexIndex);
-                part.updateWorldMatrix(true, false);
-                vertex.applyMatrix4(part.matrixWorld);
-                flashLight.position.copy(vertex);
-                flashIntensity = 4.0;
-                bolt.isActive = true;
-                bolt.startTime = clock.getElapsedTime();
-                bolt.duration = 0.2 + Math.random() * 0.1;
-                bolt.path = createLightningPath(vertex, mousePoint.current);
-            };
-
             const animate = () => {
                 animationFrameIdRef.current = requestAnimationFrame(animate);
                 const elapsedTime = clock.getElapsedTime();
-                const distanceToLogo = mousePoint.current.distanceTo(logoGroup.position);
+
+                const triggerLightning = () => {
+                    const bolt = lightningPool.current.find(b => !b.isActive);
+                    if (!bolt || !logoGroupRef.current || logoGroupRef.current.children.length === 0) return;
+                    const part = logoGroupRef.current.children[Math.floor(Math.random() * logoGroupRef.current.children.length)] as THREE.Mesh;
+                    if (!part.geometry.attributes.position) return;
+                    const positionAttribute = part.geometry.attributes.position;
+                    const vertexIndex = Math.floor(Math.random() * positionAttribute.count);
+                    const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, vertexIndex);
+                    part.updateWorldMatrix(true, false);
+                    vertex.applyMatrix4(part.matrixWorld);
+                    flashLight.position.copy(vertex);
+                    flashIntensity = 4.0;
+                    bolt.isActive = true;
+                    bolt.startTime = clock.getElapsedTime();
+                    bolt.duration = 0.2 + Math.random() * 0.1;
+                    bolt.path = createLightningPath(vertex, mousePoint.current);
+                };
+
+                const distanceToLogo = mousePoint.current.distanceTo(logoGroupRef.current?.position || new THREE.Vector3());
                 const hotZoneDistance = 1.5;
                 let strikeInterval = 0.5 + Math.pow(Math.max(0, distanceToLogo - hotZoneDistance), 2) * 0.2 + Math.random() * 0.5;
                 if (distanceToLogo < hotZoneDistance) {
@@ -326,13 +326,16 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
         };
 
         const onMouseMove = (event: MouseEvent) => {
-            if (!initialized || !currentMount) return;
-            const rect = currentMount.getBoundingClientRect();
+            if (!initialized || !currentMount || !rendererRef.current) return;
+                const rect = rendererRef.current.domElement.getBoundingClientRect();
             mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
             mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
             if (cameraRef.current) {
                 raycaster.setFromCamera(mouse, cameraRef.current);
-                raycaster.ray.intersectPlane(plane, mousePoint.current);
+                    const intersection = new THREE.Vector3();
+                    if (raycaster.ray.intersectPlane(plane, intersection)) {
+                        mousePoint.current.copy(intersection);
+                    }
             }
         };
 
