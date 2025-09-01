@@ -1,4 +1,4 @@
-# CloudPlay.uz 2.0
+# X.O.N 2.0
 
 Modern cloud gaming platform built with React, TypeScript, and Tailwind CSS.
 
@@ -152,7 +152,7 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ## 🙏 Acknowledgments
 
 - **Moonlight**: Open-source game streaming client
-- **Cloud Play**: GeForce NOW technology inspiration
+- **X.O.N**: GeForce NOW technology inspiration
 - **Tailwind CSS**: Utility-first CSS framework
 - **React**: JavaScript library for building user interfaces
 
