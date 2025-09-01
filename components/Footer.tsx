@@ -38,7 +38,7 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
         { to: "/games", text: t('availableGames') },
         { to: "/contacts", text: t('contacts') },
     ];
-    const cloudPlayLinks = [
+    const xonLinks = [
         { to: "/download", text: t('dlWindows') },
         { to: "/download", text: t('dlMac') },
         { to: "/download", text: t('dlAndroid') },
@@ -59,7 +59,7 @@ const Footer: React.FC<FooterProps> = ({ t }) => {
                     <div className="grid grid-cols-2 md:grid-cols-4 gap-6 md:gap-8">
                         <div className="w-full"><FooterNavSection title={t('usefulInfo')} links={usefulLinks} /></div>
                         <div className="w-full"><FooterNavSection title={t('about')} links={aboutLinks} /></div>
-                        <div className="w-full"><FooterNavSection title={'X.O.N'} links={cloudPlayLinks} /></div>
+                        <div className="w-full"><FooterNavSection title={'X.O.N'} links={xonLinks} /></div>
                         <div className="w-full"><FooterNavSection title={t('legal')} links={legalLinks} /></div>
                     </div>
                 </div>

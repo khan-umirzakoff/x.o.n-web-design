@@ -13,7 +13,7 @@ const Logo: React.FC<LogoProps> = ({ className }) => {
             </svg>
             <div className="font-orbitron font-bold leading-none">
                 <div className="text-lg tracking-wider">X.O.N</div>
-                <div className="text-xs text-theme-gradient tracking-widest">Cloud Gaming</div>
+                <div className="text-xs text-theme-gradient tracking-widest">X.O.N Cloud Gaming</div>
             </div>
         </div>
     );
