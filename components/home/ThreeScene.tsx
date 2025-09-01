@@ -227,6 +227,9 @@ const ThreeScene: React.FC = () => {
 
         let flashIntensity = 0;
         const mousePoint = new THREE.Vector3();
+        const raycaster = new THREE.Raycaster();
+        const mouse = new THREE.Vector2();
+        const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
 
         const createLightningPath = (start: THREE.Vector3, end: THREE.Vector3) => {
             const mainPath: THREE.Vector3[] = [];
@@ -299,15 +302,11 @@ const ThreeScene: React.FC = () => {
             if (!mountRef.current) return;
 
             const rect = mountRef.current.getBoundingClientRect();
-            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
 
-            const vec = new THREE.Vector3();
-            vec.set(x, y, 0.5);
-            vec.unproject(camera);
-            vec.sub(camera.position).normalize();
-            const distance = -camera.position.z / vec.z;
-            mousePoint.copy(camera.position).add(vec.multiplyScalar(distance));
+            raycaster.setFromCamera(mouse, camera);
+            raycaster.ray.intersectPlane(plane, mousePoint);
         };
 
         const resizeObserver = new ResizeObserver(() => {
