@@ -1,6 +1,7 @@
 
 import React from 'react';
 import { Link } from 'react-router-dom';
+import ThreeScene from './ThreeScene';
 
 interface HeroProps {
     t: (key: string) => string;
@@ -9,10 +10,9 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({ t }) => {
     return (
         <div className="relative min-h-screen flex items-center justify-center text-center -mt-[72px] pt-[72px] overflow-hidden">
-            <div 
-                className="absolute inset-0 w-full h-full bg-cover bg-center" 
-                style={{ backgroundImage: "url('https://images.unsplash.com/photo-1534796636912-3b95b3ab5986?q=80&w=2071&auto=format&fit=crop')" }}
-            ></div>
+            <div className="absolute inset-0 w-full h-full">
+                <ThreeScene />
+            </div>
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A10] via-[#0A0A10]/50 to-transparent"></div>
             <div className="absolute inset-0 bg-black/30"></div>
             
