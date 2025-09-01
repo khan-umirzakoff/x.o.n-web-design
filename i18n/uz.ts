@@ -28,14 +28,14 @@ export const uz = {
   emailAlreadyExists: 'Ushbu email allaqachon mavjud',
   weakPassword: 'Parol kamida 6 belgidan iborat bo‘lishi kerak',
   // Hero
-  heroTitle: 'CLOUD PLAY',
+  heroTitle: 'X.O.N',
   heroSubtitle: 'Geyming kelajagi shu yerda',
   // StartToPlay
   howToStartPlaying: 'Qanday o‘ynashni boshlash kerak?',
   ultraGamingExperience: 'ULTRA O‘yin tajribasi',
   // Advantages
   adv1Title: 'Har qanday qurilma — o‘yin uchun',
-  adv1Desc: 'CLOUD PLAY eng talabchan o‘yinlarni deyarli har qanday qurilmada, jumladan eski kompyuterlar, Mac, Android yoki iOS smartfonlarida ishga tushirish imkonini beradi.',
+  adv1Desc: 'X.O.N Cloud Gaming eng talabchan o‘yinlarni deyarli har qanday qurilmada, jumladan eski kompyuterlar, Mac, Android yoki iOS smartfonlarida ishga tushirish imkonini beradi.',
   adv1Btn: 'Tizim talablari',
   adv2Title: 'Oʻyinlarni oʻrnatmasdan oʻynang',
   adv2Desc: "Barcha oʻyinlar bizning serverlarimizda saqlanadi va bulutdan ishga tushiriladi. Uzoq yuklab olishlar va oʻrnatishlarni unuting. Shunchaki yengil dasturimizni oʻrnating va oʻynashni boshlang.",
@@ -78,7 +78,7 @@ export const uz = {
   wallDesc: 'Steam, Ubisoft Connect, Epic Games kutubxonalaringizni ulang yoki bepul o‘yinlarni o‘ynang.',
   // Call To Action
   ctaTitle: 'O‘ynashga tayyormisiz?',
-  ctaDesc: 'CLOUD PLAY har qanday qurilmada ishga tushirishga tayyor 50 dan ortiq o‘yinlarni taklif qiladi. Sevimli o‘yiningizni tanlang va harakatga sho‘ng‘ing!',
+  ctaDesc: 'X.O.N Cloud Gaming har qanday qurilmada ishga tushirishga tayyor 50 dan ortiq o‘yinlarni taklif qiladi. Sevimli o‘yiningizni tanlang va harakatga sho‘ng‘ing!',
   ctaBtn: 'Barcha o‘yinlarni ko‘rish',
   // Footer
   usefulInfo: 'Foydali ma’lumot',
@@ -116,12 +116,12 @@ export const uz = {
   noGamesFoundDesc: 'Filtringizni yoki qidiruv so‘rovingizni o‘zgartirib ko‘ring.',
   loadMore: 'Ko‘proq yuklash',
   // Game Details Page
-  cloudPlayBrandName: 'CLOUD PLAY',
+  cloudPlayBrandName: 'X.O.N',
   playNow: 'Hozir o‘ynash',
   share: 'O‘yinni ulashish',
   featureComingSoon: 'Oʻyin strimingi tez kunda ishga tushadi! Qoʻllab-quvvatlaganingiz uchun rahmat.',
   // Download Page
-  downloadTitle: 'CLOUD PLAY yuklab olish',
+  downloadTitle: 'X.O.N yuklab olish',
   downloadOnDevice: 'Qurilmaga',
   downloadForWindows: 'Windows 10/11 uchun',
   downloadForMacOS: 'macOS 10.15+ uchun',
@@ -130,11 +130,11 @@ export const uz = {
   downloadForSteamDeck: 'Steam Deck uchun (Discover orqali)',
   downloadForChrome: 'Chrome uchun kengaytma',
   downloadDesc: 'Eng yaxshi tajriba uchun bizning maxsus ilovamizdan foydalanishni tavsiya qilamiz.',
-  downloadMoonlightTitle: 'CLOUD PLAY: Moonlight asosida',
-  downloadMoonlightP1: "CLOUD PLAY da o‘ynashni boshlash uchun sizga bizning o‘yin serverlarimizga ulanadigan klient ilovasi kerak bo‘ladi. Bizning xizmatimiz Moonlight — ochiq kodli, yuqori unumdorlikka ega o‘yin striming klienti asosida ishlaydi.",
+  downloadMoonlightTitle: 'X.O.N: Moonlight asosida',
+  downloadMoonlightP1: "X.O.N da o‘ynashni boshlash uchun sizga bizning o‘yin serverlarimizga ulanadigan klient ilovasi kerak bo‘ladi. Bizning xizmatimiz Moonlight — ochiq kodli, yuqori unumdorlikka ega o‘yin striming klienti asosida ishlaydi.",
   downloadMoonlightP2: "Kompyuter, Mac, smartfon yoki hatto televizoringizga Moonlight klientini o‘rnating va ultra past kechikish bilan eng yaxshi o‘yinlardan bahramand bo‘ling. Moonlight yordamida sevimli o‘yinlaringizni qurilmangizning quvvatidan qat’i nazar, ajoyib grafika bilan o‘ynashingiz mumkin.",
   downloadMoonlightP3: "Yuqoridagi variantlardan o‘z operatsion tizimingiz yoki qurilmangizni tanlang va rasmiy Moonlight klientini yuklab olish uchun havolaga o‘ting. Windows, macOS, Android, iOS, Linux, Steam Deck va boshqa platformalar qo‘llab-quvvatlanadi.",
-  downloadMoonlightP4: "Ko‘proq bilishni xohlaysizmi? CLOUD PLAY haqidagi barcha ma’lumotlar bizning rasmiy veb-saytimizda mavjud. Bizga qo‘shiling! Cheksiz o‘yinlar olami va aqlbovar qilmaydigan imkoniyatlar siz o‘ylagandan ham yaqinroq!",
+  downloadMoonlightP4: "Ko‘proq bilishni xohlaysizmi? X.O.N haqidagi barcha ma’lumotlar bizning rasmiy veb-saytimizda mavjud. Bizga qo‘shiling! Cheksiz o‘yinlar olami va aqlbovar qilmaydigan imkoniyatlar siz o‘ylagandan ham yaqinroq!",
   // Guides Page
   guidesTitle: 'Qo‘llanmalar',
   guidesSubtitle: 'Savollaringizga javob toping',
@@ -147,7 +147,7 @@ export const uz = {
   guide4Title: 'Tizim talablari',
   guide4Text: 'Qurilmangiz o‘yinlarga tayyorligini tekshiring',
   // How to Start Page
-  howToStartTitle: 'CLOUD PLAY da qanday o‘ynashni boshlash kerak',
+  howToStartTitle: 'X.O.N da qanday o‘ynashni boshlash kerak',
   step1Title: 'Hisob yarating',
   step1Desc: 'Ro‘yxatdan o‘tish oddiy va bepul. Bu bir necha daqiqa vaqtni oladi.',
   step1Btn: 'Ro‘yxatdan o‘tish',
@@ -155,7 +155,7 @@ export const uz = {
   step2Desc: "Hisobingizga mablag‘ kiriting. Siz faqat o‘ynagan vaqtingiz uchun to‘laysiz.",
   step2Btn: 'Balansni to‘ldirish',
   step3Title: 'Ilovani o‘rnating',
-  step3Desc: 'Qurilmangiz uchun CLOUD PLAY klientini yuklab oling yoki to‘g‘ridan-to‘g‘ri brauzerda o‘ynang.',
+  step3Desc: 'Qurilmangiz uchun X.O.N klientini yuklab oling yoki to‘g‘ridan-to‘g‘ri brauzerda o‘ynang.',
   step3Btn: 'Klientni yuklash',
   step4Title: 'O‘yin hisoblaringizni ulang',
   step4Desc: "Sotib olingan o‘yinlaringizga kirish uchun Steam, Epic Games yoki boshqa hisoblaringizni bog‘lang.",
@@ -163,8 +163,8 @@ export const uz = {
   step5Desc: 'Keng kutubxonamizdan istalgan o‘yinni tanlang va sarguzashtingizni darhol boshlang!',
   step5Btn: 'O‘yinlarni ko‘rish',
   // About Page
-  aboutServiceTitle: 'CLOUD PLAY haqida',
-  aboutServiceP1: 'CLOUD PLAY — bu zamonaviy bulutli o‘yin xizmati bo‘lib, u sizga eng talabchan kompyuter o‘yinlarini deyarli har qanday qurilmada o‘ynash imkonini beradi. Sizga kerak bo‘lgan yagona narsa — barqaror internet aloqasi.',
+  aboutServiceTitle: 'X.O.N haqida',
+  aboutServiceP1: 'X.O.N — bu zamonaviy bulutli o‘yin xizmati bo‘lib, u sizga eng talabchan kompyuter o‘yinlarini deyarli har qanday qurilmada o‘ynash imkonini beradi. Sizga kerak bo‘lgan yagona narsa — barqaror internet aloqasi.',
   aboutServiceP2: 'Bizning vazifamiz — yuqori darajadagi geymingni, apparat ta’minotidan qat’i nazar, hamma uchun ochiq qilish. Biz hisoblash quvvati, yangilanishlar va o‘rnatishlarni o‘z zimmamizga olamiz, shunda siz eng muhim narsaga — o‘yinga e’tibor qaratishingiz mumkin.',
   aboutServiceP3: 'Ushbu loyiha zamonaviy frontend texnologiyalari va UI/UX dizayn tamoyillarini namoyish qilish uchun yaratilgan bulutli o‘yin xizmatining namoyish klonidir. U React, TypeScript va Tailwind CSS dan foydalanadi va Moonlight striming protokoli asosida ishlaydi.',
   projectFounderTitle: 'Loyiha asoschisi',
@@ -184,7 +184,7 @@ export const uz = {
   supportContactText: "Javob topa olmadingizmi? Bizning qo'llab-quvvatlash jamoamiz har qanday texnik muammolar yoki savollar bo'yicha sizga yordam berish uchun Telegram'da mavjud.",
   openTelegram: 'Telegramni ochish',
   supportStatusTitle: 'Xizmat holati',
-  supportStatusText: 'Barcha CLOUD PLAY xizmatlari normal ishlamoqda. Hech qanday hodisalar yoki rejalashtirilgan texnik xizmat ko‘rsatishlar qayd etilmagan.',
+  supportStatusText: 'Barcha X.O.N xizmatlari normal ishlamoqda. Hech qanday hodisalar yoki rejalashtirilgan texnik xizmat ko‘rsatishlar qayd etilmagan.',
   statusOperational: 'Barcha tizimlar ishlamoqda',
   // System Requirements
   sysReqTitle: 'Tizim talablari',
@@ -234,7 +234,7 @@ export const uz = {
   sysReqTV_SamsungDesc: 'Tizen tizimidagi Samsung televizorlari hozirda Moonlight tomonidan rasman qo‘llab-quvvatlanmaydi.',
   // NVIDIA Tech Page
   nvidiaTechPageTitle: "Bizning texnologiyalarimiz va serverlarimiz",
-  nvidiaTechIntro: "CLOUD PLAY eng zamonaviy texnologiyalar va kuchli uskunalar asosida ishlaydi, bu sizning qurilmangizga uzluksiz, yuqori unumdorlikka ega o'yin tajribasini taqdim etadi.",
+  nvidiaTechIntro: "X.O.N eng zamonaviy texnologiyalar va kuchli uskunalar asosida ishlaydi, bu sizning qurilmangizga uzluksiz, yuqori unumdorlikka ega o'yin tajribasini taqdim etadi.",
   nvidiaServerTitle: "Server quvvati",
   nvidiaServerDesc: "Bizning ma'lumotlar markazimiz 60 dan ortiq kuchli serverlar bilan jihozlangan bo'lib, ularning har biri eng so'nggi NVIDIA A100 grafik kartalari bilan ta'minlangan. Ushbu ulkan infratuzilma sizga o'yinlarga kutishlarsiz bir zumda kirishni va har bir o'yinning maksimal salohiyatda ishlashini ta'minlaydi.",
   nvidiaTechTitle: "O'yin texnologiyalari",

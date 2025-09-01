@@ -28,14 +28,14 @@ export const en = {
   emailAlreadyExists: 'Email already exists',
   weakPassword: 'Password must be at least 6 characters',
   // Hero
-  heroTitle: 'CLOUD PLAY',
+  heroTitle: 'X.O.N',
   heroSubtitle: 'The Future of Gaming is Here',
   // StartToPlay
   howToStartPlaying: 'How to start playing?',
   ultraGamingExperience: 'ULTRA Gaming Experience',
   // Advantages
   adv1Title: 'Any device is a gaming device',
-  adv1Desc: 'CLOUD PLAY lets you run demanding games on almost any device, including old PCs, Macs, and Android or iOS smartphones.',
+  adv1Desc: 'X.O.N Cloud Gaming lets you run demanding games on almost any device, including old PCs, Macs, and Android or iOS smartphones.',
   adv1Btn: 'System Requirements',
   adv2Title: 'Play without installing games',
   adv2Desc: "All games are stored on our servers and launched from the cloud. Forget about long downloads and installations. Just install our lightweight application and start playing.",
@@ -78,7 +78,7 @@ export const en = {
   wallDesc: 'Connect your Steam, Ubisoft Connect, Epic Games libraries or play free-to-play games.',
   // Call To Action
   ctaTitle: 'Ready to Play?',
-  ctaDesc: 'CLOUD PLAY offers over 50 games ready to run on any device. Pick your favorite and jump into the action!',
+  ctaDesc: 'X.O.N Cloud Gaming offers over 50 games ready to run on any device. Pick your favorite and jump into the action!',
   ctaBtn: 'Browse All Games',
   // Footer
   usefulInfo: 'Useful Info',
@@ -116,12 +116,12 @@ export const en = {
   noGamesFoundDesc: 'Try adjusting your filters or search query.',
   loadMore: 'Load More',
   // Game Details Page
-  cloudPlayBrandName: 'CLOUD PLAY',
+  cloudPlayBrandName: 'X.O.N',
   playNow: 'Play Now',
   share: 'Share Game',
   featureComingSoon: 'Game streaming is coming soon! Thank you for your support.',
   // Download Page
-  downloadTitle: 'Download CLOUD PLAY',
+  downloadTitle: 'Download X.O.N',
   downloadOnDevice: 'On a Device',
   downloadForWindows: 'For Windows 10/11',
   downloadForMacOS: 'For macOS 10.15+',
@@ -130,11 +130,11 @@ export const en = {
   downloadForSteamDeck: 'For Steam Deck (via Discover)',
   downloadForChrome: 'Chrome Browser Extension',
   downloadDesc: 'For the best experience, we recommend using our native application.',
-  downloadMoonlightTitle: 'CLOUD PLAY: Powered by Moonlight',
-  downloadMoonlightP1: 'To start playing on CLOUD PLAY, you need a client application that connects you to our gaming servers. Our service is powered by Moonlight, an open-source, high-performance game streaming client.',
+  downloadMoonlightTitle: 'X.O.N: Powered by Moonlight',
+  downloadMoonlightP1: 'To start playing on X.O.N, you need a client application that connects you to our gaming servers. Our service is powered by Moonlight, an open-source, high-performance game streaming client.',
   downloadMoonlightP2: "Install the Moonlight client on your PC, Mac, smartphone, or even your TV to enjoy top-tier gaming with ultra-low latency. With Moonlight, you can play your favorite games with outstanding graphics, no matter your device's hardware.",
   downloadMoonlightP3: 'Simply choose your operating system or device from the options above, and follow the link to download the official Moonlight client. Supported platforms include Windows, macOS, Android, iOS, Linux, Steam Deck, and more.',
-  downloadMoonlightP4: 'Want to know more? All the information about CLOUD PLAY can be found on our official website. Join us! The world of unlimited gaming with incredible features is closer than it seems!',
+  downloadMoonlightP4: 'Want to know more? All the information about X.O.N can be found on our official website. Join us! The world of unlimited gaming with incredible features is closer than it seems!',
   // Guides Page
   guidesTitle: 'Guides',
   guidesSubtitle: 'Find answers to your questions',
@@ -147,7 +147,7 @@ export const en = {
   guide4Title: 'System Requirements',
   guide4Text: 'Check if your device is ready for gaming',
   // How to Start Page
-  howToStartTitle: 'How to Start Playing on CLOUD PLAY',
+  howToStartTitle: 'How to Start Playing on X.O.N',
   step1Title: 'Create an Account',
   step1Desc: 'Registration is simple and free. It only takes a couple of minutes.',
   step1Btn: 'Register Now',
@@ -155,7 +155,7 @@ export const en = {
   step2Desc: 'Add funds to your account. You only pay for the time you play.',
   step2Btn: 'Top Up Balance',
   step3Title: 'Install the App',
-  step3Desc: 'Download the CLOUD PLAY client for your device or play directly in your browser.',
+  step3Desc: 'Download the X.O.N client for your device or play directly in your browser.',
   step3Btn: 'Download Client',
   step4Title: 'Connect Your Game Accounts',
   step4Desc: 'Link your Steam, Epic Games, or other accounts to access your purchased games.',
@@ -163,8 +163,8 @@ export const en = {
   step5Desc: 'Select any game from our extensive library and start your adventure instantly!',
   step5Btn: 'Browse Games',
   // About Page
-  aboutServiceTitle: 'About CLOUD PLAY',
-  aboutServiceP1: 'CLOUD PLAY is a modern cloud gaming service that allows you to play the most demanding computer games on almost any device. All you need is a stable internet connection.',
+  aboutServiceTitle: 'About X.O.N',
+  aboutServiceP1: 'X.O.N is a modern cloud gaming service that allows you to play the most demanding computer games on almost any device. All you need is a stable internet connection.',
   aboutServiceP2: 'Our mission is to make high-end gaming accessible to everyone, regardless of their hardware. We handle the processing power, updates, and installations, so you can focus on what matters most - playing.',
   aboutServiceP3: 'This project is a demonstration clone of a cloud gaming service, built to showcase modern frontend technologies and UI/UX design principles. It utilizes React, TypeScript, and Tailwind CSS, and is powered by the Moonlight streaming protocol.',
   projectFounderTitle: 'Project Founder',
@@ -184,7 +184,7 @@ export const en = {
   supportContactText: "Can't find an answer? Our support team is available on Telegram to help you with any technical issues or questions.",
   openTelegram: 'Open Telegram',
   supportStatusTitle: 'Service Status',
-  supportStatusText: 'All CLOUD PLAY services are operating normally. There are no reported incidents or scheduled maintenance.',
+  supportStatusText: 'All X.O.N services are operating normally. There are no reported incidents or scheduled maintenance.',
   statusOperational: 'All Systems Operational',
   // System Requirements
   sysReqTitle: 'System Requirements',
@@ -234,7 +234,7 @@ export const en = {
   sysReqTV_SamsungDesc: 'Samsung TVs with Tizen are not officially supported by Moonlight at this time.',
   // NVIDIA Tech Page
   nvidiaTechPageTitle: "Our Technologies & Servers",
-  nvidiaTechIntro: "CLOUD PLAY is powered by state-of-the-art technology and powerful hardware to deliver a seamless, high-performance gaming experience directly to your device.",
+  nvidiaTechIntro: "X.O.N is powered by state-of-the-art technology and powerful hardware to deliver a seamless, high-performance gaming experience directly to your device.",
   nvidiaServerTitle: "Server Power",
   nvidiaServerDesc: "Our data center is equipped with over 60 powerful servers, each fitted with the latest NVIDIA A100 graphics cards. This massive infrastructure ensures that you have instant access to games with no waiting times and that every game runs at its maximum potential.",
   nvidiaTechTitle: "Gaming Technologies",

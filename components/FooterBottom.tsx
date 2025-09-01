@@ -5,12 +5,12 @@ import { Link } from 'react-router-dom';
 const socialIcons = [
     { name: 'vk', href: 'https://r.gfn.am/vk', src: '/assets/images/icons/social/vk.svg' },
     { name: 'instagram', href: 'https://www.instagram.com/adept.tech?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', src: '/assets/images/icons/social/instagram.svg' },
-    { name: 'telegram', href: 'https://t.me/adept_tech', src: '/assets/images/icons/social/telegram.svg' },
+    { name: 'telegram', href: 'https://t.me/XON_Cloud_Gaming', src: '/assets/images/icons/social/telegram.svg' },
     { name: 'tiktok', href: 'https://r.gfn.am/tiktok', src: '/assets/images/icons/social/tiktok.svg' },
     { name: 'youtube', href: 'https://www.youtube.com/@UZGAMER', src: '/assets/images/icons/social/youtube.svg' },
-    { name: 'discord', href: 'https://discord.gg/jZsQWJP', src: '/assets/images/icons/social/discord.svg' },
-    { name: 'facebook', href: 'https://r.gfn.am/facebook', src: '/assets/images/icons/social/facebook.svg' },
-    { name: 'twitch', href: 'https://twitch.tv/uzgamer_twitch', src: '/assets/images/icons/social/twitch.svg' },
+    { name: 'discord', src: '/assets/images/icons/social/discord.svg' },
+    { name: 'facebook', src: '/assets/images/icons/social/facebook.svg' },
+    { name: 'twitch', src: '/assets/images/icons/social/twitch.svg' },
 ];
 
 interface FooterBottomProps {
@@ -29,7 +29,7 @@ const FooterBottom: React.FC<FooterBottomProps> = ({ t }) => {
                                 to="/about-service"
                                 className="text-gray-300 hover:text-white transition-colors underline"
                             >
-                                CLOUD PLAY Services
+                                X.O.N Cloud Gaming Services
                             </Link>
                             . © 2025
                         </p>
@@ -43,7 +43,7 @@ const FooterBottom: React.FC<FooterBottomProps> = ({ t }) => {
 
                     <div className="flex items-center justify-center md:justify-end flex-wrap gap-x-6 gap-y-4">
                         {socialIcons.map(icon => (
-                            <a key={icon.name} href={icon.href} target="_blank" rel="noopener noreferrer" className="transition-transform duration-200 ease-in-out hover:scale-125">
+                            <a key={icon.name} {...(icon.href ? { href: icon.href } : {})} target="_blank" rel="noopener noreferrer" className="transition-transform duration-200 ease-in-out hover:scale-125">
                                 <img src={icon.src} width="24" height="24" alt={icon.name} className="w-6 h-6 fade-in-on-load" loading="lazy" />
                             </a>
                         ))}
