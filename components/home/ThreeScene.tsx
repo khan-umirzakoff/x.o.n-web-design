@@ -55,6 +55,13 @@ const ThreeScene: React.FC = () => {
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimization for high DPI screens
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1;
+
+        renderer.domElement.style.position = 'absolute';
+        renderer.domElement.style.top = '0';
+        renderer.domElement.style.left = '0';
+        renderer.domElement.style.width = '100%';
+        renderer.domElement.style.height = '100%';
+
         currentMount.appendChild(renderer.domElement);
 
         const clock = new THREE.Clock();
