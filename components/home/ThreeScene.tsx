@@ -47,11 +47,11 @@ const ThreeScene: React.FC = () => {
         // Scene, Camera, Renderer
         const scene = new THREE.Scene();
         scene.background = new THREE.Color(0x111111);
-        const camera = new THREE.PerspectiveCamera(75, window.innerWidth / window.innerHeight, 0.1, 1000);
+        const camera = new THREE.PerspectiveCamera(75, currentMount.clientWidth / currentMount.clientHeight, 0.1, 1000);
         camera.position.set(0, 1, 5);
 
         const renderer = new THREE.WebGLRenderer({ antialias: true });
-        renderer.setSize(window.innerWidth, window.innerHeight);
+        renderer.setSize(currentMount.clientWidth, currentMount.clientHeight);
         renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2)); // Optimization for high DPI screens
         renderer.toneMapping = THREE.ACESFilmicToneMapping;
         renderer.toneMappingExposure = 1;
@@ -152,7 +152,7 @@ const ThreeScene: React.FC = () => {
         // Post-processing
         const originalBloomStrength = 0.6;
         const renderScene = new RenderPass(scene, camera);
-        const bloomPass = new UnrealBloomPass(new THREE.Vector2(window.innerWidth, window.innerHeight), 0.5, 0.4, 0.85);
+        const bloomPass = new UnrealBloomPass(new THREE.Vector2(currentMount.clientWidth, currentMount.clientHeight), 0.5, 0.4, 0.85);
         bloomPass.threshold = 0;
         bloomPass.strength = originalBloomStrength;
         bloomPass.radius = 0.5;
@@ -288,13 +288,6 @@ const ThreeScene: React.FC = () => {
              bolt.endPoint.copy(mousePoint);
         };
 
-        const onWindowResize = () => {
-            camera.aspect = window.innerWidth / window.innerHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize(window.innerWidth, window.innerHeight);
-            composer.setSize(window.innerWidth, window.innerHeight);
-        };
-
         const onMouseMove = (event: MouseEvent) => {
             const vec = new THREE.Vector3();
             vec.set(
@@ -308,7 +301,17 @@ const ThreeScene: React.FC = () => {
             mousePoint.copy(camera.position).add(vec.multiplyScalar(distance));
         };
 
-        window.addEventListener('resize', onWindowResize);
+        const resizeObserver = new ResizeObserver(() => {
+            if (currentMount) {
+                const width = currentMount.clientWidth;
+                const height = currentMount.clientHeight;
+                camera.aspect = width / height;
+                camera.updateProjectionMatrix();
+                renderer.setSize(width, height);
+                composer.setSize(width, height);
+            }
+        });
+        resizeObserver.observe(currentMount);
         window.addEventListener('mousemove', onMouseMove);
 
         let animationFrameId: number;
@@ -417,8 +420,8 @@ const ThreeScene: React.FC = () => {
         animate();
 
         return () => {
+            resizeObserver.disconnect();
             cancelAnimationFrame(animationFrameId);
-            window.removeEventListener('resize', onWindowResize);
             window.removeEventListener('mousemove', onMouseMove);
             if(mountRef.current && renderer.domElement.parentElement === mountRef.current) {
                 currentMount.removeChild(renderer.domElement);
