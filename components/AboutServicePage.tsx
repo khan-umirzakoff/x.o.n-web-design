@@ -27,14 +27,14 @@ const AboutServicePage: React.FC<AboutServicePageProps> = ({ t }) => {
             <h2 className="text-3xl font-bold text-white mb-6 border-b border-gray-700 pb-4">{t('projectFounderTitle')}</h2>
             <div className="text-lg leading-relaxed space-y-4">
                 <p>
-                    {t('projectFounderName')}
+                    Khan Umirzakoff
                 </p>
-                <p>{t('projectFounderLinks')}</p>
+                {/* <p>{t('projectFounderLinks')}</p>
                 <div className="flex flex-wrap gap-4">
                     <SocialLink href="https://www.instagram.com/adept.tech">{t('instagram')}</SocialLink>
                     <SocialLink href="https://t.me/adept_tech">{t('telegram')}</SocialLink>
                     <SocialLink href="https://www.youtube.com/@UZGAMER">{t('youtube')}</SocialLink>
-                </div>
+                </div> */}
             </div>
           </div>
           
