@@ -10,9 +10,7 @@ interface HeroProps {
 const Hero: React.FC<HeroProps> = ({ t }) => {
     return (
         <div className="relative min-h-screen flex items-center justify-center text-center -mt-[72px] pt-[72px] overflow-hidden">
-            <div className="absolute inset-0 w-full h-full">
-                <ThreeScene />
-            </div>
+            <ThreeScene className="absolute inset-0 w-full h-full" />
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A10] via-[#0A0A10]/50 to-transparent"></div>
             <div className="absolute inset-0 bg-black/30"></div>
             
