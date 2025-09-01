@@ -296,12 +296,14 @@ const ThreeScene: React.FC = () => {
         };
 
         const onMouseMove = (event: MouseEvent) => {
+            if (!mountRef.current) return;
+
+            const rect = mountRef.current.getBoundingClientRect();
+            const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+            const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
             const vec = new THREE.Vector3();
-            vec.set(
-                (event.clientX / window.innerWidth) * 2 - 1,
-                - (event.clientY / window.innerHeight) * 2 + 1,
-                0.5
-            );
+            vec.set(x, y, 0.5);
             vec.unproject(camera);
             vec.sub(camera.position).normalize();
             const distance = -camera.position.z / vec.z;
