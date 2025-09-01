@@ -40,11 +40,11 @@ const SupportPage: React.FC<SupportPageProps> = ({ t }) => {
             <SupportCard 
               title={t('supportContactTitle')} 
               icon="/assets/images/icons/support/contact.svg"
-              action={
+              /* action={
                 <a href="https://t.me/cloudplay_gg" target="_blank" rel="noopener noreferrer" className="bg-blue-500 hover:bg-blue-600 text-white font-medium py-2 px-6 rounded-lg transition-colors block text-center w-full md:w-auto">
                     {t('openTelegram')}
                 </a>
-              }
+              } */
             >
                 {t('supportContactText')}
             </SupportCard>

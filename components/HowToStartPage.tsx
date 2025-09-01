@@ -53,7 +53,7 @@ const HowToStartPage: React.FC<HowToStartPageProps> = ({ t, onLoginClick, onTopU
             <div className="max-w-2xl">
               <h1 className="text-3xl font-orbitron font-bold text-white border-b border-gray-700 pb-4 mb-8">{t('howToStartTitle')}</h1>
 
-              <div className="relative h-0 pb-[56.25%] mb-12 rounded-lg overflow-hidden shadow-lg">
+              {/* <div className="relative h-0 pb-[56.25%] mb-12 rounded-lg overflow-hidden shadow-lg">
                 <iframe
                   className="absolute top-0 left-0 w-full h-full"
                   src="https://www.youtube.com/embed/vs0omriW7PI?si=jMDaOls5PF1G3Dn0"
@@ -62,7 +62,7 @@ const HowToStartPage: React.FC<HowToStartPageProps> = ({ t, onLoginClick, onTopU
                   allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
                   allowFullScreen
                 ></iframe>
-              </div>
+              </div> */}
 
               <div className="flex flex-col">
                 <Step
