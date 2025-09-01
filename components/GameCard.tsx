@@ -59,7 +59,7 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
 {imageError ? (
   <div className="w-full h-full bg-black flex items-center justify-center p-4">
     <div className="text-center font-orbitron text-white text-xl font-bold select-none">
-      CLOUD PLAY
+      X.O.N
     </div>
   </div>
 ) : (

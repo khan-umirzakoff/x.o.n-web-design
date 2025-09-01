@@ -229,7 +229,7 @@ const AllGamesPage: React.FC<AllGamesPageProps> = ({ t }) => {
             <main className="container mx-auto px-4 py-8">
                 <nav className="breadcrumb text-sm text-gray-500 mb-6" aria-label="breadcrumb">
                     <ol className="flex items-center space-x-2">
-                        <li><Link to="/" className="hover:underline">CLOUD PLAY</Link></li>
+                        <li><Link to="/" className="hover:underline">X.O.N</Link></li>
                         <li><span className="text-gray-600">/</span></li>
                         <li><Link to="/games" className="hover:underline">{t('games')}</Link></li>
                         <li><span className="text-gray-600">/</span></li>
