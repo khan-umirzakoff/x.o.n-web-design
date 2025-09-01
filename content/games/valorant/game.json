@@ -1,0 +1,42 @@
+{
+  "id": 11515,
+  "title": "Valorant",
+  "genres": [
+    "Tactical Shooter",
+    "Hero Shooter"
+  ],
+  "isFree": true,
+  "rtx": false,
+  "stores": [
+    "xbox",
+    "playstation",
+    "epicgames"
+  ],
+  "storeLinks": {
+    "xbox": "https://www.xbox.com/en-US/games/valorant",
+    "playstation": "https://store.playstation.com/en-us/product/UP3993-PPSA20676_00-VALORANT00000000",
+    "epicgames": "https://store.epicgames.com/en-US/p/valorant"
+  },
+  "publisher": "Riot Games",
+  "ageRating": "16",
+  "descriptions": {
+    "ENG": "Valorant is a free-to-play 5v5 character-based tactical hero shooter developed and published by Riot Games. [1] In the main game mode, players are assigned to either the attacking or defending team, with each team having five players. [1] Teams battle over 13 rounds, where the attacking team must plant a bomb-like device called the Spike, while the defending team tries to prevent it. [3] Players choose from a cast of 'Agents,' each equipped with unique abilities that create tactical opportunities. [2] The game blends precise gunplay with these abilities, requiring strategy, quick thinking, and teamwork to succeed. [9]",
+    "RUS": "Valorant — это бесплатный тактический шутер 5 на 5 с уникальными персонажами, разработанный и изданный Riot Games. [20] Игроки выбирают Агентов, обладающих особыми способностями, и участвуют в матчах, состоящих из 13 раундов. [20] Основная задача — установка или обезвреживание бомбы, называемой Spike, что требует слаженной командной работы и точной стрельбы. [12] Игра сочетает в себе элементы классических тактических шутеров и уникальные способности героев, создавая напряженный и соревновательный геймплей.",
+    "UZB": "Valorant — bu Riot Games tomonidan ishlab chiqilgan va nashr etilgan bepul oʻynaladigan, 5v5 personajlarga asoslangan taktik qahramon otishma oʻyini. Asosiy oʻyin rejimida oʻyinchilar hujum qiluvchi yoki himoyalanuvchi jamoalarga tayinlanadi, har bir jamoada besh nafar oʻyinchi boʻladi. Jamoalar 13 raund davomida kurash olib boradi, bunda hujum qiluvchi jamoa Spike deb nomlangan bomba qurilmasini oʻrnatishi kerak, himoyalanuvchi jamoa esa bunga yoʻl qoʻymaslikka harakat qiladi. Oʻyinchilar har biri oʻziga xos qobiliyatlarga ega boʻlgan 'Agentlar' tarkibidan tanlaydilar, bu esa taktik imkoniyatlarni yaratadi. Oʻyin aniq otishma mahoratini ushbu qobiliyatlar bilan birlashtirib, muvaffaqiyatga erishish uchun strategiya, tezkor fikrlash va jamoaviy ishlashni talab qiladi."
+  },
+  "assets": {
+    "coverArt": "valorant_art.jpg",
+    "wideArt": "valorant_wide_art.webp",
+    "screenshots": [
+      "valorant_screenshot_1.jpg",
+      "valorant_screenshot_2.jpg",
+      "valorant_screenshot_3.jpg",
+      "valorant_screenshot_4.jpg",
+      "valorant_screenshot_5.jpg",
+      "valorant_screenshot_6.jpg",
+      "valorant_screenshot_7.jpg",
+      "valorant_screenshot_8.jpg",
+      "valorant_screenshot_9.jpg"
+    ]
+  }
+}

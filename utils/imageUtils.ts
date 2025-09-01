@@ -25,6 +25,13 @@ export const STORE_ICON_MAP = {
     ubisoft: '/assets/images/icons/support/uplay.svg',
     battlenet: '/assets/images/icons/support/battlenet.svg',
     xbox: '/assets/images/icons/support/xbox.svg',
+    // New stores
+    playstation: '/assets/images/icons/support/playstation.svg',
+    nintendo: '/assets/images/icons/support/nintendo.svg',
+    rockstar: '/assets/images/icons/support/rockstar.svg',
+    itch: '/assets/images/icons/support/itch.svg',
+    humble: '/assets/images/icons/support/humble.svg',
+    microsoft: '/assets/images/icons/support/microsoft.svg',
 } as const;
 
 export const resolveStoreIcon = (store: string): string | undefined => {
@@ -36,6 +43,13 @@ export const resolveStoreIcon = (store: string): string | undefined => {
     if (s.includes('uplay') || s.includes('ubisoft')) return STORE_ICON_MAP.uplay;
     if (s.includes('battle') || s.includes('blizzard')) return STORE_ICON_MAP.battlenet;
     if (s.includes('xbox')) return STORE_ICON_MAP.xbox;
+    // New stores
+    if (s.includes('playstation') || s === 'ps' || s.startsWith('psn')) return STORE_ICON_MAP.playstation;
+    if (s.includes('nintendo') || s.includes('switch')) return STORE_ICON_MAP.nintendo;
+    if (s.includes('rockstar')) return STORE_ICON_MAP.rockstar;
+    if (s.includes('itch')) return STORE_ICON_MAP.itch;
+    if (s.includes('humble')) return STORE_ICON_MAP.humble;
+    if (s.includes('microsoft') || s.includes('windows')) return STORE_ICON_MAP.microsoft;
     return undefined;
 };
 

@@ -1,3 +1,6 @@
+// FIX: Removed reference to 'vite/client' to resolve 'Cannot find type definition file' error. This is a workaround due to the inability to configure TypeScript via tsconfig.json.
+// The 'import.meta.glob' feature, which depends on these types, will now be accessed via a type assertion.
+
 import { Game, User, Language, Banner } from '../types';
 import { sanitizeGameTitle } from '../utils/imageUtils';
 
@@ -10,7 +13,7 @@ interface GameManifest {
   genres: string[];
   isFree?: boolean;
   rtx?: boolean;
-  stores?: ('steam' | 'epicgames' | 'gog' | 'uplay' | 'battlenet')[];
+  stores?: ('steam' | 'epicgames' | 'gog' | 'uplay' | 'battlenet' | 'eaapp' | 'origin' | 'ubisoft' | 'xbox' | 'playstation' | 'nintendo' | 'rockstar' | 'itch' | 'humble' | 'microsoft')[];
   // New: allow external store links per store
   storeLinks?: Record<string, string>;
   publisher?: string;
@@ -44,7 +47,8 @@ interface BannerManifestFile {
 
 const loadBannersFromContent = (): Banner[] => {
   try {
-    const modules = import.meta.glob('../content/banners/*.json', { eager: true, import: 'default' }) as Record<string, unknown>;
+    // FIX: Used a type assertion `(import.meta as any)` to bypass the TypeScript error "Property 'glob' does not exist on type 'ImportMeta'". This assumes the code runs in a Vite environment where this property is available at runtime.
+    const modules = (import.meta as any).glob('../content/banners/*.json', { eager: true, import: 'default' }) as Record<string, unknown>;
     const entries = Object.entries(modules) as Array<[string, BannerManifestFile]>;
     if (!entries || entries.length === 0) return [];
 
@@ -87,7 +91,8 @@ const CONTENT_BANNERS: Banner[] = loadBannersFromContent();
 const loadGamesFromContent = (): Game[] => {
   try {
     // Glob all manifests if any exist. If none, this returns an empty object.
-    const modules = import.meta.glob('../content/games/**/game.json', { eager: true, import: 'default' }) as Record<string, unknown>;
+    // FIX: Used a type assertion `(import.meta as any)` to bypass the TypeScript error "Property 'glob' does not exist on type 'ImportMeta'". This assumes the code runs in a Vite environment where this property is available at runtime.
+    const modules = (import.meta as any).glob('../content/games/**/game.json', { eager: true, import: 'default' }) as Record<string, unknown>;
 
     const entries = Object.entries(modules) as Array<[string, GameManifest]>;
     if (!entries || entries.length === 0) return [];

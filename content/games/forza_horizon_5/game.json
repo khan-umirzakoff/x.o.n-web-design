@@ -1,0 +1,51 @@
+{
+  "id": 1551360,
+  "title": "Forza Horizon 5",
+  "genres": [
+    "Racing",
+    "Action",
+    "Adventure",
+    "Simulation",
+    "Sports",
+    "Open World"
+  ],
+  "isFree": false,
+  "rtx": true,
+  "stores": [
+    "steam",
+    "xbox"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/1551360/Forza_Horizon_5/",
+    "xbox": "https://www.xbox.com/en-US/games/store/forza-horizon-5/9nkx70bbcdrn"
+  },
+  "publisher": "Xbox Game Studios",
+  "ageRating": "3",
+  "descriptions": {
+    "ENG": "Your Ultimate Horizon Adventure awaits! Explore the vibrant and ever-evolving open world landscapes of Mexico with limitless, fun driving action in hundreds of the world's greatest cars. Lead breathtaking expeditions across a world of striking contrast and beauty. Discover living deserts, lush jungles, historic cities, hidden ruins, pristine beaches, vast canyons, and a towering snow-capped volcano. Immerse yourself in a deep campaign with hundreds of challenges that reward you for engaging in the activities you love. Meet new characters and choose the outcomes of their Horizon Story missions.",
+    "RUS": "Вас ждёт бесконечный калейдоскоп приключений Horizon! Совершайте увлекательные поездки по невероятно красивому и самобытному миру Мексики за рулём величайших автомобилей в истории. Исследуйте яркие и постоянно меняющиеся пейзажи открытого мира Мексики, безгранично и весело проводя время за рулем сотен величайших автомобилей мира. Возглавьте захватывающие экспедиции по миру ярких контрастов и красоты. Откройте для себя живые пустыни, густые джунгли, исторические города, скрытые руины, нетронутые пляжи, огромные каньоны и высокий действующий вулкан.",
+    "UZB": "Sizning Ultimate Horizon sarguzashtingiz kutmoqda! Dunyoning eng zo'r yuzlab avtomobillarida cheksiz, qiziqarli haydash harakati bilan Meksikaning jonli va doimo o'zgarib turadigan ochiq dunyo landshaftlarini o'rganing. Ajablanarli kontrast va go'zallik dunyosi bo'ylab hayajonli ekspeditsiyalarga boshchilik qiling. Jonli cho'llar, yam-yashil o'rmonlar, tarixiy shaharlar, yashirin xarobalar, toza plyajlar, keng kanyonlar va qorli vulqonni kashf eting. O'zingiz yoqtirgan mashg'ulotlar bilan shug'ullanganingiz uchun sizni mukofotlaydigan yuzlab qiyinchiliklarga ega chuqur kampaniyaga sho'ng'ing. Yangi qahramonlar bilan tanishing va ularning Horizon Story missiyalari natijalarini tanlang."
+  },
+  "assets": {
+    "coverArt": "forza_horizon_5_art.jpg",
+    "wideArt": "forza_horizon_5_wide_art.webp",
+    "screenshots": [
+      "forza_horizon_5_screenshot_1.jpg",
+      "forza_horizon_5_screenshot_2.jpg",
+      "forza_horizon_5_screenshot_3.jpg",
+      "forza_horizon_5_screenshot_4.jpg",
+      "forza_horizon_5_screenshot_5.jpg",
+      "forza_horizon_5_screenshot_6.jpg",
+      "forza_horizon_5_screenshot_7.jpg",
+      "forza_horizon_5_screenshot_8.jpg",
+      "forza_horizon_5_screenshot_9.jpg",
+      "forza_horizon_5_screenshot_10.jpg",
+      "forza_horizon_5_screenshot_11.jpg",
+      "forza_horizon_5_screenshot_12.jpg",
+      "forza_horizon_5_screenshot_13.jpg",
+      "forza_horizon_5_screenshot_14.jpg",
+      "forza_horizon_5_screenshot_15.jpg",
+      "forza_horizon_5_screenshot_16.jpg"
+    ]
+  }
+}

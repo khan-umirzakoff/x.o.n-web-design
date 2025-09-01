@@ -1,0 +1,40 @@
+{
+  "id": 570,
+  "title": "Dota 2",
+  "genres": [
+    "MOBA",
+    "Action",
+    "Strategy"
+  ],
+  "isFree": true,
+  "rtx": false,
+  "stores": [
+    "steam"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/570/Dota_2/"
+  },
+  "publisher": "Valve",
+  "ageRating": "13",
+  "descriptions": {
+    "ENG": "Dota 2 is a multiplayer online battle arena (MOBA) video game developed and published by Valve. [1] The game is a sequel to Defense of the Ancients (DotA), a community-created mod for Blizzard Entertainment's Warcraft III: Reign of Chaos. Dota 2 is played in matches between two teams of five players, with each team occupying and defending their own separate base on the map. Each of the ten players independently controls a powerful character known as a \"Hero\", who all have unique abilities and differing styles of play. During a match, players collect experience points and items for their heroes to defeat the opposing team's heroes in player versus player combat. A team wins by being the first to destroy the other team's \"Ancient\", a large structure located within their base.",
+    "RUS": "Dota 2 — многопользовательская командная компьютерная игра в жанре MOBA, разработанная и изданная корпорацией Valve. [16] Игра является продолжением DotA — пользовательской карты-модификации для игры Warcraft III: Reign of Chaos. В Dota 2 сражаются две команды по пять игроков, одна из которых играет за светлую сторону (The Radiant), а другая — за тёмную (The Dire). Конечная цель каждого матча — уничтожить вражескую «крепость» (Ancient), особый объект, принадлежащий противнику, и защитить собственную. [16] Игроки управляют «героями» с уникальными способностями, набирая опыт и приобретая предметы для усиления.",
+    "UZB": "Dota 2 — bu Valve korporatsiyasi tomonidan ishlab chiqilgan va nashr etilgan koʻp oʻyinchi onlayn jangovar arena (MOBA) janridagi videooʻyin. [17] Oʻyin Warcraft III: Reign of Chaos uchun hamjamiyat tomonidan yaratilgan Defense of the Ancients (DotA) modifikatsiyasining davomidir. Dota 2 da har birida besh nafardan oʻyinchi boʻlgan ikkita jamoa oʻzaro jang olib boradi, har bir jamoa xaritadagi oʻz bazasini egallaydi va himoya qiladi. Oʻn nafar oʻyinchining har biri oʻziga xos qobiliyatlarga va turli oʻyin uslublariga ega boʻlgan \"Qahramon\" deb nomlanuvchi kuchli personajni mustaqil ravishda boshqaradi. O'yin davomida o'yinchilar o'z qahramonlari uchun tajriba ochkolarini va buyumlarini to'playdilar, raqib jamoasining qahramonlarini mag'lub etish uchun o'zaro janglarda qatnashadilar. Jamoa g'alaba qozonish uchun birinchi bo'lib raqibning bazasi ichida joylashgan katta inshoot bo'lgan \"Qadimgi\" ni yo'q qilishi kerak."
+  },
+  "assets": {
+    "coverArt": "dota_2_art.jpg",
+    "wideArt": "dota_2_wide_art.jpg",
+    "screenshots": [
+      "dota_2_screenshot_1.jpg",
+      "dota_2_screenshot_2.jpg",
+      "dota_2_screenshot_3.jpg",
+      "dota_2_screenshot_4.jpg",
+      "dota_2_screenshot_5.jpg",
+      "dota_2_screenshot_6.jpg",
+      "dota_2_screenshot_7.jpg",
+      "dota_2_screenshot_8.jpg",
+      "dota_2_screenshot_9.jpg",
+      "dota_2_screenshot_10.jpg"
+    ]
+  }
+}

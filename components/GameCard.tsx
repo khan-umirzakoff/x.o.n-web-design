@@ -82,30 +82,29 @@ const GameCard: React.FC<GameCardProps> = ({ game, onClick }) => {
                     {/* Game badges */}
                     <div className="flex items-center gap-2 mt-2">
                         {game.isFree && (
-                            <span className="bg-tertiary text-on-tertiary text-xs px-3 py-1.5 rounded-full font-medium">
+                            <span className="bg-white/10 text-gray-200 text-xs px-2 py-0.5 rounded-full font-medium ring-1 ring-white/10">
                                 Bepul
                             </span>
                         )}
                         {game.rtx && (
-                            <span className="bg-secondary text-on-tertiary text-xs px-2.5 py-1.5 rounded-full font-medium inline-flex items-center gap-2">
-                                <span>RTX</span>
-                                {/* Store icons next to RTX on hover */}
-                                {Array.isArray(game.stores) && game.stores.length > 0 && (
-                                    <span className="inline-flex items-center gap-1 pl-1 border-l border-white/20">
-                                        {game.stores.slice(0, 3).map((store, idx) => {
-                                            const icon = resolveStoreIcon(store);
-                                            return icon ? (
-                                                <img
-                                                    key={store + idx}
-                                                    src={icon}
-                                                    alt={store}
-                                                    className="w-4 h-4 opacity-80 group-hover:opacity-100 transition-opacity duration-200"
-                                                    loading="lazy"
-                                                />
-                                            ) : null;
-                                        })}
-                                    </span>
-                                )}
+                            <span className="bg-black/40 backdrop-blur-sm text-theme-gradient text-xs px-2 py-0.5 rounded-full font-medium ring-1 ring-white/10 shadow-sm">
+                                RTX
+                            </span>
+                        )}
+                        {Array.isArray(game.stores) && game.stores.length > 0 && (
+                            <span className="inline-flex items-center gap-1 flex-shrink-0">
+                                {game.stores.slice(0, 3).map((store, idx) => {
+                                    const icon = resolveStoreIcon(store);
+                                    return icon ? (
+                                        <img
+                                            key={store + idx}
+                                            src={icon}
+                                            alt={store}
+                                            className="w-4 h-4 opacity-80 group-hover:opacity-100 transition-opacity duration-200"
+                                            loading="lazy"
+                                        />
+                                    ) : null;
+                                })}
                             </span>
                         )}
                     </div>

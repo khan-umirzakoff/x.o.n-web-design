@@ -2,8 +2,6 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 
-const twitchIconDataUri = 'data:image/svg+xml;base64,PHN2ZyByb2xlPSJpbWciIHZpZXdCb3g9IjAgMCAyNCAyNCIgeG1sbnM9Imh0dHA6Ly93d3cudzMub3JnLzIwMDAvc3ZnIiBmaWxsPSIjOUNBM0FGIj48dGl0bGU+VHdpdGNoPC90aXRsZT48cGF0aCBkPSJNMTEuNTcxIDQuNzE0aDEuNzE1djUuMTQzSDExLjU3em00LjcxNCAwaDEuNzE1djUuMTQzaC0xLjcxNXpNNiAwTDIuNzE0IDQuMjg2djE1LjQyOGg1LjE0M1YyNGw0LjI4Ni00LjI4NmgzLjQyOEwyMi4yODYgMTJWMEg2em0xNC41NzEgMTEuMTQzbC0zLjQyOCAzLjQyOGgtMy40MjlsLTMgM3YtM0g4LjU3MVYxLjcxNGgxMnY5LjQyOXoiLz48L3N2Zz4=';
-
 const socialIcons = [
     { name: 'vk', href: 'https://r.gfn.am/vk', src: '/assets/images/icons/social/vk.svg' },
     { name: 'instagram', href: 'https://www.instagram.com/adept.tech?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', src: '/assets/images/icons/social/instagram.svg' },
@@ -12,7 +10,7 @@ const socialIcons = [
     { name: 'youtube', href: 'https://www.youtube.com/@UZGAMER', src: '/assets/images/icons/social/youtube.svg' },
     { name: 'discord', href: 'https://discord.gg/jZsQWJP', src: '/assets/images/icons/social/discord.svg' },
     { name: 'facebook', href: 'https://r.gfn.am/facebook', src: '/assets/images/icons/social/facebook.svg' },
-    { name: 'twitch', href: 'https://twitch.tv/uzgamer_twitch', src: twitchIconDataUri },
+    { name: 'twitch', href: 'https://twitch.tv/uzgamer_twitch', src: '/assets/images/icons/social/twitch.svg' },
 ];
 
 interface FooterBottomProps {

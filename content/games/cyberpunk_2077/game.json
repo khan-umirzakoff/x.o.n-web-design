@@ -1,0 +1,53 @@
+{
+  "id": 1091500,
+  "title": "Cyberpunk 2077",
+  "genres": [
+    "RPG",
+    "Action",
+    "Adventure",
+    "Sci-Fi & Cyberpunk",
+    "Open World"
+  ],
+  "isFree": false,
+  "rtx": true,
+  "stores": [
+    "steam",
+    "gog",
+    "epicgames",
+    "xbox",
+    "playstation"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/1091500/Cyberpunk_2077/",
+    "gog": "https://www.gog.com/en/game/cyberpunk_2077",
+    "epicgames": "https://store.epicgames.com/en-US/p/cyberpunk-2077",
+    "xbox": "https://www.xbox.com/en-US/games/store/cyberpunk-2077/bx3m8l83bbrw",
+    "playstation": "https://store.playstation.com/en-us/product/UP4497-PPSA03974_00-EXPANSION1B00000"
+  },
+  "publisher": "CD PROJEKT RED",
+  "ageRating": "17",
+  "descriptions": {
+    "ENG": "Cyberpunk 2077 is an open-world, action-adventure RPG set in the megalopolis of Night City, where you play as a cyberpunk mercenary wrapped up in a do-or-die fight for survival. The story takes place in a dystopian future where you assume the role of V, a mercenary outlaw whose cybernetic enhancements, skills, and playstyle can be customized. As you take on dangerous jobs, you build a reputation and forge relationships with unforgettable characters, making choices that shape the story and the world around you. Night City is a vast open world obsessed with power, glamour, and body modification, offering countless things to do, places to see, and people to meet.",
+    "RUS": "Cyberpunk 2077 — это ролевая игра в жанре экшен-приключения с открытым миром, действие которой происходит в мегаполисе Найт-Сити. Вы играете за киберпанка-наемника, втянутого в отчаянную борьбу за выживание. Действие разворачивается в антиутопическом будущем, где вы берете на себя роль Ви, наемника-преступника, чьи кибернетические улучшения, навыки и стиль игры можно настраивать. Выполняя опасные задания, вы зарабатываете репутацию и строите отношения с незабываемыми персонажами, принимая решения, которые формируют историю и окружающий мир. Найт-Сити — это огромный открытый мир, одержимый властью, гламуром и модификациями тела, предлагающий бесчисленное множество занятий, мест и встреч.",
+    "UZB": "Cyberpunk 2077 — bu Night City megapolisida bo'lib o'tadigan ochiq dunyo, action-sarguzasht RPG o'yini bo'lib, unda siz omon qolish uchun o'limga qarshi kurashga tortilgan kiberpank yollanma askari sifatida o'ynaysiz. Voqealar distopik kelajakda sodir bo'ladi, unda siz V rolini o'ynaysiz, yollanma qonunbuzar, uning kibernetik yaxshilanishlari, mahoratlari va o'yin uslubini sozlash mumkin. Xavfli ishlarni bajarar ekansiz, siz obro'-e'tibor qozonasiz va unutilmas qahramonlar bilan munosabatlar o'rnatasiz, hikoya va sizni o'rab turgan dunyoni shakllantiradigan tanlovlarni amalga oshirasiz. Night City — bu kuch, joziba va tana modifikatsiyasiga berilib ketgan ulkan ochiq dunyo bo'lib, u son-sanoqsiz ishlar, ko'rish kerak bo'lgan joylar va uchrashish kerak bo'lgan odamlarni taklif qiladi."
+  },
+  "assets": {
+    "coverArt": "cyberpunk_2077_art.jpg",
+    "wideArt": "cyberpunk_2077_wide_art.jpg",
+    "screenshots": [
+      "cyberpunk_2077_screenshot_1.jpg",
+      "cyberpunk_2077_screenshot_2.jpg",
+      "cyberpunk_2077_screenshot_3.jpg",
+      "cyberpunk_2077_screenshot_4.jpg",
+      "cyberpunk_2077_screenshot_5.jpg",
+      "cyberpunk_2077_screenshot_6.jpg",
+      "cyberpunk_2077_screenshot_7.jpg",
+      "cyberpunk_2077_screenshot_8.jpg",
+      "cyberpunk_2077_screenshot_9.jpg",
+      "cyberpunk_2077_screenshot_10.jpg",
+      "cyberpunk_2077_screenshot_11.jpg",
+      "cyberpunk_2077_screenshot_12.jpg",
+      "cyberpunk_2077_screenshot_13.jpg"
+    ]
+  }
+}

@@ -56,7 +56,7 @@ export interface Game {
     wideImage?: string;
     rtx?: boolean;
     isFree?: boolean;
-    stores?: ('steam' | 'epicgames' | 'gog' | 'uplay' | 'battlenet')[];
+    stores?: ('steam' | 'epicgames' | 'gog' | 'uplay' | 'battlenet' | 'eaapp' | 'origin' | 'ubisoft' | 'xbox' | 'playstation' | 'nintendo' | 'rockstar' | 'itch' | 'humble' | 'microsoft')[];
     // New: optional mapping of store name -> external link
     storeLinks?: Record<string, string>;
     publisher?: string;

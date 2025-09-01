@@ -1,0 +1,46 @@
+{
+  "id": 1245620,
+  "title": "Elden Ring",
+  "genres": [
+    "Action",
+    "RPG",
+    "Souls-like",
+    "Open World",
+    "Dark Fantasy"
+  ],
+  "isFree": false,
+  "rtx": true,
+  "stores": [
+    "steam",
+    "playstation",
+    "xbox"
+  ],
+  "storeLinks": {
+    "steam": "https://store.steampowered.com/app/1245620/ELDEN_RING/",
+    "playstation": "https://store.playstation.com/en-us/product/UP0700-PPSA04610_00-ELDENRING0000000",
+    "xbox": "https://www.xbox.com/en-us/games/store/elden-ring/9p3j32ctxlrz"
+  },
+  "publisher": "Bandai Namco Entertainment",
+  "ageRating": "17",
+  "descriptions": {
+    "ENG": "Rise, Tarnished, and be guided by grace to brandish the power of the Elden Ring and become an Elden Lord in the Lands Between. In the Lands Between ruled by Queen Marika the Eternal, the Elden Ring, the source of the Erdtree, has been shattered. Marika's offspring, demigods all, claimed the shards of the Elden Ring known as the Great Runes, and the mad taint of their newfound strength triggered a war: The Shattering. A war that meant abandonment by the Greater Will. ELDEN RING features vast fantastical landscapes and shadowy, complex dungeons that are connected seamlessly. Traverse the breathtaking world on foot or on horseback, alone or online with other players, and fully immerse yourself in the grassy plains, suffocating swamps, spiraling mountains, foreboding castles and other sites of grandeur on a scale never seen before in a FromSoftware title.",
+    "RUS": "Новая фэнтезийная ролевая игра. Восстань, погасшая душа, и пусть благодать приведёт тебя к Кольцу Элден. Стань повелителем Междуземья. В Междуземье, где правит королева Марика Вечная, Кольцо Элден, источник Древа Эрд, было разрушено. Потомки Марики, полубоги, завладели осколками Кольца Элден, известными как Великие руны. Их новообретённая сила породила безумие, которое привело к войне, известной как Раскол. Эта война означала, что Великая Воля покинула эти земли. Вас ждут огромные фантастические пейзажи и тёмные, запутанные подземелья, которые плавно переходят друг в друга. Путешествуйте по захватывающему миру пешком или верхом, в одиночку или с другими игроками, и полностью погрузитесь в травянистые равнины, удушающие болота, спиральные горы, зловещие замки и другие грандиозные места в масштабе, невиданном ранее в играх от FromSoftware.",
+    "UZB": "Yangi fantaziya rolli o'yini. Turing, o'chgan ruh va inoyat sizni Elden halqasiga yo'naltirsin. O'rta yerlar hukmdori bo'ling. Qirolicha Marika Abadiy hukmronlik qiladigan O'rta yerlarda, Erdtree manbai bo'lgan Elden halqasi parchalangan. Marikaning avlodlari, yarim xudolar, Buyuk Runalar deb nomlanuvchi Elden halqasining parchalarini egallab olishdi. Ularning yangi topilgan kuchi jinnilikni keltirib chiqardi, bu esa \"Bo'linish\" deb nomlanuvchi urushga olib keldi. Bu urush Buyuk Iroda bu yerlarni tark etganini anglatardi. Sizni ulkan fantastik manzaralar va bir-biriga uzviy bog'langan qorong'u, chigal zindonlar kutmoqda. Hayajonli dunyo bo'ylab piyoda yoki otda, yolg'iz yoki boshqa o'yinchilar bilan sayohat qiling va FromSoftware o'yinlarida ilgari ko'rilmagan miqyosdagi o'tloqli tekisliklar, bo'g'uvchi botqoqlar, spiral tog'lar, dahshatli qal'alar va boshqa ajoyib joylarga to'liq sho'ng'ing."
+  },
+  "assets": {
+    "coverArt": "elden_ring_art.webp",
+    "wideArt": "elden_ring_wide_art.jpg",
+    "screenshots": [
+      "elden_ring_screenshot_1.jpg",
+      "elden_ring_screenshot_2.jpg",
+      "elden_ring_screenshot_3.jpg",
+      "elden_ring_screenshot_4.jpg",
+      "elden_ring_screenshot_5.jpg",
+      "elden_ring_screenshot_6.jpg",
+      "elden_ring_screenshot_7.jpg",
+      "elden_ring_screenshot_8.jpg",
+      "elden_ring_screenshot_9.jpg",
+      "elden_ring_screenshot_10.jpg"
+    ]
+  }
+}
