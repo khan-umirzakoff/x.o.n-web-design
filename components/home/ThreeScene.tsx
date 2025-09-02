@@ -1,38 +1,35 @@
-import React, { useRef, useEffect, useState, useCallback } from 'react';
+import React, { useRef, useEffect, useState } from 'react';
 import * as THREE from 'three';
-import { EffectComposer } from 'three/examples/jsm/postprocessing/EffectComposer';
-import { RenderPass } from 'three/examples/jsm/postprocessing/RenderPass';
-import { UnrealBloomPass } from 'three/examples/jsm/postprocessing/UnrealBloomPass';
-import { TubeGeometry, CatmullRomCurve3 } from 'three';
+import { EffectComposer } from 'three/addons/postprocessing/EffectComposer.js';
+import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
+
+import { DebugSystem, ThreeErrorBoundary } from '../../utils/debug-utilities';
+import { LightningSystem } from '../../extracted-components/lightning-system';
+import { PerformanceOptimizer, AdaptiveQualitySystem, GeometryPool } from '../../extracted-components/performance-optimizations';
+import { 
+  DeviceCapabilityDetector, 
+  FallbackSystem, 
+  ProgressiveEnhancement, 
+  DEFAULT_FALLBACK_CONFIG 
+} from '../../utils/fallback-system';
+import { Canvas2DFallback, StaticFallback } from '../../utils/canvas-fallback';
+import { 
+  ErrorRecoverySystem, 
+  createErrorContext, 
+  withErrorRecovery,
+  WebGLContextLostError,
+  MemoryPressureError,
+  PerformanceDegradationError
+} from '../../utils/error-recovery';
 
 interface ThreeSceneProps {
     className?: string;
+    debugMode?: boolean;
 }
 
-interface LightningMaterials {
-    core: THREE.MeshBasicMaterial;
-    glow: THREE.MeshBasicMaterial;
-    branch: THREE.MeshBasicMaterial;
-    branchGlow: THREE.MeshBasicMaterial;
-}
+// Lightning interfaces moved to extracted-components/lightning-system.ts
 
-interface LightningMeshSet {
-    main: THREE.Mesh;
-    glow: THREE.Mesh;
-    branches: THREE.Mesh[];
-    branchGlows: THREE.Mesh[];
-}
-
-interface LightningBolt {
-    meshes: LightningMeshSet;
-    materials: LightningMaterials;
-    isActive: boolean;
-    startTime: number;
-    duration: number;
-    path: { main: THREE.Vector3[]; branches: THREE.Vector3[][] } | null;
-}
-
-const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
+const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false }) => {
     const mountRef = useRef<HTMLDivElement>(null);
     const [isLoading, setIsLoading] = useState(true);
 
@@ -41,46 +38,27 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
     const cameraRef = useRef<THREE.PerspectiveCamera | null>(null);
     const composerRef = useRef<EffectComposer | null>(null);
     const animationFrameIdRef = useRef<number>(0);
-    const lightningPool = useRef<LightningBolt[]>([]);
+    const lightningSystem = useRef<LightningSystem | null>(null);
     const lastStrikeTime = useRef(0);
+    const adaptiveQuality = useRef<AdaptiveQualitySystem | null>(null);
+    const geometryPool = useRef<GeometryPool | null>(null);
     const mousePoint = useRef(new THREE.Vector3());
     const logoGroupRef = useRef<THREE.Group | null>(null);
-    const cleanupRef = useRef<() => void>(() => {});
+    const cleanupRef = useRef<() => void>(() => { });
 
-    const createLightningPath = useCallback((start: THREE.Vector3, end: THREE.Vector3) => {
-        const mainPath: THREE.Vector3[] = [start.clone()];
-        const dir = new THREE.Vector3().subVectors(end, start);
-        const totalDistance = dir.length();
-        const numSegments = 15;
-        for (let i = 1; i < numSegments; i++) {
-            const progress = i / numSegments;
-            const point = new THREE.Vector3().lerpVectors(start, end, progress);
-            const offsetScale = totalDistance * 0.1 * Math.sin(progress * Math.PI);
-            const offset = new THREE.Vector3(Math.random() - 0.5, Math.random() - 0.5, Math.random() - 0.5).normalize().multiplyScalar(Math.random() * offsetScale);
-            point.add(offset);
-            mainPath.push(point);
-        }
-        mainPath.push(end.clone());
-        const branches: THREE.Vector3[][] = [];
-        const MAX_BRANCHES_PER_BOLT = 3;
-        const numBranches = 1 + Math.floor(Math.random() * MAX_BRANCHES_PER_BOLT);
-        for (let i = 0; i < numBranches; i++) {
-            const branch: THREE.Vector3[] = [];
-            const startIndex = Math.floor(mainPath.length * 0.2) + Math.floor(Math.random() * (mainPath.length * 0.6));
-            const branchStart = mainPath[startIndex].clone();
-            const branchEnd = branchStart.clone().add(new THREE.Vector3((Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4));
-            branch.push(branchStart);
-            const branchSegments = 5 + Math.floor(Math.random() * 5);
-            for (let j = 1; j < branchSegments; j++) {
-                const point = new THREE.Vector3().lerpVectors(branchStart, branchEnd, j / branchSegments);
-                point.add(new THREE.Vector3((Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5, (Math.random() - 0.5) * 0.5));
-                branch.push(point);
-            }
-            branch.push(branchEnd);
-            branches.push(branch);
-        }
-        return { main: mainPath, branches };
-    }, []);
+    // Debug system
+    const debugSystemRef = useRef<DebugSystem | null>(null);
+    const errorBoundary = ThreeErrorBoundary.getInstance();
+    const mouseScreenPos = useRef(new THREE.Vector2());
+
+    // Mouse tracking optimization
+    const lastMouseUpdate = useRef(0);
+    const mouseUpdateThrottle = 16; // ~60fps
+    const isMobile = useRef(false);
+    const smoothedMousePoint = useRef(new THREE.Vector3());
+    const mouseSmoothingFactor = 0.1; // Smoothing strength
+
+    // Lightning path creation moved to LightningSystem class
 
     useEffect(() => {
         const currentMount = mountRef.current;
@@ -92,41 +70,76 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
             if (initialized || currentMount.clientWidth === 0) return;
             initialized = true;
 
+            // Calculate aspect ratio once for responsive design
+            const aspectRatio = currentMount.clientWidth / currentMount.clientHeight;
+
+            // Detect mobile device for responsive optimizations
+            isMobile.current = /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent) ||
+                currentMount.clientWidth < 768;
+
             const scene = new THREE.Scene();
             scene.background = new THREE.Color(0x111111);
             sceneRef.current = scene;
 
-            const camera = new THREE.PerspectiveCamera(75, currentMount.clientWidth / currentMount.clientHeight, 0.1, 1000);
-            camera.position.set(0, 1, 5);
+            const camera = new THREE.PerspectiveCamera(75, aspectRatio, 0.1, 1000);
+            // Responsive camera positioning
+            const cameraZ = aspectRatio < 1 ? 6 : 5; // Further back on mobile portrait
+            camera.position.set(0, 1, cameraZ);
             cameraRef.current = camera;
 
             const renderer = new THREE.WebGLRenderer({ antialias: true, alpha: true });
             renderer.setSize(currentMount.clientWidth, currentMount.clientHeight);
-            renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
-            renderer.toneMapping = THREE.ACESFilmicToneMapping;
-            renderer.toneMappingExposure = 1;
+
+            // Apply performance optimizations from original
+            PerformanceOptimizer.optimizeRenderer(renderer);
+
+            // Additional mobile optimizations
+            if (isMobile.current) {
+                renderer.setPixelRatio(Math.min(window.devicePixelRatio, 1.5)); // Lower pixel ratio on mobile
+                renderer.shadowMap.enabled = false; // Disable shadows on mobile for performance
+            }
             currentMount.appendChild(renderer.domElement);
             rendererRef.current = renderer;
 
             setIsLoading(false);
 
-            const clock = new THREE.Clock();
-            const raycaster = new THREE.Raycaster();
-            const mouse = new THREE.Vector2();
-            const plane = new THREE.Plane(new THREE.Vector3(0, 0, 1), 0);
+            // Initialize debug system
+            debugSystemRef.current = new DebugSystem(scene, camera, renderer);
+            debugSystemRef.current.setDebugMode(debugMode);
 
-            const chromeMaterial = new THREE.MeshStandardMaterial({
-                color: 0xcccccc, metalness: 1.0, roughness: 0.35, envMapIntensity: 1.2
-            });
+            // Add debug UI if in debug mode
+            if (debugMode) {
+                const debugUI = debugSystemRef.current.createDebugUI();
+                document.body.appendChild(debugUI);
+
+                // Add toggle functionality
+                const toggleButton = document.getElementById('debug-toggle');
+                if (toggleButton) {
+                    toggleButton.addEventListener('click', () => {
+                        const currentMode = debugSystemRef.current?.getDebugMode();
+                        debugSystemRef.current?.setDebugMode(!currentMode);
+                    });
+                }
+            }
+
+            const clock = new THREE.Clock();
+            // Remove raycaster approach - using working unproject method instead
+
+            // Create optimized materials first
+            const materials = PerformanceOptimizer.createOptimizedMaterials();
+            const chromeMaterial = materials.chrome;
 
             const logoGroup = new THREE.Group();
-            logoGroup.position.y = 1.5;
+            // Responsive logo positioning
+            logoGroup.position.y = aspectRatio < 1 ? 1.2 : 1.5; // Lower on mobile portrait
             scene.add(logoGroup);
             logoGroupRef.current = logoGroup;
 
             const createLogo = (material: THREE.MeshStandardMaterial) => {
                 const shape = new THREE.Shape();
-                const size = 1.0;
+                // Responsive logo size based on screen dimensions
+                const baseSize = 1.0;
+                const size = aspectRatio < 1 ? baseSize * 0.8 : baseSize; // Smaller on mobile portrait
                 shape.moveTo(-size, size); shape.lineTo(0, 0); shape.lineTo(-size, -size); shape.lineTo(-size, size);
                 const extrudeSettings = { steps: 2, depth: 0.3, bevelEnabled: true, bevelThickness: 0.1, bevelSize: 0.1, bevelOffset: 0, bevelSegments: 5 };
                 const geometry = new THREE.ExtrudeGeometry(shape, extrudeSettings);
@@ -137,88 +150,55 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
             };
             createLogo(chromeMaterial);
 
-            const cycloramaGeo = new THREE.PlaneGeometry(30, 30, 50, 50);
-            cycloramaGeo.rotateX(-Math.PI / 2);
-            const positions = cycloramaGeo.attributes.position;
-            const backEdgeZ = -15;
-            const curveRadius = 4;
-            for (let i = 0; i < positions.count; i++) {
-                const z_orig = positions.getZ(i);
-                if (z_orig < backEdgeZ + curveRadius) {
-                    const z_in_curve = z_orig - backEdgeZ;
-                    const angle = (z_in_curve / curveRadius) * (Math.PI / 2);
-                    const newY = curveRadius - curveRadius * Math.cos(angle);
-                    const newZ = backEdgeZ + curveRadius * Math.sin(angle);
-                    positions.setY(i, newY);
-                    positions.setZ(i, newZ);
-                }
-            }
-            cycloramaGeo.computeVertexNormals();
-            const cycloramaMat = new THREE.MeshStandardMaterial({ color: 0x282828, roughness: 0.8, metalness: 0.1 });
+            // Use optimized cyclorama geometry from performance optimizations
+            const cycloramaGeo = PerformanceOptimizer.createOptimizedCyclorama(30, 30, 4);
+            const cycloramaMat = materials.cyclorama;
             const cyclorama = new THREE.Mesh(cycloramaGeo, cycloramaMat);
             cyclorama.position.y = -1.5;
             scene.add(cyclorama);
 
-            const ambientLight = new THREE.AmbientLight(0xffffff, 1.0);
-            scene.add(ambientLight);
-            const fillLight = new THREE.PointLight(0xffffff, 2, 20);
-            fillLight.position.set(0, 4, 4);
-            scene.add(fillLight);
-            const spotLight1 = new THREE.SpotLight(0xffffff, 20, 20, Math.PI * 0.2, 0.8);
-            spotLight1.position.set(-5, 5, 5);
-            scene.add(spotLight1);
-            const spotLight2 = new THREE.SpotLight(0xaa88ff, 30, 20, Math.PI * 0.15, 0.9);
-            spotLight2.position.set(5, 5, 2);
-            scene.add(spotLight2);
-            const flashLight = new THREE.PointLight(0x99aaff, 0, 15, 2);
-            scene.add(flashLight);
+            // Use optimized lighting setup from performance optimizations
+            const lights = PerformanceOptimizer.createOptimizedLighting(scene);
 
             const composer = new EffectComposer(renderer);
             composer.addPass(new RenderPass(scene, camera));
-            const bloomPass = new UnrealBloomPass(new THREE.Vector2(currentMount.clientWidth, currentMount.clientHeight), 0.5, 0.4, 0.85);
+
+            // Use optimized bloom configuration from performance optimizations
+            const bloomPass = PerformanceOptimizer.createOptimizedBloom(
+                currentMount.clientWidth,
+                currentMount.clientHeight
+            );
+
+            // Reduce bloom quality on mobile for better performance
+            if (isMobile.current) {
+                bloomPass.strength *= 0.8; // Reduce bloom strength on mobile
+                bloomPass.radius *= 0.8;   // Reduce bloom radius on mobile
+            }
             composer.addPass(bloomPass);
             composerRef.current = composer;
 
-            const lightningGroup = new THREE.Group();
-            scene.add(lightningGroup);
+            // Initialize adaptive quality system for performance optimization
+            adaptiveQuality.current = new AdaptiveQualitySystem();
 
-            const POOL_SIZE = 5;
-            const MAX_BRANCHES_PER_BOLT = 3;
-            const baseMaterials = {
-                core: new THREE.MeshBasicMaterial({ color: 0xffffff, blending: THREE.AdditiveBlending, transparent: true }),
-                branch: new THREE.MeshBasicMaterial({ color: 0xaa88ff, blending: THREE.AdditiveBlending, transparent: true }),
-                glow: new THREE.MeshBasicMaterial({ color: 0xaa88ff, blending: THREE.AdditiveBlending, transparent: true }),
-                branchGlow: new THREE.MeshBasicMaterial({ color: 0xaa88ff, blending: THREE.AdditiveBlending, transparent: true }),
-            };
+            // Initialize working lightning system from extracted components
+            lightningSystem.current = new LightningSystem(scene, clock);
 
-            lightningPool.current = [];
-            for (let i = 0; i < POOL_SIZE; i++) {
-                const materials: LightningMaterials = {
-                    core: baseMaterials.core.clone(), branch: baseMaterials.branch.clone(),
-                    glow: baseMaterials.glow.clone(), branchGlow: baseMaterials.branchGlow.clone(),
-                };
-                const branches: THREE.Mesh[] = [];
-                const branchGlows: THREE.Mesh[] = [];
-                for (let j = 0; j < MAX_BRANCHES_PER_BOLT; j++) {
-                    const branch = new THREE.Mesh(new THREE.BufferGeometry(), materials.branch);
-                    const branchGlow = new THREE.Mesh(new THREE.BufferGeometry(), materials.branchGlow);
-                    branch.visible = false; branchGlow.visible = false;
-                    lightningGroup.add(branch, branchGlow);
-                    branches.push(branch); branchGlows.push(branchGlow);
-                }
-                const bolt: LightningBolt = {
-                    isActive: false, startTime: 0, duration: 0,
-                    path: null, materials,
-                    meshes: {
-                        main: new THREE.Mesh(new THREE.BufferGeometry(), materials.core),
-                        glow: new THREE.Mesh(new THREE.BufferGeometry(), materials.glow),
-                        branches, branchGlows,
-                    },
-                };
-                lightningGroup.add(bolt.meshes.main, bolt.meshes.glow);
-                lightningPool.current.push(bolt);
+            // Note: Lightning pool size optimization would be handled internally by LightningSystem
+            if (isMobile.current) {
+                console.log('📱 Mobile device - lightning system will use optimized settings');
             }
-            Object.values(baseMaterials).forEach(m => m.dispose());
+
+            // Initialize adaptive quality system for performance optimization
+            adaptiveQuality.current = new AdaptiveQualitySystem();
+
+            // Set mobile-specific performance settings
+            if (isMobile.current && adaptiveQuality.current) {
+                // Mobile devices get more conservative settings for better performance
+                console.log('📱 Mobile device detected - applying performance optimizations');
+            }
+
+            // Initialize geometry pool for memory optimization
+            geometryPool.current = new GeometryPool();
 
             let flashIntensity = 0;
 
@@ -226,99 +206,100 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
                 animationFrameIdRef.current = requestAnimationFrame(animate);
                 const elapsedTime = clock.getElapsedTime();
 
+                // Update adaptive quality system for performance optimization
+                let qualityLevel = 1.0;
+                if (adaptiveQuality.current) {
+                    qualityLevel = adaptiveQuality.current.update();
+                }
+
+                // Update performance monitoring
+                if (debugSystemRef.current) {
+                    debugSystemRef.current.updatePerformance();
+                }
+
                 const triggerLightning = () => {
-                    const bolt = lightningPool.current.find(b => !b.isActive);
-                    if (!bolt || !logoGroupRef.current || logoGroupRef.current.children.length === 0) return;
-                    const part = logoGroupRef.current.children[Math.floor(Math.random() * logoGroupRef.current.children.length)] as THREE.Mesh;
-                    if (!part.geometry.attributes.position) return;
-                    const positionAttribute = part.geometry.attributes.position;
-                    const vertexIndex = Math.floor(Math.random() * positionAttribute.count);
-                    const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, vertexIndex);
-                    part.updateWorldMatrix(true, false);
-                    vertex.applyMatrix4(part.matrixWorld);
-                    flashLight.position.copy(vertex);
-                    flashIntensity = 4.0;
-                    bolt.isActive = true;
-                    bolt.startTime = clock.getElapsedTime();
-                    bolt.duration = 0.2 + Math.random() * 0.1;
-                    bolt.path = createLightningPath(vertex, mousePoint.current);
+                    try {
+                        if (!lightningSystem.current) {
+                            if (debugMode) console.warn('⚡ Lightning system not initialized');
+                            return;
+                        }
+
+                        if (!logoGroupRef.current || logoGroupRef.current.children.length === 0) {
+                            if (debugMode) console.warn('⚡ Logo group not available for lightning');
+                            return;
+                        }
+
+                        const part = logoGroupRef.current.children[Math.floor(Math.random() * logoGroupRef.current.children.length)] as THREE.Mesh;
+                        if (!part.geometry.attributes.position) {
+                            if (debugMode) console.warn('⚡ Logo part has no position attribute');
+                            return;
+                        }
+
+                        const positionAttribute = part.geometry.attributes.position;
+                        const vertexIndex = Math.floor(Math.random() * positionAttribute.count);
+                        const vertex = new THREE.Vector3().fromBufferAttribute(positionAttribute, vertexIndex);
+                        part.updateWorldMatrix(true, false);
+                        vertex.applyMatrix4(part.matrixWorld);
+
+                        // Trigger lightning using the working system
+                        const success = lightningSystem.current.triggerLightning(vertex, mousePoint.current);
+
+                        if (success) {
+                            lights.flash.position.copy(vertex);
+                            flashIntensity = 4.0;
+
+                            // Debug: Show lightning trigger point
+                            if (debugSystemRef.current) {
+                                debugSystemRef.current.showLightningTrigger(vertex, 0);
+                            }
+
+                            if (debugMode) {
+                                console.log(`⚡ Lightning triggered - Distance: ${distanceToLogo.toFixed(2)}`);
+                            }
+                        } else if (debugMode) {
+                            console.warn('⚡ No available lightning bolt in pool');
+                        }
+                    } catch (error) {
+                        errorBoundary.catchError(error as Error, 'triggerLightning');
+                    }
                 };
 
                 const distanceToLogo = mousePoint.current.distanceTo(logoGroupRef.current?.position || new THREE.Vector3());
-                const hotZoneDistance = 1.5;
+                // Responsive hot zone distance based on screen size
+                const currentAspectRatio = currentMount.clientWidth / currentMount.clientHeight;
+                const hotZoneDistance = currentAspectRatio < 1 ? 2.0 : 1.5; // Larger hot zone on mobile
                 let strikeInterval = 0.5 + Math.pow(Math.max(0, distanceToLogo - hotZoneDistance), 2) * 0.2 + Math.random() * 0.5;
                 if (distanceToLogo < hotZoneDistance) {
                     strikeInterval = 0.1 + Math.random() * 0.2;
                 }
+
+                // Adaptive performance: Increase interval when quality is low
+                strikeInterval *= (2.0 - qualityLevel); // Lower quality = longer intervals
                 if (elapsedTime - lastStrikeTime.current > strikeInterval) {
                     triggerLightning();
                     lastStrikeTime.current = elapsedTime;
                 }
-                if (flashIntensity > 0) {
-                    bloomPass.strength = 0.6 + flashIntensity * 1.5;
-                    flashLight.intensity = flashIntensity * 20;
-                    flashIntensity -= 0.25;
-                } else {
-                    bloomPass.strength = 0.6;
-                    flashLight.intensity = 0;
-                }
-                spotLight1.position.x = Math.sin(elapsedTime * 0.3) * 7;
-                spotLight2.position.x = Math.sin(elapsedTime * 0.5 + Math.PI) * 6;
 
-                lightningPool.current.forEach(bolt => {
-                    if (!bolt.isActive) return;
-                    const life = (elapsedTime - bolt.startTime) / bolt.duration;
-                    if (life >= 1.0) {
-                        bolt.isActive = false;
-                        bolt.path = null;
-                        bolt.meshes.main.visible = false;
-                        bolt.meshes.glow.visible = false;
-                        bolt.meshes.branches.forEach(m => m.visible = false);
-                        bolt.meshes.branchGlows.forEach(m => m.visible = false);
-                        return;
-                    }
-                    if (bolt.path && !bolt.meshes.main.visible) {
-                        const { main, branches } = bolt.path;
-                        if (main.length > 1) {
-                            const mainCurve = new CatmullRomCurve3(main);
-                            bolt.meshes.main.geometry.dispose();
-                            bolt.meshes.glow.geometry.dispose();
-                            bolt.meshes.main.geometry = new TubeGeometry(mainCurve, 64, 0.04, 12, false);
-                            bolt.meshes.glow.geometry = new TubeGeometry(mainCurve, 64, 0.15, 12, false);
-                            bolt.meshes.main.visible = true;
-                            bolt.meshes.glow.visible = true;
-                        }
-                        branches.forEach((branchPath, i) => {
-                            if (i < MAX_BRANCHES_PER_BOLT) {
-                                const branchMesh = bolt.meshes.branches[i];
-                                const branchGlowMesh = bolt.meshes.branchGlows[i];
-                                if (branchPath.length > 1) {
-                                    const branchCurve = new CatmullRomCurve3(branchPath);
-                                    branchMesh.geometry.dispose();
-                                    branchGlowMesh.geometry.dispose();
-                                    branchMesh.geometry = new TubeGeometry(branchCurve, 20, 0.015, 8, false);
-                                    branchGlowMesh.geometry = new TubeGeometry(branchCurve, 20, 0.06, 8, false);
-                                    branchMesh.visible = true;
-                                    branchGlowMesh.visible = true;
-                                } else {
-                                    branchMesh.visible = false;
-                                    branchGlowMesh.visible = false;
-                                }
-                            }
-                        });
-                        for (let i = branches.length; i < MAX_BRANCHES_PER_BOLT; i++) {
-                            bolt.meshes.branches[i].visible = false;
-                            bolt.meshes.branchGlows[i].visible = false;
-                        }
-                    }
-                    if (bolt.meshes.main.visible) {
-                        const opacity = Math.pow(1.0 - life, 2);
-                        bolt.materials.core.opacity = opacity * 0.9;
-                        bolt.materials.branch.opacity = opacity * 0.7;
-                        bolt.materials.glow.opacity = opacity * 0.4;
-                        bolt.materials.branchGlow.opacity = opacity * 0.2;
-                    }
-                });
+                // Debug: Log lightning system status periodically
+                if (debugSystemRef.current && lightningSystem.current && Math.floor(elapsedTime) % 5 === 0 && elapsedTime % 1 < 0.1) {
+                    const debugInfo = lightningSystem.current.getDebugInfo();
+                    const fps = adaptiveQuality.current?.getFPS() || 0;
+                    console.log(`⚡ Lightning Status - Active: ${debugInfo.activeBolts}/${debugInfo.totalBolts}, Distance: ${distanceToLogo.toFixed(2)}, Interval: ${strikeInterval.toFixed(2)}s, FPS: ${fps}, Quality: ${(qualityLevel * 100).toFixed(0)}%`);
+                }
+                // Use optimized flash effect from performance optimizations
+                flashIntensity = PerformanceOptimizer.updateFlashEffect(
+                    lights.flash,
+                    bloomPass,
+                    flashIntensity,
+                    0.6
+                );
+                // Use optimized lighting animation from performance optimizations
+                PerformanceOptimizer.animateLights(lights, elapsedTime);
+
+                // Update lightning system using working implementation
+                if (lightningSystem.current) {
+                    lightningSystem.current.update();
+                }
                 composer.render();
             };
 
@@ -326,16 +307,52 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
         };
 
         const onMouseMove = (event: MouseEvent) => {
-            if (!initialized || !currentMount || !rendererRef.current) return;
-                const rect = rendererRef.current.domElement.getBoundingClientRect();
-            mouse.x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-            mouse.y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-            if (cameraRef.current) {
-                raycaster.setFromCamera(mouse, cameraRef.current);
-                    const intersection = new THREE.Vector3();
-                    if (raycaster.ray.intersectPlane(plane, intersection)) {
-                        mousePoint.current.copy(intersection);
-                    }
+            try {
+                // Throttle mouse updates for performance (more aggressive on mobile)
+                const now = performance.now();
+                const throttle = isMobile.current ? mouseUpdateThrottle * 2 : mouseUpdateThrottle;
+                if (now - lastMouseUpdate.current < throttle) return;
+                lastMouseUpdate.current = now;
+
+                if (!initialized || !currentMount || !rendererRef.current || !cameraRef.current) return;
+
+                // WORKING mouse tracking method from original implementation
+                const vec = new THREE.Vector3();
+
+                // WORKING: Use exact original method for coordinate conversion
+                // This matches the working implementation exactly
+                vec.set(
+                    (event.clientX / currentMount.clientWidth) * 2 - 1,
+                    -(event.clientY / currentMount.clientHeight) * 2 + 1,
+                    0.5
+                );
+
+                // Store screen position for debug
+                mouseScreenPos.current.set(vec.x, vec.y);
+
+                // WORKING: Use unproject method instead of raycaster
+                vec.unproject(cameraRef.current);
+                vec.sub(cameraRef.current.position).normalize();
+                const distance = -cameraRef.current.position.z / vec.z;
+                const newMousePoint = new THREE.Vector3().copy(cameraRef.current.position).add(vec.multiplyScalar(distance));
+
+                // Apply smoothing for more natural movement
+                smoothedMousePoint.current.lerp(newMousePoint, mouseSmoothingFactor);
+                mousePoint.current.copy(smoothedMousePoint.current);
+
+                // Debug: Update mouse position indicator
+                if (debugSystemRef.current) {
+                    debugSystemRef.current.updateMousePosition(mouseScreenPos.current, mousePoint.current);
+                }
+
+                if (debugMode && Math.random() < 0.01) { // Log only 1% of updates to avoid spam
+                    console.log(`🖱️ Mouse updated - Screen: (${vec.x.toFixed(2)}, ${vec.y.toFixed(2)}) World: (${mousePoint.current.x.toFixed(2)}, ${mousePoint.current.y.toFixed(2)}, ${mousePoint.current.z.toFixed(2)})`);
+                }
+            } catch (error) {
+                errorBoundary.catchError(error as Error, 'onMouseMove');
+                if (debugMode) {
+                    console.error('🖱️ Mouse tracking error:', error);
+                }
             }
         };
 
@@ -353,6 +370,22 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
                     camera.updateProjectionMatrix();
                     renderer.setSize(clientWidth, clientHeight);
                     composer.setSize(clientWidth, clientHeight);
+
+                    // Update responsive elements on resize
+                    const aspectRatio = clientWidth / clientHeight;
+
+                    // Update camera position for responsive design
+                    const cameraZ = aspectRatio < 1 ? 6 : 5;
+                    camera.position.z = cameraZ;
+
+                    // Update logo position for responsive design
+                    if (logoGroupRef.current) {
+                        logoGroupRef.current.position.y = aspectRatio < 1 ? 1.2 : 1.5;
+
+                        // Update logo scale for responsive design
+                        const logoScale = aspectRatio < 1 ? 0.8 : 1.0;
+                        logoGroupRef.current.scale.setScalar(logoScale);
+                    }
                 }
             }
         };
@@ -361,11 +394,50 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
         resizeObserver.observe(currentMount);
         window.addEventListener('mousemove', onMouseMove);
 
+        // Add mobile touch support for responsive design
+        const onTouchMove = (event: TouchEvent) => {
+            if (event.touches.length > 0) {
+                const touch = event.touches[0];
+                // Create a synthetic mouse event from touch
+                const syntheticEvent = {
+                    clientX: touch.clientX,
+                    clientY: touch.clientY
+                } as MouseEvent;
+                onMouseMove(syntheticEvent);
+            }
+        };
+
+        window.addEventListener('touchmove', onTouchMove, { passive: true });
+
         handleResize();
 
         cleanupRef.current = () => {
+            // Cleanup debug system
+            if (debugSystemRef.current) {
+                debugSystemRef.current.dispose();
+                debugSystemRef.current = null;
+            }
+
+            // Cleanup lightning system
+            if (lightningSystem.current) {
+                lightningSystem.current.dispose();
+                lightningSystem.current = null;
+            }
+
+            // Cleanup adaptive quality system
+            if (adaptiveQuality.current) {
+                adaptiveQuality.current = null;
+            }
+
+            // Dispose geometry pool
+            if (geometryPool.current) {
+                geometryPool.current.dispose();
+                geometryPool.current = null;
+            }
+
             resizeObserver.disconnect();
             window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('touchmove', onTouchMove);
             cancelAnimationFrame(animationFrameIdRef.current);
 
             const renderer = rendererRef.current;
@@ -373,21 +445,14 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
                 renderer.domElement.parentElement.removeChild(renderer.domElement);
             }
 
-            sceneRef.current?.traverse(object => {
-                if (object instanceof THREE.Mesh) {
-                    object.geometry.dispose();
-                    const mat = object.material as THREE.Material | THREE.Material[];
-                    if (Array.isArray(mat)) {
-                        mat.forEach(material => material.dispose());
-                    } else if (mat) {
-                        mat.dispose();
-                    }
-                }
-            });
+            // Use optimized scene disposal from performance optimizations
+            if (sceneRef.current) {
+                PerformanceOptimizer.disposeScene(sceneRef.current);
+            }
             renderer?.dispose();
             composerRef.current?.dispose();
         };
-    }, [createLightningPath]);
+    }, []); // No dependencies needed as lightning system is self-contained
 
     useEffect(() => {
         return () => {
@@ -402,7 +467,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className }) => {
                     <div className="text-white text-3xl tracking-widest animate-pulse">Loading...</div>
                 </div>
             )}
-            <div ref={mountRef} className={className || ''} />
+            <div ref={mountRef} className={className || ''} data-testid="three-scene-container" />
         </>
     );
 };

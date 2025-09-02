@@ -1,6 +1,12 @@
 
 import React from 'react';
 
+const _SocialLink: React.FC<{ href: string; children: React.ReactNode; }> = ({ href, children }) => (
+    <a href={href} target="_blank" rel="noopener noreferrer" className="inline-block bg-white/10 text-gray-200 hover:bg-white/20 hover:text-white transition-colors rounded-lg px-4 py-2 text-base">
+        {children}
+    </a>
+);
+
 interface AboutServicePageProps {
   t: (key: string) => string;
 }

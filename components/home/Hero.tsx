@@ -2,15 +2,32 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import ThreeScene from './ThreeScene';
+import ErrorBoundary from '../debug/ErrorBoundary';
+import PerformanceMonitor from '../debug/PerformanceMonitor';
 
 interface HeroProps {
     t: (key: string) => string;
 }
 
 const Hero: React.FC<HeroProps> = ({ t }) => {
+    const isDevelopment = process.env.NODE_ENV === 'development';
+
     return (
         <div className="relative min-h-screen flex items-center justify-center text-center -mt-[72px] pt-[72px] overflow-hidden">
-            <ThreeScene className="absolute inset-0 w-full h-full" />
+            <ErrorBoundary
+                onError={(error, errorInfo) => {
+                    console.error('Hero component error:', error, errorInfo);
+                }}
+            >
+                <ThreeScene 
+                    className="absolute inset-0 w-full h-full" 
+                    debugMode={isDevelopment} 
+                />
+            </ErrorBoundary>
+            
+            {/* Performance Monitor - only in development */}
+            {isDevelopment && <PerformanceMonitor enabled={true} />}
+            
             <div className="absolute inset-0 bg-gradient-to-t from-[#0A0A10] via-[#0A0A10]/50 to-transparent"></div>
             <div className="absolute inset-0 bg-black/30"></div>
             
