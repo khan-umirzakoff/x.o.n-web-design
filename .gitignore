@@ -25,3 +25,6 @@ dist-ssr
 
 # Do not commit environment files
 .env
+
+# Test results
+__tests__/results/

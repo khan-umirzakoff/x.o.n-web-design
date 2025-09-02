@@ -284,20 +284,21 @@ describe('Lightning System Integration Tests', () => {
     });
 
     it('should respect maximum triggers per second', () => {
+      vi.setSystemTime(new Date(2000, 1, 1, 0, 0, 0, 0));
+      const trigger = new LightningTrigger(50, 5);
       // Trigger maximum allowed (5 times)
       for (let i = 0; i < 5; i++) {
+        expect(trigger.trigger()).toBe(true);
         vi.advanceTimersByTime(60); // Wait minimum interval
-        expect(lightningTrigger.trigger()).toBe(true);
       }
       
       // Next trigger should fail (rate limited)
-      vi.advanceTimersByTime(60);
-      expect(lightningTrigger.canTrigger()).toBe(false);
-      expect(lightningTrigger.trigger()).toBe(false);
+      expect(trigger.canTrigger()).toBe(false);
+      expect(trigger.trigger()).toBe(false);
       
       // After 1 second, should reset
       vi.advanceTimersByTime(1000);
-      expect(lightningTrigger.canTrigger()).toBe(true);
+      expect(trigger.canTrigger()).toBe(true);
     });
 
     it('should reset trigger state', () => {
