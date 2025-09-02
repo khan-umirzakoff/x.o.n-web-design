@@ -6,22 +6,6 @@ import { RenderPass } from 'three/addons/postprocessing/RenderPass.js';
 import { DebugSystem, ThreeErrorBoundary } from '../../utils/debug-utilities';
 import { LightningSystem } from '../../extracted-components/lightning-system';
 import { PerformanceOptimizer, AdaptiveQualitySystem, GeometryPool } from '../../extracted-components/performance-optimizations';
-import { 
-  DeviceCapabilityDetector, 
-  FallbackSystem, 
-  ProgressiveEnhancement, 
-  DEFAULT_FALLBACK_CONFIG 
-} from '../../utils/fallback-system';
-import { Canvas2DFallback, StaticFallback } from '../../utils/canvas-fallback';
-import { 
-  ErrorRecoverySystem, 
-  createErrorContext, 
-  withErrorRecovery,
-  WebGLContextLostError,
-  MemoryPressureError,
-  PerformanceDegradationError
-} from '../../utils/error-recovery';
-
 interface ThreeSceneProps {
     className?: string;
     debugMode?: boolean;
