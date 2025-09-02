@@ -42,9 +42,10 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
     const lastStrikeTime = useRef(0);
     const adaptiveQuality = useRef<AdaptiveQualitySystem | null>(null);
     const geometryPool = useRef<GeometryPool | null>(null);
-    const mousePoint = useRef(new THREE.Vector3());
+    const mousePoint = useRef(new THREE.Vector3(9999, 9999, 9999)); // Start far away
     const logoGroupRef = useRef<THREE.Group | null>(null);
     const cleanupRef = useRef<() => void>(() => { });
+    const hasInteracted = useRef(false);
 
     // Debug system
     const debugSystemRef = useRef<DebugSystem | null>(null);
@@ -266,14 +267,14 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
                 // Responsive hot zone distance based on screen size
                 const currentAspectRatio = currentMount.clientWidth / currentMount.clientHeight;
                 const hotZoneDistance = currentAspectRatio < 1 ? 2.0 : 1.5; // Larger hot zone on mobile
-                let strikeInterval = 0.5 + Math.pow(Math.max(0, distanceToLogo - hotZoneDistance), 2) * 0.2 + Math.random() * 0.5;
+                let strikeInterval = 1.0 + Math.pow(Math.max(0, distanceToLogo - hotZoneDistance), 2) * 0.1 + Math.random();
                 if (distanceToLogo < hotZoneDistance) {
-                    strikeInterval = 0.1 + Math.random() * 0.2;
+                    strikeInterval = 0.4 + Math.random() * 0.5;
                 }
 
                 // Adaptive performance: Increase interval when quality is low
                 strikeInterval *= (2.0 - qualityLevel); // Lower quality = longer intervals
-                if (elapsedTime - lastStrikeTime.current > strikeInterval) {
+                if (hasInteracted.current && elapsedTime - lastStrikeTime.current > strikeInterval) {
                     triggerLightning();
                     lastStrikeTime.current = elapsedTime;
                 }
@@ -306,6 +307,9 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
 
         const onMouseMove = (event: MouseEvent) => {
             try {
+                if (!hasInteracted.current) {
+                    hasInteracted.current = true;
+                }
                 // Throttle mouse updates for performance (more aggressive on mobile)
                 const now = performance.now();
                 const throttle = isMobile.current ? mouseUpdateThrottle * 2 : mouseUpdateThrottle;
@@ -393,7 +397,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
 
         const onMouseLeave = () => {
             // Move the point far away to stop interaction
-            mousePoint.current.set(9999, 9999, 9999);
+            mousePoint.current = new THREE.Vector3(9999, 9999, 9999);
         };
         currentMount.addEventListener('mouseleave', onMouseLeave);
 
@@ -410,7 +414,20 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
             }
         };
 
+        const onTouchStart = (event: TouchEvent) => {
+            if (!hasInteracted.current) {
+                hasInteracted.current = true;
+            }
+            onTouchMove(event);
+        };
+
+        const onTouchEnd = () => {
+            mousePoint.current = new THREE.Vector3(9999, 9999, 9999);
+        };
+
+        window.addEventListener('touchstart', onTouchStart, { passive: true });
         window.addEventListener('touchmove', onTouchMove, { passive: true });
+        window.addEventListener('touchend', onTouchEnd);
 
         handleResize();
 
@@ -443,7 +460,9 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
             }
             resizeObserver.disconnect();
             window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('touchstart', onTouchStart);
             window.removeEventListener('touchmove', onTouchMove);
+            window.removeEventListener('touchend', onTouchEnd);
             cancelAnimationFrame(animationFrameIdRef.current);
 
             const renderer = rendererRef.current;
