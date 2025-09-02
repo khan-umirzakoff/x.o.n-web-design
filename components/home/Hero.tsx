@@ -13,24 +13,35 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
     const isDevelopment = process.env.NODE_ENV === 'development';
     const xonRef = useRef<HTMLSpanElement>(null);
     const subtitleRef = useRef<HTMLSpanElement>(null);
-    const [subtitleScale, setSubtitleScale] = useState(1);
+    const [letterSpacing, setLetterSpacing] = useState(0);
 
     useLayoutEffect(() => {
-        const calculateScale = () => {
+        const calculateSpacing = async () => {
+            // Wait for fonts to be loaded and ready
+            await document.fonts.ready;
+
             if (xonRef.current && subtitleRef.current) {
                 const xonWidth = xonRef.current.offsetWidth;
                 const subtitleWidth = subtitleRef.current.offsetWidth;
-                if (subtitleWidth > 0) {
-                    setSubtitleScale(xonWidth / subtitleWidth);
+                const subtitleText = subtitleRef.current.innerText;
+
+                if (subtitleWidth > 0 && subtitleText.length > 1) {
+                    // Temporarily reset letter spacing to get the natural width
+                    subtitleRef.current.style.letterSpacing = 'normal';
+                    const naturalSubtitleWidth = subtitleRef.current.offsetWidth;
+
+                    const widthDiff = xonWidth - naturalSubtitleWidth;
+                    const newSpacing = widthDiff / (subtitleText.length - 1);
+                    setLetterSpacing(newSpacing);
                 }
             }
         };
 
-        calculateScale();
-        window.addEventListener('resize', calculateScale);
+        calculateSpacing();
+        window.addEventListener('resize', calculateSpacing);
 
-        return () => window.removeEventListener('resize', calculateScale);
-    }, [t]); // Recalculate when language changes
+        return () => window.removeEventListener('resize', calculateSpacing);
+    }, [t]);
 
     return (
         <>
@@ -58,17 +69,14 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
                         <span ref={xonRef} className="text-white text-4xl md:text-6xl font-audiowide" style={{ letterSpacing: '0.25em', paddingLeft: '0.25em' }}>X.O.N</span>
                         <span
                             ref={subtitleRef}
-                            className="text-theme-gradient text-lg md:text-2xl mt-1 tracking-wider font-poppins font-light"
-                            style={{
-                                transform: `scaleX(${subtitleScale})`,
-                                transformOrigin: 'center'
-                            }}
+                            className="text-theme-gradient text-lg md:text-2xl mt-1 font-poppins font-light"
+                            style={{ letterSpacing: `${letterSpacing}px` }}
                         >
                             Cloud Gaming
                         </span>
                     </h1>
                     <div className="mt-8 flex justify-center">
-                         <Link to="/games" className="bg-theme-gradient text-white font-bold text-lg rounded-lg px-10 py-4 hover-glow transition-all shadow-lg transform hover:scale-105">
+                     <Link to="/games" className="bg-theme-gradient text-white font-bold text-lg rounded-lg px-10 py-4 hover-glow transition-all transform hover:scale-105">
                             {t('registerAndPlay')}
                         </Link>
                     </div>

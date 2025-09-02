@@ -3,11 +3,11 @@ import React from 'react';
 import { Link } from 'react-router-dom';
 
 const socialIcons = [
-    { name: 'vk', href: 'https://r.gfn.am/vk', src: '/assets/images/icons/social/vk.svg' },
-    { name: 'instagram', href: 'https://www.instagram.com/adept.tech?utm_source=ig_web_button_share_sheet&igsh=ZDNlZDc0MzIxNw==', src: '/assets/images/icons/social/instagram.svg' },
-    { name: 'telegram', href: 'https://t.me/XON_Cloud_Gaming', src: '/assets/images/icons/social/telegram.svg' },
-    { name: 'tiktok', href: 'https://r.gfn.am/tiktok', src: '/assets/images/icons/social/tiktok.svg' },
-    { name: 'youtube', href: 'https://www.youtube.com/@UZGAMER', src: '/assets/images/icons/social/youtube.svg' },
+    { name: 'vk', src: '/assets/images/icons/social/vk.svg' },
+    { name: 'instagram', src: '/assets/images/icons/social/instagram.svg' },
+    { name: 'telegram', src: '/assets/images/icons/social/telegram.svg' },
+    { name: 'tiktok', src: '/assets/images/icons/social/tiktok.svg' },
+    { name: 'youtube', src: '/assets/images/icons/social/youtube.svg' },
     { name: 'discord', src: '/assets/images/icons/social/discord.svg' },
     { name: 'facebook', src: '/assets/images/icons/social/facebook.svg' },
     { name: 'twitch', src: '/assets/images/icons/social/twitch.svg' },

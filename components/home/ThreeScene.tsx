@@ -395,7 +395,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
             // Move the point far away to stop interaction
             mousePoint.current.set(9999, 9999, 9999);
         };
-        document.addEventListener('mouseleave', onMouseLeave);
+        currentMount.addEventListener('mouseleave', onMouseLeave);
 
         // Add mobile touch support for responsive design
         const onTouchMove = (event: TouchEvent) => {
@@ -438,9 +438,11 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
                 geometryPool.current = null;
             }
 
+            if (currentMount) {
+                currentMount.removeEventListener('mouseleave', onMouseLeave);
+            }
             resizeObserver.disconnect();
             window.removeEventListener('mousemove', onMouseMove);
-            document.removeEventListener('mouseleave', onMouseLeave);
             window.removeEventListener('touchmove', onTouchMove);
             cancelAnimationFrame(animationFrameIdRef.current);
 
