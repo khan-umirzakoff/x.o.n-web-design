@@ -11,7 +11,7 @@ def run():
             page.wait_for_selector(hero_selector, timeout=30000) # 30 seconds timeout
             # Give the 3D scene some time to render
             page.wait_for_timeout(5000) # 5 seconds
-            page.screenshot(path="jules-scratch/verification/baseline.png")
+            page.screenshot(path="jules-scratch/verification/after_changes.png")
             print("Screenshot taken successfully.")
         except Exception as e:
             print(f"An error occurred: {e}")

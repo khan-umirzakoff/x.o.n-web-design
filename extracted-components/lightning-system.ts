@@ -159,20 +159,14 @@ export class LightningSystem {
         mainPath.push(end.clone());
         
         const branches: THREE.Vector3[][] = [];
-        // Optimized branching - more branches for better visual effect
-        const numBranches = 2 + Math.floor(Math.random() * (this.MAX_BRANCHES_PER_BOLT - 1));
+        const numBranches = 1 + Math.floor(Math.random() * this.MAX_BRANCHES_PER_BOLT); // Use max branches
         for (let i = 0; i < numBranches; i++) {
             const branch: THREE.Vector3[] = [];
-            const startIndex = Math.floor(mainPath.length * 0.3) + Math.floor(Math.random() * (mainPath.length * 0.4));
+            const startIndex = Math.floor(mainPath.length * 0.2) + Math.floor(Math.random() * (mainPath.length * 0.6));
             const branchStart = mainPath[startIndex].clone();
-            
-            // Improved branch direction - more natural branching
-            const branchDirection = new THREE.Vector3(
-                (Math.random() - 0.5) * 3, 
-                (Math.random() - 0.5) * 3, 
-                (Math.random() - 0.5) * 2  // Less Z variation for better visibility
-            );
-            const branchEnd = branchStart.clone().add(branchDirection);
+            const branchEnd = branchStart.clone().add(new THREE.Vector3(
+                (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4, (Math.random() - 0.5) * 4
+            ));
             
             branch.push(branchStart);
             const branchSegments = 5 + Math.floor(Math.random() * 5);
@@ -199,8 +193,7 @@ export class LightningSystem {
 
         bolt.isActive = true;
         bolt.startTime = this.clock.getElapsedTime();
-        // Optimized duration for better visibility - slightly longer than original
-        bolt.duration = 0.25 + Math.random() * 0.15;  // 0.25-0.4s instead of 0.2-0.3s
+        bolt.duration = 0.2 + Math.random() * 0.1;
         bolt.startPoint.copy(startPoint);
         bolt.endPoint.copy(endPoint);
         
@@ -231,15 +224,12 @@ export class LightningSystem {
             // KEY: Recreate path every frame for dynamic effect
             const { main, branches } = this.createLightningPath(bolt.startPoint, bolt.endPoint);
             
-            // Optimized fade-out curve for better visibility
-            const fadeProgress = life;
-            const opacity = life < 0.7 ? 1.0 : Math.pow(1.0 - (life - 0.7) / 0.3, 1.5);
+            const opacity = Math.pow(1.0 - life, 2);
     
-            // Enhanced opacity values for better visibility
-            bolt.materials.core.opacity = opacity * 1.0;      // Increased from 0.9
-            bolt.materials.branch.opacity = opacity * 0.8;    // Increased from 0.7
-            bolt.materials.glow.opacity = opacity * 0.6;      // Increased from 0.4
-            bolt.materials.branchGlow.opacity = opacity * 0.4; // Increased from 0.2
+            bolt.materials.core.opacity = opacity * 0.9;
+            bolt.materials.branch.opacity = opacity * 0.7;
+            bolt.materials.glow.opacity = opacity * 0.4;
+            bolt.materials.branchGlow.opacity = opacity * 0.2;
     
             if (main.length > 1) {
                 const mainCurve = new CatmullRomCurve3(main);
