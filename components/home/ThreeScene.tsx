@@ -314,16 +314,16 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
 
                 if (!initialized || !currentMount || !rendererRef.current || !cameraRef.current) return;
 
+                const rect = currentMount.getBoundingClientRect();
+                const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
+                const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
+
                 // WORKING mouse tracking method from original implementation
                 const vec = new THREE.Vector3();
 
                 // WORKING: Use exact original method for coordinate conversion
                 // This matches the working implementation exactly
-                vec.set(
-                    (event.clientX / currentMount.clientWidth) * 2 - 1,
-                    -(event.clientY / currentMount.clientHeight) * 2 + 1,
-                    0.5
-                );
+                vec.set(x, y, 0.5);
 
                 // Store screen position for debug
                 mouseScreenPos.current.set(vec.x, vec.y);
