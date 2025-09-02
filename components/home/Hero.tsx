@@ -28,8 +28,8 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
             {/* Performance Monitor - only in development */}
             {isDevelopment && <PerformanceMonitor enabled={true} />}
             
-            <div className="container mx-auto px-4 relative z-10 mt-60">
-                <h1 className="font-orbitron text-3xl md:text-5xl font-bold uppercase tracking-normal flex flex-col items-center">
+            <div className="container mx-auto px-4 relative z-10 mt-96">
+                <h1 className="text-3xl md:text-5xl uppercase tracking-normal flex flex-col items-center font-orbitron">
                     <span className="text-white" style={{ letterSpacing: '0.25em', paddingLeft: '0.25em' }}>X.O.N</span>
                     <span className="text-theme-gradient text-lg md:text-2xl mt-1 tracking-wider">Cloud Gaming</span>
                 </h1>
