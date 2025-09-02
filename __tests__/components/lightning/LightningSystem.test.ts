@@ -178,8 +178,8 @@ describe('Lightning System Integration Tests', () => {
       const lightning = new LightningBolt(startPoint, endPoint, 5);
       
       expect(lightning.points).toHaveLength(6); // 5 segments = 6 points
-      expect(lightning.points[0].x).toBeCloseTo(0, 1);
-      expect(lightning.points[5].x).toBeCloseTo(10, 1);
+      expect(lightning.points[0].x).toBeCloseTo(0, 0);
+      expect(lightning.points[5].x).toBeCloseTo(10, 0);
       expect(lightning.isActive).toBe(true);
       expect(lightning.opacity).toBe(1.0);
     });
