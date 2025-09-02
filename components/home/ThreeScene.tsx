@@ -55,8 +55,6 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
     const lastMouseUpdate = useRef(0);
     const mouseUpdateThrottle = 16; // ~60fps
     const isMobile = useRef(false);
-    const smoothedMousePoint = useRef(new THREE.Vector3());
-    const mouseSmoothingFactor = 0.1; // Smoothing strength
 
     // Lightning path creation moved to LightningSystem class
 
@@ -337,8 +335,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
                 const newMousePoint = new THREE.Vector3().copy(cameraRef.current.position).add(vec.multiplyScalar(distance));
 
                 // Apply smoothing for more natural movement
-                smoothedMousePoint.current.lerp(newMousePoint, mouseSmoothingFactor);
-                mousePoint.current.copy(smoothedMousePoint.current);
+                mousePoint.current.copy(newMousePoint);
 
                 // Debug: Update mouse position indicator
                 if (debugSystemRef.current) {
@@ -394,6 +391,12 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
         resizeObserver.observe(currentMount);
         window.addEventListener('mousemove', onMouseMove);
 
+        const onMouseLeave = () => {
+            // Move the point far away to stop interaction
+            mousePoint.current.set(9999, 9999, 9999);
+        };
+        document.addEventListener('mouseleave', onMouseLeave);
+
         // Add mobile touch support for responsive design
         const onTouchMove = (event: TouchEvent) => {
             if (event.touches.length > 0) {
@@ -437,6 +440,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
 
             resizeObserver.disconnect();
             window.removeEventListener('mousemove', onMouseMove);
+            document.removeEventListener('mouseleave', onMouseLeave);
             window.removeEventListener('touchmove', onTouchMove);
             cancelAnimationFrame(animationFrameIdRef.current);
 
