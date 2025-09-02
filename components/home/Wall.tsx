@@ -65,7 +65,7 @@ const Wall: React.FC<WallProps> = ({ t }) => {
     );
 
     return (
-        <div className="py-24 md:py-20 sm:py-16 bg-[#0A0A10] text-center">
+        <div className="py-24 md:py-20 sm:py-16 bg-[#0A0A10] text-center overflow-hidden">
             <div className="container mx-auto px-4">
                 <h2 className="text-4xl sm:text-3xl font-orbitron font-bold mb-4">{t('wallTitle')}</h2>
                 <p className="text-lg text-gray-400 mb-14 md:mb-10 sm:mb-8">
