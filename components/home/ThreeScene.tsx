@@ -269,7 +269,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
                 const hotZoneDistance = currentAspectRatio < 1 ? 2.0 : 1.5; // Larger hot zone on mobile
                 let strikeInterval = 1.0 + Math.pow(Math.max(0, distanceToLogo - hotZoneDistance), 2) * 0.1 + Math.random();
                 if (distanceToLogo < hotZoneDistance) {
-                    strikeInterval = 0.4 + Math.random() * 0.5;
+                    strikeInterval = 0.4 + Math.random() * 0.4; // Slower strikes in hot zone
                 }
 
                 // Adaptive performance: Increase interval when quality is low
@@ -428,6 +428,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
         window.addEventListener('touchstart', onTouchStart, { passive: true });
         window.addEventListener('touchmove', onTouchMove, { passive: true });
         window.addEventListener('touchend', onTouchEnd);
+        window.addEventListener('touchcancel', onTouchEnd);
 
         handleResize();
 
@@ -463,6 +464,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
             window.removeEventListener('touchstart', onTouchStart);
             window.removeEventListener('touchmove', onTouchMove);
             window.removeEventListener('touchend', onTouchEnd);
+            window.removeEventListener('touchcancel', onTouchEnd);
             cancelAnimationFrame(animationFrameIdRef.current);
 
             const renderer = rendererRef.current;
