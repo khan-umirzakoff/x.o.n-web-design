@@ -127,6 +127,7 @@ body {
   font-family: 'Rubik', sans-serif;
   background-color: #0A0A10;
   color: #E5E7EB; /* gray-200 */
+  overscroll-behavior-y: none;
 }
 .font-orbitron {
   font-family: 'Orbitron', sans-serif;

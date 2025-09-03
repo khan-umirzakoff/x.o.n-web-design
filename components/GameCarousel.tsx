@@ -21,7 +21,7 @@ const PrevButton: React.FC<{ onClick: () => void; disabled: boolean }> = ({ onCl
     <button 
         onClick={onClick} 
         disabled={disabled}
-        className={`absolute top-1/2 -left-4 -translate-y-1/2 z-20 p-2 bg-black/60 rounded-full text-white hover:bg-black/90 transition-all duration-300 ${disabled ? 'opacity-0 scale-50 cursor-not-allowed' : 'opacity-100 scale-100'}`}
+        className={`absolute top-1/2 left-4 -translate-y-1/2 z-20 p-2 bg-black/60 rounded-full text-white hover:bg-black/90 transition-all duration-300 ${disabled ? 'opacity-0 scale-50 cursor-not-allowed' : 'opacity-100 scale-100'}`}
         aria-label="Previous slide"
     >
         <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -34,7 +34,7 @@ const NextButton: React.FC<{ onClick: () => void; disabled: boolean }> = ({ onCl
      <button 
         onClick={onClick}
         disabled={disabled}
-        className={`absolute top-1/2 -right-4 -translate-y-1/2 z-20 p-2 bg-black/60 rounded-full text-white hover:bg-black/90 transition-all duration-300 ${disabled ? 'opacity-0 scale-50 cursor-not-allowed' : 'opacity-100 scale-100'}`}
+        className={`absolute top-1/2 right-4 -translate-y-1/2 z-20 p-2 bg-black/60 rounded-full text-white hover:bg-black/90 transition-all duration-300 ${disabled ? 'opacity-0 scale-50 cursor-not-allowed' : 'opacity-100 scale-100'}`}
         aria-label="Next slide"
     >
          <svg xmlns="http://www.w3.org/2000/svg" className="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
