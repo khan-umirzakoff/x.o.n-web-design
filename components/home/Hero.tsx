@@ -47,7 +47,6 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
         <>
             <style>{`
                 .font-audiowide { font-family: 'Audiowide', cursive; }
-                .font-poppins { font-family: 'Poppins', sans-serif; }
             `}</style>
             <div className="relative min-h-screen flex items-center justify-center text-center -mt-[72px] pt-[72px] overflow-hidden">
                 <ErrorBoundary
@@ -69,7 +68,7 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
                         <span ref={xonRef} className="text-white text-4xl md:text-6xl font-audiowide" style={{ letterSpacing: '0.25em', paddingLeft: '0.25em' }}>X.O.N</span>
                         <span
                             ref={subtitleRef}
-                            className="text-theme-gradient text-lg md:text-2xl mt-1 font-poppins font-light"
+                            className="text-theme-gradient text-lg md:text-2xl mt-1 font-orbitron font-light"
                             style={{ letterSpacing: `${letterSpacing}px` }}
                         >
                             Cloud Gaming
