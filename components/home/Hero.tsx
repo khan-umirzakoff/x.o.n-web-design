@@ -49,7 +49,7 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
                 .font-audiowide { font-family: 'Audiowide', cursive; }
                 .font-poppins { font-family: 'Poppins', sans-serif; }
             `}</style>
-            <div className="relative min-h-screen flex items-center justify-center text-center -mt-[72px] pt-[72px] overflow-hidden">
+            <div className="relative min-h-screen flex items-start justify-center text-center -mt-[72px] pt-[72px] overflow-hidden">
                 <ErrorBoundary
                     onError={(error, errorInfo) => {
                         console.error('Hero component error:', error, errorInfo);
@@ -64,7 +64,7 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
                 {/* Performance Monitor - only in development */}
                 {isDevelopment && <PerformanceMonitor enabled={true} />}
 
-                <div className="container mx-auto px-4 relative z-10">
+                <div className="container mx-auto px-4 relative z-10 pt-24 md:pt-32">
                     <h1 className="uppercase tracking-normal flex flex-col items-center">
                         <span ref={xonRef} className="text-white text-4xl md:text-6xl font-audiowide" style={{ letterSpacing: '0.25em', paddingLeft: '0.25em' }}>X.O.N</span>
                         <span
