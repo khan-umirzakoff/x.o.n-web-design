@@ -69,7 +69,7 @@ const GamesSlider: React.FC<GamesSliderProps> = ({ t, currentUser, isLoggedIn, o
     };
 
     return (
-        <section className="catalogSlider relative w-full overflow-hidden pt-16">
+        <section className="catalogSlider relative w-full overflow-hidden pt-12">
             <div className="relative h-96 md:h-[504px] lg:h-[432px]">
                 {sliderSlides.map((slide, index) => (
                     <div
