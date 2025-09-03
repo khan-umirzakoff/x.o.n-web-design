@@ -105,6 +105,7 @@ export const uz = {
   top10: 'Top 10 o‘yinlar',
   viewAll: 'Barchasini ko‘rish',
   play: 'O‘ynash',
+  genres: 'Janrlar',
 
   // All Games Page
   toCatalog: 'Katalogga qaytish',

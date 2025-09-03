@@ -105,6 +105,7 @@ export const ru = {
   top10: 'Топ 10 игр',
   viewAll: 'Смотреть все',
   play: 'Играть',
+  genres: 'Жанры',
 
   // All Games Page
   toCatalog: 'Назад в каталог',

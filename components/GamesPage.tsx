@@ -270,6 +270,7 @@ const GamesPage: React.FC<GamesPageProps> = ({ t, currentUser, isLoggedIn, onTop
             
             <section className="genres py-8 bg-black">
                 <div className="container mx-auto px-4">
+                    {/* Display the translated "Genres" title */}
                     <h2 className="text-2xl font-medium text-white mb-4">{t('genres')}</h2>
                 </div>
                 <div className="categorySlider gcSlider relative">
