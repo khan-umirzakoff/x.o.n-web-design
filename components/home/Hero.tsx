@@ -64,7 +64,7 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
                 {/* Performance Monitor - only in development */}
                 {isDevelopment && <PerformanceMonitor enabled={true} />}
 
-                <div className="container mx-auto px-4 relative z-10 pt-40 md:pt-48">
+                <div className="container mx-auto px-4 relative z-10 pt-64 md:pt-72">
                     <h1 className="uppercase tracking-normal flex flex-col items-center">
                         <span ref={xonRef} className="text-white text-4xl md:text-6xl font-audiowide" style={{ letterSpacing: '0.25em', paddingLeft: '0.25em' }}>X.O.N</span>
                         <span
