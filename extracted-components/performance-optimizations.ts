@@ -61,8 +61,8 @@ export class PerformanceOptimizer {
             0.85  // threshold
         );
         bloomPass.threshold = 0;
-        bloomPass.strength = 0.6; // Original working value
-        bloomPass.radius = 0.5;
+        bloomPass.strength = 1.0; // Original working value
+        bloomPass.radius = 0.55;
         
         return bloomPass;
     }
@@ -131,7 +131,7 @@ export class PerformanceOptimizer {
         flashLight: THREE.PointLight, 
         bloomPass: any, 
         flashIntensity: number, 
-        originalBloomStrength: number = 0.6
+        originalBloomStrength: number = 1.0
     ): number {
         if (flashIntensity > 0) {
             bloomPass.strength = originalBloomStrength + flashIntensity * 1.5;

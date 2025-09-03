@@ -105,6 +105,7 @@ export const en = {
   top10: 'Top 10 Games',
   viewAll: 'View All',
   play: 'Play',
+  genres: 'Genres',
 
   // All Games Page
   toCatalog: 'Back to Catalog',
