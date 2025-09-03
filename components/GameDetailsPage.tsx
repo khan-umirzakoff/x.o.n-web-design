@@ -255,7 +255,7 @@ const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string, onScr
     };
 
     return (
-        <div className="py-8 relative">
+        <div className="py-8 relative overflow-hidden">
             {canScrollLeft && (
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#0A0A10] to-transparent z-10" />
             )}
