@@ -409,10 +409,10 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
             mousePoint.current = new THREE.Vector3(9999, 9999, 9999);
         };
 
-        window.addEventListener('touchstart', onTouchStart, { passive: true });
-        window.addEventListener('touchmove', onTouchMove, { passive: true });
-        window.addEventListener('touchend', onTouchEnd);
-        window.addEventListener('touchcancel', onTouchEnd);
+        currentMount.addEventListener('touchstart', onTouchStart, { passive: true });
+        currentMount.addEventListener('touchmove', onTouchMove, { passive: true });
+        currentMount.addEventListener('touchend', onTouchEnd);
+        currentMount.addEventListener('touchcancel', onTouchEnd);
 
         handleResize();
 
@@ -442,13 +442,13 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
 
             if (currentMount) {
                 currentMount.removeEventListener('mouseleave', onMouseLeave);
+                currentMount.removeEventListener('touchstart', onTouchStart);
+                currentMount.removeEventListener('touchmove', onTouchMove);
+                currentMount.removeEventListener('touchend', onTouchEnd);
+                currentMount.removeEventListener('touchcancel', onTouchEnd);
             }
             resizeObserver.disconnect();
             window.removeEventListener('mousemove', onMouseMove);
-            window.removeEventListener('touchstart', onTouchStart);
-            window.removeEventListener('touchmove', onTouchMove);
-            window.removeEventListener('touchend', onTouchEnd);
-            window.removeEventListener('touchcancel', onTouchEnd);
             cancelAnimationFrame(animationFrameIdRef.current);
 
             const renderer = rendererRef.current;

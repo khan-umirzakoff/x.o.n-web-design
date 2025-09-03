@@ -4,6 +4,7 @@ import { useDebounce } from '../hooks/useDebounce';
 import { Game, User, Language } from '../types';
 import { api } from '../services/api';
 import GamesSlider from './games/GamesSlider';
+import GameCarousel from './GameCarousel';
 import GenreCard from './games/GenreCard';
 import CatalogSection from './games/CatalogSection';
 import { ChevronLeftIcon, ChevronRightIcon } from './icons';
@@ -269,13 +270,16 @@ const GamesPage: React.FC<GamesPageProps> = ({ t, currentUser, isLoggedIn, onTop
             
             <section className="genres py-8 bg-black">
                 <div className="container mx-auto px-4">
-                    <div className="relative">
-                        <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-6 gap-4">
-                            {staticGenres.map(genre => (
-                                <GenreCard key={genre.title} genre={genre} onClick={() => navigate(`/all-games?filter=${genre.title}`)} />
-                            ))}
-                        </div>
-                    </div>
+                    <h2 className="text-2xl font-medium text-white mb-4">{t('genres')}</h2>
+                </div>
+                <div className="categorySlider gcSlider relative">
+                    <GameCarousel>
+                        {staticGenres.map(genre => (
+                            <div key={genre.title} className="w-48 sm:w-40 shrink-0">
+                                <GenreCard genre={genre} onClick={() => navigate(`/all-games?filter=${genre.title}`)} />
+                            </div>
+                        ))}
+                    </GameCarousel>
                 </div>
             </section>
 
