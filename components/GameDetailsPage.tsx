@@ -425,8 +425,7 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
           </div>
           <div className="flex-grow pt-4">
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold mb-4">{game.title}</h1>
-            <div className="flex items-center gap-4 mb-6 flex-wrap overflow-hidden rounded-lg">
-              <div className="flex gap-2 overflow-x-auto no-scrollbar p-2">
+            <div className="flex flex-wrap gap-2 mb-6">
                 {tags.map(tag => (
                     <Link
                       key={tag}
@@ -436,7 +435,6 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
                       {tag}
                     </Link>
                 ))}
-              </div>
             </div>
             
             <div className="flex items-center gap-4">
