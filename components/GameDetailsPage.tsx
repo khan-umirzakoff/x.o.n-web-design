@@ -423,7 +423,7 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
           <div className="flex-shrink-0 w-48 h-48 md:w-64 md:h-64 rounded-lg overflow-hidden shadow-2xl shadow-blue-500/10">
             <img src={coverSrc} alt={game.title} className="w-full h-full object-cover fade-in-on-load" />
           </div>
-          <div className="flex-grow pt-4">
+          <div className="flex-grow pt-4 min-w-0">
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold mb-4">{game.title}</h1>
             <div className="flex items-center gap-4 mb-6 flex-wrap overflow-hidden rounded-lg">
               <div className="flex gap-2 overflow-x-auto no-scrollbar p-2">
