@@ -269,6 +269,21 @@ export class LightningSystem {
     }
 
     /**
+     * Stop all active lightning bolts immediately.
+     */
+    stopAll() {
+        this.lightningPool.forEach(bolt => {
+            if (bolt.isActive) {
+                bolt.isActive = false;
+                bolt.meshes.main.visible = false;
+                bolt.meshes.glow.visible = false;
+                bolt.meshes.branches.forEach(m => m.visible = false);
+                bolt.meshes.branchGlows.forEach(m => m.visible = false);
+            }
+        });
+    }
+
+    /**
      * Get debug information about lightning system
      */
     getDebugInfo() {

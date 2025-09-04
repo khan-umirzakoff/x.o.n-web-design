@@ -382,6 +382,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
         const onMouseLeave = () => {
             // Move the point far away to stop interaction
             mousePoint.current = new THREE.Vector3(9999, 9999, 9999);
+            lightningSystem.current?.stopAll();
         };
         currentMount.addEventListener('mouseleave', onMouseLeave);
 
@@ -407,6 +408,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
 
         const onTouchEnd = () => {
             mousePoint.current = new THREE.Vector3(9999, 9999, 9999);
+            lightningSystem.current?.stopAll();
         };
 
         currentMount.addEventListener('touchstart', onTouchStart, { passive: true });

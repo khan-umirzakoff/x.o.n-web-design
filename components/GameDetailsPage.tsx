@@ -255,7 +255,7 @@ const ScreenshotGallery: React.FC<{ screenshots?: string[], title: string, onScr
     };
 
     return (
-        <div className="py-8 relative">
+        <div className="py-8 relative overflow-hidden">
             {canScrollLeft && (
                 <div className="pointer-events-none absolute inset-y-0 left-0 w-16 bg-gradient-to-r from-[#0A0A10] to-transparent z-10" />
             )}
@@ -425,8 +425,8 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
           </div>
           <div className="flex-grow pt-4">
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold mb-4">{game.title}</h1>
-            <div className="flex items-center gap-4 mb-6 flex-wrap">
-              <div className="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+            <div className="flex items-center gap-4 mb-6 flex-wrap overflow-hidden rounded-lg">
+              <div className="flex gap-2 overflow-x-auto no-scrollbar p-2">
                 {tags.map(tag => (
                     <Link
                       key={tag}
