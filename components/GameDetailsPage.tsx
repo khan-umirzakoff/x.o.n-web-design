@@ -425,7 +425,7 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
           </div>
           <div className="flex-grow pt-4 min-w-0">
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold mb-4">{game.title}</h1>
-            <div className="flex items-center gap-4 mb-6 flex-wrap overflow-hidden rounded-lg">
+            <div className="mb-6 overflow-hidden rounded-lg">
               <div className="flex gap-2 overflow-x-auto no-scrollbar p-2">
                 {tags.map(tag => (
                     <Link
