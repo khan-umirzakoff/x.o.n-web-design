@@ -56,8 +56,7 @@ const GameCarousel: React.FC<GameCarouselProps> = ({ children }) => {
         const container = scrollContainerRef.current;
         if (container) {
             const { scrollLeft, scrollWidth, clientWidth } = container;
-            // A small tolerance for floating point inaccuracies
-            const scrollEndReached = scrollLeft + clientWidth >= scrollWidth - 2;
+            const scrollEndReached = Math.ceil(scrollLeft) >= scrollWidth - clientWidth;
             setIsAtStart(scrollLeft <= 0);
             setIsAtEnd(scrollEndReached);
         }
@@ -93,6 +92,7 @@ const GameCarousel: React.FC<GameCarouselProps> = ({ children }) => {
         <div className="relative">
             <div
                 ref={scrollContainerRef}
+                data-testid="scroll-container"
                 className="flex space-x-4 pb-4 overflow-x-auto scroll-smooth no-scrollbar px-4"
             >
                 {children}
