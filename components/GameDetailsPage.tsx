@@ -425,16 +425,16 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
           </div>
           <div className="flex-grow pt-4">
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold mb-4">{game.title}</h1>
-            <div className="flex flex-wrap gap-2 mb-6">
-                {tags.map(tag => (
-                    <Link
-                      key={tag}
-                      to={`/all-games?filter=${encodeURIComponent(tag)}`}
-                      className="bg-white/10 text-gray-300 text-xs px-3 py-1.5 rounded-full shrink-0 hover:bg-white/20 hover:text-white transition-colors"
-                    >
-                      {tag}
-                    </Link>
-                ))}
+            <div className="flex gap-2 overflow-x-auto no-scrollbar py-2 mb-6">
+              {tags.map(tag => (
+                  <Link
+                    key={tag}
+                    to={`/all-games?filter=${encodeURIComponent(tag)}`}
+                    className="bg-white/10 text-gray-300 text-xs px-3 py-1.5 rounded-full shrink-0 hover:bg-white/20 hover:text-white transition-colors"
+                  >
+                    {tag}
+                  </Link>
+              ))}
             </div>
             
             <div className="flex items-center gap-4">
