@@ -26,7 +26,7 @@ Modern cloud gaming platform built with React, TypeScript, and Tailwind CSS.
 
 1. Clone the repository:
 ```bash
-git clone https://github.com/your-username/cloudplay.uz-2.0.git
+git https://github.com/khan-umirzakoff/x.o.n-web-design.git
 cd cloudplay.uz-2.0
 ```
 
@@ -159,4 +159,4 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 ---
 
 Made with ❤️ for the gaming community
-.
+.# Test update for author name
