@@ -24,12 +24,15 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
     const animationFrameIdRef = useRef<number>(0);
     const lightningSystem = useRef<LightningSystem | null>(null);
     const lastStrikeTime = useRef(0);
+    const isTouching = useRef(false);
+    const lastTouchTime = useRef(0);
     const adaptiveQuality = useRef<AdaptiveQualitySystem | null>(null);
     const geometryPool = useRef<GeometryPool | null>(null);
     const mousePoint = useRef(new THREE.Vector3(9999, 9999, 9999)); // Start far away
     const logoGroupRef = useRef<THREE.Group | null>(null);
     const cleanupRef = useRef<() => void>(() => { });
     const hasInteracted = useRef(false);
+    const triggerLightningRef = useRef<() => void>(() => {});
 
     // Debug system
     const debugSystemRef = useRef<DebugSystem | null>(null);
@@ -200,7 +203,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
                     debugSystemRef.current.updatePerformance();
                 }
 
-                const triggerLightning = () => {
+                const doTriggerLightning = () => {
                     try {
                         if (!lightningSystem.current) {
                             if (debugMode) console.warn('⚡ Lightning system not initialized');
@@ -237,7 +240,8 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
                             }
 
                             if (debugMode) {
-                                console.log(`⚡ Lightning triggered - Distance: ${distanceToLogo.toFixed(2)}`);
+                                const dNow = mousePoint.current.distanceTo(logoGroupRef.current?.position || new THREE.Vector3());
+                                console.log(`⚡ Lightning triggered - Distance: ${dNow.toFixed(2)}`);
                             }
                         } else if (debugMode) {
                             console.warn('⚡ No available lightning bolt in pool');
@@ -247,27 +251,38 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
                     }
                 };
 
-                const distanceToLogo = mousePoint.current.distanceTo(logoGroupRef.current?.position || new THREE.Vector3());
-                // Responsive hot zone distance based on screen size
-                const currentAspectRatio = currentMount.clientWidth / currentMount.clientHeight;
-                const hotZoneDistance = currentAspectRatio < 1 ? 2.0 : 1.5; // Larger hot zone on mobile
-                let strikeInterval = 1.0 + Math.pow(Math.max(0, distanceToLogo - hotZoneDistance), 2) * 0.1 + Math.random();
-                if (distanceToLogo < hotZoneDistance) {
-                    strikeInterval = 0.4 + Math.random() * 0.4; // Slower strikes in hot zone
-                }
+                // Expose for touch handlers
+                triggerLightningRef.current = doTriggerLightning;
 
-                // Adaptive performance: Increase interval when quality is low
-                strikeInterval *= (2.0 - qualityLevel); // Lower quality = longer intervals
-                if (hasInteracted.current && elapsedTime - lastStrikeTime.current > strikeInterval) {
-                    triggerLightning();
-                    lastStrikeTime.current = elapsedTime;
+                if (!isTouching.current) {
+                    const distanceToLogo = mousePoint.current.distanceTo(logoGroupRef.current?.position || new THREE.Vector3());
+                    // Responsive hot zone distance based on screen size
+                    const currentAspectRatio = currentMount.clientWidth / currentMount.clientHeight;
+                    const hotZoneDistance = currentAspectRatio < 1 ? 2.0 : 1.5; // Larger hot zone on mobile
+                    let strikeInterval = 1.0 + Math.pow(Math.max(0, distanceToLogo - hotZoneDistance), 2) * 0.1 + Math.random();
+                    if (distanceToLogo < hotZoneDistance) {
+                        strikeInterval = 0.4 + Math.random() * 0.4; // Slower strikes in hot zone
+                    }
+
+                    // Adaptive performance: Increase interval when quality is low
+                    strikeInterval *= (2.0 - qualityLevel); // Lower quality = longer intervals
+                    if (hasInteracted.current && elapsedTime - lastStrikeTime.current > strikeInterval) {
+                        doTriggerLightning();
+                        lastStrikeTime.current = elapsedTime;
+                    }
                 }
 
                 // Debug: Log lightning system status periodically
                 if (debugSystemRef.current && lightningSystem.current && Math.floor(elapsedTime) % 5 === 0 && elapsedTime % 1 < 0.1) {
                     const debugInfo = lightningSystem.current.getDebugInfo();
                     const fps = adaptiveQuality.current?.getFPS() || 0;
-                    console.log(`⚡ Lightning Status - Active: ${debugInfo.activeBolts}/${debugInfo.totalBolts}, Distance: ${distanceToLogo.toFixed(2)}, Interval: ${strikeInterval.toFixed(2)}s, FPS: ${fps}, Quality: ${(qualityLevel * 100).toFixed(0)}%`);
+                    const d = mousePoint.current.distanceTo(logoGroupRef.current?.position || new THREE.Vector3());
+                    const ar = currentMount.clientWidth / currentMount.clientHeight;
+                    const hz = ar < 1 ? 2.0 : 1.5;
+                    let si = 1.0 + Math.pow(Math.max(0, d - hz), 2) * 0.1 + Math.random();
+                    if (d < hz) si = 0.4 + Math.random() * 0.4;
+                    si *= (2.0 - qualityLevel);
+                    console.log(`⚡ Lightning Status - Active: ${debugInfo.activeBolts}/${debugInfo.totalBolts}, Distance: ${d.toFixed(2)}, Interval: ${si.toFixed(2)}s, FPS: ${fps}, Quality: ${(qualityLevel * 100).toFixed(0)}%`);
                 }
                 // Use optimized flash effect from performance optimizations
                 flashIntensity = PerformanceOptimizer.updateFlashEffect(
@@ -289,8 +304,38 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
             animate();
         };
 
+        const updateInteractionPoint = (x: number, y: number) => {
+            if (!initialized || !currentMount || !rendererRef.current || !cameraRef.current) return;
+            const rect = currentMount.getBoundingClientRect();
+            const nx = ((x - rect.left) / rect.width) * 2 - 1;
+            const ny = -((y - rect.top) / rect.height) * 2 + 1;
+
+            const vec = new THREE.Vector3();
+            vec.set(nx, ny, 0.5);
+
+            mouseScreenPos.current.set(vec.x, vec.y);
+
+            vec.unproject(cameraRef.current);
+            vec.sub(cameraRef.current.position).normalize();
+            const distance = -cameraRef.current.position.z / vec.z;
+            const newMousePoint = new THREE.Vector3().copy(cameraRef.current.position).add(vec.multiplyScalar(distance));
+
+            mousePoint.current.copy(newMousePoint);
+
+            if (debugSystemRef.current) {
+                debugSystemRef.current.updateMousePosition(mouseScreenPos.current, mousePoint.current);
+            }
+
+            if (debugMode && Math.random() < 0.01) {
+                console.log(`🖱️ Interaction updated - Screen: (${nx.toFixed(2)}, ${ny.toFixed(2)}) World: (${mousePoint.current.x.toFixed(2)}, ${mousePoint.current.y.toFixed(2)}, ${mousePoint.current.z.toFixed(2)})`);
+            }
+        };
+
         const onMouseMove = (event: MouseEvent) => {
             try {
+                if (Date.now() - lastTouchTime.current < 500) return;
+                if (isTouching.current) return;
+
                 if (!hasInteracted.current) {
                     hasInteracted.current = true;
                 }
@@ -300,39 +345,7 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
                 if (now - lastMouseUpdate.current < throttle) return;
                 lastMouseUpdate.current = now;
 
-                if (!initialized || !currentMount || !rendererRef.current || !cameraRef.current) return;
-
-                const rect = currentMount.getBoundingClientRect();
-                const x = ((event.clientX - rect.left) / rect.width) * 2 - 1;
-                const y = -((event.clientY - rect.top) / rect.height) * 2 + 1;
-
-                // WORKING mouse tracking method from original implementation
-                const vec = new THREE.Vector3();
-
-                // WORKING: Use exact original method for coordinate conversion
-                // This matches the working implementation exactly
-                vec.set(x, y, 0.5);
-
-                // Store screen position for debug
-                mouseScreenPos.current.set(vec.x, vec.y);
-
-                // WORKING: Use unproject method instead of raycaster
-                vec.unproject(cameraRef.current);
-                vec.sub(cameraRef.current.position).normalize();
-                const distance = -cameraRef.current.position.z / vec.z;
-                const newMousePoint = new THREE.Vector3().copy(cameraRef.current.position).add(vec.multiplyScalar(distance));
-
-                // Apply smoothing for more natural movement
-                mousePoint.current.copy(newMousePoint);
-
-                // Debug: Update mouse position indicator
-                if (debugSystemRef.current) {
-                    debugSystemRef.current.updateMousePosition(mouseScreenPos.current, mousePoint.current);
-                }
-
-                if (debugMode && Math.random() < 0.01) { // Log only 1% of updates to avoid spam
-                    console.log(`🖱️ Mouse updated - Screen: (${vec.x.toFixed(2)}, ${vec.y.toFixed(2)}) World: (${mousePoint.current.x.toFixed(2)}, ${mousePoint.current.y.toFixed(2)}, ${mousePoint.current.z.toFixed(2)})`);
-                }
+                updateInteractionPoint(event.clientX, event.clientY);
             } catch (error) {
                 errorBoundary.catchError(error as Error, 'onMouseMove');
                 if (debugMode) {
@@ -386,35 +399,38 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
         };
         currentMount.addEventListener('mouseleave', onMouseLeave);
 
-        // Add mobile touch support for responsive design
+        // Touch handlers for mobile interaction
+        const onTouchStart = (event: TouchEvent) => {
+            if (event.touches.length > 0) {
+                isTouching.current = true;
+                if (!hasInteracted.current) {
+                    hasInteracted.current = true;
+                }
+                const touch = event.touches[0];
+                updateInteractionPoint(touch.clientX, touch.clientY);
+                triggerLightningRef.current();
+            }
+        };
+
         const onTouchMove = (event: TouchEvent) => {
             if (event.touches.length > 0) {
                 const touch = event.touches[0];
-                // Create a synthetic mouse event from touch
-                const syntheticEvent = {
-                    clientX: touch.clientX,
-                    clientY: touch.clientY
-                } as MouseEvent;
-                onMouseMove(syntheticEvent);
+                updateInteractionPoint(touch.clientX, touch.clientY);
             }
-        };
-
-        const onTouchStart = (event: TouchEvent) => {
-            if (!hasInteracted.current) {
-                hasInteracted.current = true;
-            }
-            onTouchMove(event);
         };
 
         const onTouchEnd = () => {
-            mousePoint.current = new THREE.Vector3(9999, 9999, 9999);
+            isTouching.current = false;
+            lastTouchTime.current = Date.now();
+            mousePoint.current.set(0, 9999, 0);
             lightningSystem.current?.stopAll();
         };
 
-        currentMount.addEventListener('touchstart', onTouchStart, { passive: true });
-        currentMount.addEventListener('touchmove', onTouchMove, { passive: true });
-        currentMount.addEventListener('touchend', onTouchEnd);
-        currentMount.addEventListener('touchcancel', onTouchEnd);
+        // Window-level listeners
+        window.addEventListener('resize', handleResize);
+        window.addEventListener('touchstart', onTouchStart, { passive: true });
+        window.addEventListener('touchmove', onTouchMove, { passive: true });
+        window.addEventListener('touchend', onTouchEnd);
 
         handleResize();
 
@@ -451,6 +467,10 @@ const ThreeScene: React.FC<ThreeSceneProps> = ({ className, debugMode = false })
             }
             resizeObserver.disconnect();
             window.removeEventListener('mousemove', onMouseMove);
+            window.removeEventListener('resize', handleResize);
+            window.removeEventListener('touchstart', onTouchStart as unknown as EventListener);
+            window.removeEventListener('touchmove', onTouchMove as unknown as EventListener);
+            window.removeEventListener('touchend', onTouchEnd as unknown as EventListener);
             cancelAnimationFrame(animationFrameIdRef.current);
 
             const renderer = rendererRef.current;
