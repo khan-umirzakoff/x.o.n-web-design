@@ -423,9 +423,9 @@ const GameDetailsPage: React.FC<GameDetailsPageProps> = ({ t, language, currentU
           <div className="flex-shrink-0 w-48 h-48 md:w-64 md:h-64 rounded-lg overflow-hidden shadow-2xl shadow-blue-500/10">
             <img src={coverSrc} alt={game.title} className="w-full h-full object-cover fade-in-on-load" />
           </div>
-          <div className="flex-grow pt-4 overflow-hidden">
+          <div className="flex-grow pt-4">
             <h1 className="text-4xl md:text-6xl font-orbitron font-bold mb-4 break-words">{game.title}</h1>
-            <div className="relative min-w-0 mb-6">
+            <div className="relative min-w-0 mb-6 overflow-hidden">
               <div className="flex gap-2 overflow-x-auto no-scrollbar py-2">
                 {tags.map(tag => (
                     <Link
