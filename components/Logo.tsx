@@ -11,9 +11,9 @@ const Logo: React.FC<LogoProps> = ({ className }) => {
                 <path d="M0 0 L0 100 L50 50 Z" fill="#FFFFFF" />
                 <path d="M50 50 L100 0 L100 100 Z" fill="#FFFFFF" />
             </svg>
-            <div className="leading-none">
+            <div className="flex flex-col items-start">
                 <div className="text-lg tracking-wider font-audiowide">X.O.N</div>
-                <div className="text-xs text-theme-gradient tracking-widest font-orbitron font-light">Cloud Gaming</div>
+                <div className="text-xs text-theme-gradient tracking-widest font-orbitron font-light translate-y-[-1px]">Cloud Gaming</div>
             </div>
         </div>
     );
