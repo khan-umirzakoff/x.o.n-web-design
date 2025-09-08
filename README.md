@@ -141,18 +141,18 @@ This project is licensed under the MIT License - see the [LICENSE](LICENSE) file
 
 ## 👥 Team
 
-- **Project Founder**: Bobur Yusupov
+- **Project Founder**: Khan Umirzakoff(Abdulbosit Umirzoqov)
 - **Frontend Developer**: Abdulbosit Umirzoqov (Khan Umirzakoff)
 
 ## 📞 Contact
 
-- **Telegram**: [@your_telegram](https://t.me/your_telegram)
-- **Email**: your.email@example.com
+- **Telegram**: [@khan_umirzakoff](https://t.me/khan_umirzakoff)
+- **Email**: khanumirzakoff@gmail.com
 
 ## 🙏 Acknowledgments
 
 - **Moonlight**: Open-source game streaming client
-- **X.O.N**: GeForce NOW technology inspiration
+- **X.O.N**: 
 - **Tailwind CSS**: Utility-first CSS framework
 - **React**: JavaScript library for building user interfaces
 
