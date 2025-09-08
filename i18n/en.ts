@@ -36,6 +36,8 @@ export const en = {
   resetPassword: 'Reset Password',
   sendResetLink: 'Send Reset Link',
   checkYourEmailForReset: 'A password reset link has been sent to your email.',
+  followLinkToReset: 'Follow the link in the email to reset your password.',
+  checkSpamForReset: "If you don't see the email, please check your spam folder.",
   backToLogin: 'Back to Login',
   // Previous Auth messages
   invalidCredentials: 'Invalid email or password',

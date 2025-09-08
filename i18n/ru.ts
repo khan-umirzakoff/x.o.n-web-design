@@ -36,6 +36,8 @@ export const ru = {
   resetPassword: 'Сбросить пароль',
   sendResetLink: 'Отправить ссылку для сброса',
   checkYourEmailForReset: 'Ссылка для сброса пароля отправлена на вашу почту.',
+  followLinkToReset: 'Следуйте ссылке в письме, чтобы сбросить пароль.',
+  checkSpamForReset: 'Если вы не видите письмо, пожалуйста, проверьте папку "Спам".',
   backToLogin: 'Вернуться ко входу',
   // Previous Auth messages
   invalidCredentials: 'Неверный email или пароль',

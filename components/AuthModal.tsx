@@ -106,7 +106,8 @@ const AuthModal: React.FC<AuthModalProps> = ({
         return (
           <div className="p-6 text-center">
             <h3 className="text-xl font-semibold text-white mb-4">{t('checkYourEmailForReset')}</h3>
-            <p className="text-gray-400 mb-6">{t('followLinkToReset')}</p>
+            <p className="text-gray-400 mb-2">{t('followLinkToReset')}</p>
+            <p className="text-gray-500 text-sm mb-6">{t('checkSpamForReset')}</p>
             <button onClick={() => setMode('login')} className="text-purple-400 hover:text-purple-300 font-medium">
               {t('backToLogin')}
             </button>
