@@ -73,6 +73,9 @@ const Hero: React.FC<HeroProps> = ({ t }) => {
                         >
                             Cloud Gaming
                         </span>
+                        <span className="text-white text-sm md:text-base mt-4 font-light tracking-widest">
+                            Xpress Online Now
+                        </span>
                     </h1>
                     <div className="mt-8 flex justify-center">
                      <Link to="/games" className="bg-theme-gradient text-white font-bold text-lg rounded-lg px-10 py-4 hover-glow transition-all transform hover:scale-105">

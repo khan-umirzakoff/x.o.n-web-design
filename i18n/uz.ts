@@ -36,6 +36,8 @@ export const uz = {
   resetPassword: 'Parolni tiklash',
   sendResetLink: 'Tiklash havolasini yuborish',
   checkYourEmailForReset: 'Parolni tiklash havolasi elektron pochtangizga yuborildi.',
+  followLinkToReset: 'Parolni tiklash uchun xatdagi havolaga o‘ting.',
+  checkSpamForReset: 'Agar xatni ko‘rmasangiz, iltimos, spam papkangizni tekshiring.',
   backToLogin: 'Kirishga qaytish',
   // Previous Auth messages
   invalidCredentials: 'Noto‘g‘ri email yoki parol',
