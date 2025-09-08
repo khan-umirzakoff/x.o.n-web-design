@@ -8,6 +8,7 @@ import {
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   updateProfile,
+  sendPasswordResetEmail,
   AuthError
 } from 'firebase/auth';
 import ErrorBoundary from './components/ErrorBoundary';
@@ -203,7 +204,6 @@ const AppContent: React.FC = () => {
       setIsAuthModalOpen(false);
     } catch (error) {
       const authError = error as AuthError;
-      // Don't show an error if the user just closes the popup
       if (authError.code !== 'auth/popup-closed-by-user') {
         const message = handleAuthError(authError);
         addToast(message, 'error');
@@ -220,7 +220,7 @@ const AppContent: React.FC = () => {
     } catch (error) {
       const message = handleAuthError(error as AuthError);
       addToast(message, 'error');
-      throw new Error(message); // Re-throw to be caught in modal
+      throw new Error(message);
     }
   };
 
@@ -232,7 +232,18 @@ const AppContent: React.FC = () => {
     } catch (error) {
       const message = handleAuthError(error as AuthError);
       addToast(message, 'error');
-      throw new Error(message); // Re-throw to be caught in modal
+      throw new Error(message);
+    }
+  };
+
+  const handlePasswordReset = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      // No need to show toast here, the modal will show a success message
+    } catch (error) {
+      const message = handleAuthError(error as AuthError);
+      addToast(message, 'error');
+      throw new Error(message);
     }
   };
 
@@ -294,6 +305,7 @@ const AppContent: React.FC = () => {
         onGoogleSignIn={handleGoogleSignIn}
         onEmailLogin={handleEmailLogin}
         onEmailRegister={handleEmailRegister}
+        onPasswordReset={handlePasswordReset}
         t={t}
       />
       <TopUpModal
