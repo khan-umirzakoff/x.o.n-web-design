@@ -127,15 +127,19 @@ const Header: React.FC<HeaderProps> = ({
                         ) : (
                             <div className="relative hidden lg:block" ref={userMenuRef}>
                                 <button onClick={() => setIsUserMenuOpen(!isUserMenuOpen)} className="flex items-center gap-2">
-                                    <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center font-bold text-white">
-                                        {currentUser?.username.charAt(0).toUpperCase()}
-                                    </div>
+                                    {currentUser?.avatar ? (
+                                        <img src={currentUser.avatar} alt="User Avatar" className="w-8 h-8 rounded-full" />
+                                    ) : (
+                                        <div className="w-8 h-8 rounded-full bg-purple-600 flex items-center justify-center font-bold text-white">
+                                            {currentUser?.displayName?.charAt(0).toUpperCase() || 'U'}
+                                        </div>
+                                    )}
                                     <ChevronDownIcon className={`w-4 h-4 text-gray-400 transition-transform ${isUserMenuOpen ? 'rotate-180' : ''}`} />
                                 </button>
                                 {isUserMenuOpen && (
                                      <div className="absolute top-full right-0 mt-2 w-48 glass rounded-lg shadow-lg z-10">
                                          <div className="p-4 border-b border-white/10">
-                                             <p className="font-semibold text-white truncate">{currentUser?.username}</p>
+                                             <p className="font-semibold text-white truncate">{currentUser?.displayName}</p>
                                              <p className="text-sm text-gray-400 truncate">{currentUser?.email}</p>
                                          </div>
                                          <ul className="py-1">

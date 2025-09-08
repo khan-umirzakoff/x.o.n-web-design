@@ -48,7 +48,7 @@ const Sidebar: React.FC<SidebarProps> = ({
                 </div>
             ) : (
                 <div className="mb-4 p-4 bg-white/5 rounded-lg">
-                    <p className="font-semibold text-white truncate">{currentUser?.username}</p>
+                    <p className="font-semibold text-white truncate">{currentUser?.displayName}</p>
                     <p className="text-sm text-gray-400 truncate">{currentUser?.email}</p>
                 </div>
             )}

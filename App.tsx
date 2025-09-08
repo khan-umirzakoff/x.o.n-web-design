@@ -1,5 +1,6 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Routes, Route, Outlet, useLocation } from 'react-router-dom';
+import { onAuthStateChanged, signInWithPopup, signOut, User as FirebaseUser } from 'firebase/auth';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider } from './components/Toast';
 import { useToast } from './hooks/useToast';
@@ -28,9 +29,10 @@ import NotFoundPage from './components/NotFoundPage';
 import { Language, User } from './types';
 import { translations } from './i18n';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { api } from './services/api';
+import { auth, googleProvider } from './services/firebase';
 import { loggingService } from './services/loggingService';
 import Subscriptions from './components/home/Subscriptions';
+import { api } from './services/api';
 
 type TranslationKey = keyof typeof translations.ENG;
 
@@ -41,13 +43,11 @@ const getInitialLanguage = (): Language => {
       return savedLang as Language;
     }
   } catch (error) {
-    loggingService.logError(error, { context: 'getInitialLanguage', message: 'Could not access localStorage. Proceeding with browser language detection.' });
+    loggingService.logError(error, { context: 'getInitialLanguage', message: 'Could not access localStorage.' });
   }
-
   const browserLang = navigator.language?.toLowerCase().split('-')[0];
   if (browserLang === 'uz') return 'UZB';
   if (browserLang === 'ru') return 'RUS';
-
   return 'ENG';
 };
 
@@ -58,7 +58,6 @@ const HomePage: React.FC<{ t: (key: string) => string }> = ({ t }) => (
     <Advantages t={t} />
     <Subscriptions
       t={t}
-      // These props need to be wired up properly later
       onTopUpClick={() => {}}
       currentUser={null}
       isLoggedIn={false}
@@ -113,18 +112,13 @@ const Layout: React.FC<{
           onClick={() => setIsSidebarOpen(false)}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              setIsSidebarOpen(false);
-            }
-          }}
+          onKeyDown={(e) => e.key === 'Escape' && setIsSidebarOpen(false)}
           aria-label="Sidebar yopish"
         />
       )}
     </div>
   );
 };
-
 
 const AppContent: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -145,74 +139,86 @@ const AppContent: React.FC = () => {
       const loader = document.getElementById('initial-loader');
       if (loader) {
         loader.classList.add('hidden');
-        loader.addEventListener('transitionend', () => {
-          loader.remove();
-        }, { once: true });
+        loader.addEventListener('transitionend', () => loader.remove(), { once: true });
       }
     }, 100);
-
     return () => clearTimeout(timer);
   }, []);
 
+  // Firebase Auth State Listener
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        const appUser: User = {
+          uid: firebaseUser.uid,
+          displayName: firebaseUser.displayName,
+          email: firebaseUser.email,
+          avatar: firebaseUser.photoURL,
+          // balance and other app-specific fields would be fetched from a database
+        };
+        setCurrentUser(appUser);
+        setIsLoggedIn(true);
+      } else {
+        setCurrentUser(null);
+        setIsLoggedIn(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [setCurrentUser, setIsLoggedIn]);
+
   const t = useCallback((key: string, fallback?: string): string => {
     const translationKey = key as TranslationKey;
-    return (translations[language] as typeof translations.ENG)[translationKey] || translations.ENG[translationKey] || fallback || key;
+    return (translations[language] as any)[translationKey] || (translations.ENG as any)[translationKey] || fallback || key;
   }, [language]);
 
-  const handleLogin = async (email: string, password: string) => {
+  const handleGoogleSignIn = async () => {
     try {
-      const user = await api.login(email, password);
-      setIsLoggedIn(true);
-      setCurrentUser(user);
+      await signInWithPopup(auth, googleProvider);
       addToast(t('loginSuccess'), 'success');
       setIsAuthModalOpen(false);
     } catch (error) {
-      const errorMessage = error instanceof Error ? t(error.message) : 'An error occurred';
-      addToast(errorMessage, 'error');
-      throw error;
+      loggingService.logError(error, { context: 'handleGoogleSignIn' });
+      addToast(t('loginError'), 'error');
     }
   };
 
-  const handleRegister = async (email: string, password: string, username: string) => {
+  const handleLogout = async () => {
     try {
-      const user = await api.register(username, email, password);
-      setIsLoggedIn(true);
-      setCurrentUser(user);
-      addToast(t('registerSuccess'), 'success');
-      setIsAuthModalOpen(false);
+      await signOut(auth);
+      addToast(t('logoutSuccess'), 'success');
     } catch (error) {
-      const errorMessage = error instanceof Error ? t(error.message) : 'An error occurred';
-      addToast(errorMessage, 'error');
-      throw error;
+      loggingService.logError(error, { context: 'handleLogout' });
+      addToast(t('logoutError'), 'error');
     }
   };
 
-  const handleLogout = () => {
-    api.logout();
-    setIsLoggedIn(false);
-    setCurrentUser(null);
-  };
-
+  // TODO: Re-implement Top-Up functionality with a proper backend/database.
+  // The previous implementation was tied to the mock user database and will not work
+  // with Firebase Authentication without a service like Firestore to store user balances.
   const handleTopUp = async (amount: number) => {
-    if (!currentUser) return;
-    try {
-      type StoredUser = User & { password?: string };
-      const users = JSON.parse(sessionStorage.getItem('mock_users_db') || '{}') as Record<string, StoredUser>;
-      const freshUser = Object.values(users).find(u => u.id === currentUser.id);
+     if (!currentUser) return;
+     addToast('Top-up functionality is currently disabled.', 'info');
+     // The original code is commented out below for reference.
+     /*
+     try {
+       type StoredUser = User & { password?: string };
+       const users = JSON.parse(sessionStorage.getItem('mock_users_db') || '{}') as Record<string, StoredUser>;
+       const freshUser = Object.values(users).find(u => u.id === currentUser.id);
 
-      if (!freshUser) {
-        throw new Error('userNotFound');
-      }
+       if (!freshUser) {
+         throw new Error('userNotFound');
+       }
 
-      const updatedUser = await api.updateBalance(freshUser.id, Number(amount));
-      setCurrentUser(updatedUser);
-      addToast(t('topUpSuccessMessage'), 'success');
-      setIsTopUpModalOpen(false);
-    } catch (error) {
-      addToast(t('topUpFailed'), 'error');
-      loggingService.logError(error);
-      throw error;
-    }
+       const updatedUser = await api.updateBalance(freshUser.id, Number(amount));
+       setCurrentUser(updatedUser);
+       addToast(t('topUpSuccessMessage'), 'success');
+       setIsTopUpModalOpen(false);
+     } catch (error) {
+       addToast(t('topUpFailed'), 'error');
+       loggingService.logError(error);
+       throw error;
+     }
+     */
   };
 
   const onLoginClick = () => setIsAuthModalOpen(true);
@@ -255,8 +261,8 @@ const AppContent: React.FC = () => {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onLogin={handleLogin}
-        onRegister={handleRegister}
+        onLogin={handleGoogleSignIn} // Changed from onLogin/onRegister
+        onRegister={() => {}} // No longer used
         t={t}
       />
       <TopUpModal
