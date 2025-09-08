@@ -9,13 +9,13 @@ export interface NavigateOptions {
 }
 
 export interface User {
-  id: number;
-  username: string;
-  email: string;
-  avatar?: string;
-  balance: number;
+  uid: string; // This is the unique ID from Firebase
+  displayName: string | null;
+  email: string | null;
+  avatar: string | null; // Mapped from photoURL
+  balance?: number;
   subscription?: 'standard' | 'premium';
-  createdAt: string;
+  createdAt?: string;
 }
 
 export interface ApiError extends Error {

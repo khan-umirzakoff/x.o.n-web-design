@@ -1,5 +1,16 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Routes, Route, Outlet, useLocation } from 'react-router-dom';
+import {
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+  User as FirebaseUser,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+  sendPasswordResetEmail,
+  AuthError
+} from 'firebase/auth';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider } from './components/Toast';
 import { useToast } from './hooks/useToast';
@@ -28,9 +39,10 @@ import NotFoundPage from './components/NotFoundPage';
 import { Language, User } from './types';
 import { translations } from './i18n';
 import { useLocalStorage } from './hooks/useLocalStorage';
-import { api } from './services/api';
+import { auth, googleProvider } from './services/firebase';
 import { loggingService } from './services/loggingService';
 import Subscriptions from './components/home/Subscriptions';
+import { api } from './services/api';
 
 type TranslationKey = keyof typeof translations.ENG;
 
@@ -41,13 +53,11 @@ const getInitialLanguage = (): Language => {
       return savedLang as Language;
     }
   } catch (error) {
-    loggingService.logError(error, { context: 'getInitialLanguage', message: 'Could not access localStorage. Proceeding with browser language detection.' });
+    loggingService.logError(error, { context: 'getInitialLanguage', message: 'Could not access localStorage.' });
   }
-
   const browserLang = navigator.language?.toLowerCase().split('-')[0];
   if (browserLang === 'uz') return 'UZB';
   if (browserLang === 'ru') return 'RUS';
-
   return 'ENG';
 };
 
@@ -58,7 +68,6 @@ const HomePage: React.FC<{ t: (key: string) => string }> = ({ t }) => (
     <Advantages t={t} />
     <Subscriptions
       t={t}
-      // These props need to be wired up properly later
       onTopUpClick={() => {}}
       currentUser={null}
       isLoggedIn={false}
@@ -113,18 +122,13 @@ const Layout: React.FC<{
           onClick={() => setIsSidebarOpen(false)}
           role="button"
           tabIndex={0}
-          onKeyDown={(e) => {
-            if (e.key === 'Escape') {
-              setIsSidebarOpen(false);
-            }
-          }}
+          onKeyDown={(e) => e.key === 'Escape' && setIsSidebarOpen(false)}
           aria-label="Sidebar yopish"
         />
       )}
     </div>
   );
 };
-
 
 const AppContent: React.FC = () => {
   const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -145,74 +149,117 @@ const AppContent: React.FC = () => {
       const loader = document.getElementById('initial-loader');
       if (loader) {
         loader.classList.add('hidden');
-        loader.addEventListener('transitionend', () => {
-          loader.remove();
-        }, { once: true });
+        loader.addEventListener('transitionend', () => loader.remove(), { once: true });
       }
     }, 100);
-
     return () => clearTimeout(timer);
   }, []);
 
+  useEffect(() => {
+    const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
+      if (firebaseUser) {
+        const appUser: User = {
+          uid: firebaseUser.uid,
+          displayName: firebaseUser.displayName,
+          email: firebaseUser.email,
+          avatar: firebaseUser.photoURL,
+        };
+        setCurrentUser(appUser);
+        setIsLoggedIn(true);
+      } else {
+        setCurrentUser(null);
+        setIsLoggedIn(false);
+      }
+    });
+    return () => unsubscribe();
+  }, [setCurrentUser, setIsLoggedIn]);
+
   const t = useCallback((key: string, fallback?: string): string => {
     const translationKey = key as TranslationKey;
-    return (translations[language] as typeof translations.ENG)[translationKey] || translations.ENG[translationKey] || fallback || key;
+    return (translations[language] as any)[translationKey] || (translations.ENG as any)[translationKey] || fallback || key;
   }, [language]);
 
-  const handleLogin = async (email: string, password: string) => {
+  const handleAuthError = (error: AuthError) => {
+    loggingService.logError(error);
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        return t('emailAlreadyExists');
+      case 'auth/invalid-email':
+        return t('invalidEmail');
+      case 'auth/weak-password':
+        return t('weakPassword');
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        return t('invalidCredentials');
+      default:
+        return t('loginError');
+    }
+  };
+
+  const handleGoogleSignIn = async () => {
     try {
-      const user = await api.login(email, password);
-      setIsLoggedIn(true);
-      setCurrentUser(user);
+      await signInWithPopup(auth, googleProvider);
       addToast(t('loginSuccess'), 'success');
       setIsAuthModalOpen(false);
     } catch (error) {
-      const errorMessage = error instanceof Error ? t(error.message) : 'An error occurred';
-      addToast(errorMessage, 'error');
-      throw error;
+      const authError = error as AuthError;
+      if (authError.code !== 'auth/popup-closed-by-user') {
+        const message = handleAuthError(authError);
+        addToast(message, 'error');
+      }
     }
   };
 
-  const handleRegister = async (email: string, password: string, username: string) => {
+  const handleEmailRegister = async (email: string, password: string, username: string) => {
     try {
-      const user = await api.register(username, email, password);
-      setIsLoggedIn(true);
-      setCurrentUser(user);
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: username });
       addToast(t('registerSuccess'), 'success');
       setIsAuthModalOpen(false);
     } catch (error) {
-      const errorMessage = error instanceof Error ? t(error.message) : 'An error occurred';
-      addToast(errorMessage, 'error');
-      throw error;
+      const message = handleAuthError(error as AuthError);
+      addToast(message, 'error');
+      throw new Error(message);
     }
   };
 
-  const handleLogout = () => {
-    api.logout();
-    setIsLoggedIn(false);
-    setCurrentUser(null);
+  const handleEmailLogin = async (email: string, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      addToast(t('loginSuccess'), 'success');
+      setIsAuthModalOpen(false);
+    } catch (error) {
+      const message = handleAuthError(error as AuthError);
+      addToast(message, 'error');
+      throw new Error(message);
+    }
+  };
+
+  const handlePasswordReset = async (email: string) => {
+    try {
+      await sendPasswordResetEmail(auth, email);
+      // No need to show toast here, the modal will show a success message
+    } catch (error) {
+      const message = handleAuthError(error as AuthError);
+      addToast(message, 'error');
+      throw new Error(message);
+    }
+  };
+
+  const handleLogout = async () => {
+    try {
+      await signOut(auth);
+      addToast(t('logoutSuccess'), 'success');
+    } catch (error) {
+      loggingService.logError(error, { context: 'handleLogout' });
+      addToast(t('logoutError'), 'error');
+    }
   };
 
   const handleTopUp = async (amount: number) => {
-    if (!currentUser) return;
-    try {
-      type StoredUser = User & { password?: string };
-      const users = JSON.parse(sessionStorage.getItem('mock_users_db') || '{}') as Record<string, StoredUser>;
-      const freshUser = Object.values(users).find(u => u.id === currentUser.id);
-
-      if (!freshUser) {
-        throw new Error('userNotFound');
-      }
-
-      const updatedUser = await api.updateBalance(freshUser.id, Number(amount));
-      setCurrentUser(updatedUser);
-      addToast(t('topUpSuccessMessage'), 'success');
-      setIsTopUpModalOpen(false);
-    } catch (error) {
-      addToast(t('topUpFailed'), 'error');
-      loggingService.logError(error);
-      throw error;
-    }
+     if (!currentUser) return;
+     addToast('Top-up functionality is currently disabled.', 'info');
   };
 
   const onLoginClick = () => setIsAuthModalOpen(true);
@@ -255,8 +302,10 @@ const AppContent: React.FC = () => {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onLogin={handleLogin}
-        onRegister={handleRegister}
+        onGoogleSignIn={handleGoogleSignIn}
+        onEmailLogin={handleEmailLogin}
+        onEmailRegister={handleEmailRegister}
+        onPasswordReset={handlePasswordReset}
         t={t}
       />
       <TopUpModal

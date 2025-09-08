@@ -141,45 +141,6 @@ const CONTENT_GAMES: Game[] = loadGamesFromContent();
 // Use ONLY local content games throughout the app
 const ACTIVE_GAMES: Game[] = CONTENT_GAMES;
 
-// --- Mock User Database ---
-// In a real app, this would be a database. We use sessionStorage for better security.
-const MOCK_USERS_KEY = 'mock_users_db';
-
-// The stored user includes the password, but the User type for the app does not.
-type StoredUser = User & { password?: string };
-
-const getMockUsers = (): Record<string, StoredUser> => {
-  try {
-    let users = sessionStorage.getItem(MOCK_USERS_KEY);
-    if (!users) {
-      const defaultUser: StoredUser = {
-        id: 1,
-        username: 'testuser',
-        email: 'test@example.com',
-        password: hashPassword('password'),
-        balance: 10000,
-        createdAt: new Date().toISOString(),
-      };
-      const initialUsers = { [defaultUser.email]: defaultUser };
-      users = JSON.stringify(initialUsers);
-      sessionStorage.setItem(MOCK_USERS_KEY, users);
-    }
-    return JSON.parse(users);
-  } catch {
-    return {};
-  }
-};
-
-const saveMockUsers = (users: Record<string, StoredUser>) => {
-  sessionStorage.setItem(MOCK_USERS_KEY, JSON.stringify(users));
-};
-
-// Hash password before storing (simple implementation)
-const hashPassword = (password: string): string => {
-  // In a real app, use a proper hashing library
-  return btoa(password + "salt_value");
-};
-
 // Data is now internal to this "service" file
 const genresData = [
   { title: 'Action', icon: '/assets/images/icons/genres/action.svg', slug: 'action' },
@@ -306,88 +267,8 @@ export const api = {
     });
   },
 
-  // --- Mock Auth API ---
-
-  // Auth methods with improved security
-async register(username: string, email: string, password: string): Promise<User> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-      const users = getMockUsers();
-      if (Object.values(users).some(user => user.email === email)) {
-        return reject(new Error('emailAlreadyExists'));
-      }
-      if (password.length < 6) {
-        return reject(new Error('weakPassword'));
-      }
-      
-      const newUser: StoredUser = { 
-        id: Date.now(), 
-        username, 
-        email, 
-        password: hashPassword(password),
-        balance: 0,
-        createdAt: new Date().toISOString()
-      };
-      users[email] = newUser;
-      saveMockUsers(users);
-      
-      // Don't return password to the client
-      const userToReturn = { ...newUser };
-      delete userToReturn.password;
-      resolve(userToReturn);
-    }, DEMO_LATENCY * 5);
-  });
-},
-
-async login(email: string, password: string): Promise<User> {
-  return new Promise((resolve, reject) => {
-    setTimeout(() => {
-
-      const users = getMockUsers();
-      const userRecord = Object.values(users).find(u => u.email === email);
-      
-      if (userRecord && userRecord.password === hashPassword(password)) {
-        const userToReturn = { ...userRecord };
-        delete userToReturn.password;
-        resolve(userToReturn);
-      } else {
-        reject(new Error('invalidCredentials'));
-        }
-      }, DEMO_LATENCY * 5);
-    });
-  },
-
-  async logout(): Promise<void> {
-    return new Promise((resolve) => {
-      setTimeout(() => {
-        resolve();
-      }, DEMO_LATENCY);
-    });
-  },
-
-  async updateBalance(userId: number, topUpAmount: number): Promise<User> {
-    return new Promise((resolve, reject) => {
-      setTimeout(() => {
-        try {
-          const users = getMockUsers();
-          const userEmail = Object.keys(users).find(email => users[email].id === userId);
-
-          if (userEmail && users[userEmail]) {
-            users[userEmail].balance = (users[userEmail].balance || 0) + topUpAmount;
-            saveMockUsers(users);
-
-            const userToReturn = { ...users[userEmail] };
-            delete userToReturn.password;
-            resolve(userToReturn);
-          } else {
-            reject(new Error('userNotFound'));
-          }
-        } catch {
-          reject(new Error('Failed to update balance'));
-        }
-      }, DEMO_LATENCY * 3);
-    });
-  },
+  // Mock Auth API has been removed and replaced with Firebase.
+  // The related functions (register, login, logout, updateBalance) were deleted.
 
   async getBanners(): Promise<Banner[]> {
     return new Promise((resolve) => {
