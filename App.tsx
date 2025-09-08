@@ -1,6 +1,15 @@
 import React, { useState, useCallback, useEffect } from 'react';
 import { Routes, Route, Outlet, useLocation } from 'react-router-dom';
-import { onAuthStateChanged, signInWithPopup, signOut, User as FirebaseUser } from 'firebase/auth';
+import {
+  onAuthStateChanged,
+  signInWithPopup,
+  signOut,
+  User as FirebaseUser,
+  createUserWithEmailAndPassword,
+  signInWithEmailAndPassword,
+  updateProfile,
+  AuthError
+} from 'firebase/auth';
 import ErrorBoundary from './components/ErrorBoundary';
 import { ToastProvider } from './components/Toast';
 import { useToast } from './hooks/useToast';
@@ -145,7 +154,6 @@ const AppContent: React.FC = () => {
     return () => clearTimeout(timer);
   }, []);
 
-  // Firebase Auth State Listener
   useEffect(() => {
     const unsubscribe = onAuthStateChanged(auth, (firebaseUser: FirebaseUser | null) => {
       if (firebaseUser) {
@@ -154,7 +162,6 @@ const AppContent: React.FC = () => {
           displayName: firebaseUser.displayName,
           email: firebaseUser.email,
           avatar: firebaseUser.photoURL,
-          // balance and other app-specific fields would be fetched from a database
         };
         setCurrentUser(appUser);
         setIsLoggedIn(true);
@@ -171,14 +178,61 @@ const AppContent: React.FC = () => {
     return (translations[language] as any)[translationKey] || (translations.ENG as any)[translationKey] || fallback || key;
   }, [language]);
 
+  const handleAuthError = (error: AuthError) => {
+    loggingService.logError(error);
+    switch (error.code) {
+      case 'auth/email-already-in-use':
+        return t('emailAlreadyExists');
+      case 'auth/invalid-email':
+        return t('invalidEmail');
+      case 'auth/weak-password':
+        return t('weakPassword');
+      case 'auth/user-not-found':
+      case 'auth/wrong-password':
+      case 'auth/invalid-credential':
+        return t('invalidCredentials');
+      default:
+        return t('loginError');
+    }
+  };
+
   const handleGoogleSignIn = async () => {
     try {
       await signInWithPopup(auth, googleProvider);
       addToast(t('loginSuccess'), 'success');
       setIsAuthModalOpen(false);
     } catch (error) {
-      loggingService.logError(error, { context: 'handleGoogleSignIn' });
-      addToast(t('loginError'), 'error');
+      const authError = error as AuthError;
+      // Don't show an error if the user just closes the popup
+      if (authError.code !== 'auth/popup-closed-by-user') {
+        const message = handleAuthError(authError);
+        addToast(message, 'error');
+      }
+    }
+  };
+
+  const handleEmailRegister = async (email: string, password: string, username: string) => {
+    try {
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
+      await updateProfile(userCredential.user, { displayName: username });
+      addToast(t('registerSuccess'), 'success');
+      setIsAuthModalOpen(false);
+    } catch (error) {
+      const message = handleAuthError(error as AuthError);
+      addToast(message, 'error');
+      throw new Error(message); // Re-throw to be caught in modal
+    }
+  };
+
+  const handleEmailLogin = async (email: string, password: string) => {
+    try {
+      await signInWithEmailAndPassword(auth, email, password);
+      addToast(t('loginSuccess'), 'success');
+      setIsAuthModalOpen(false);
+    } catch (error) {
+      const message = handleAuthError(error as AuthError);
+      addToast(message, 'error');
+      throw new Error(message); // Re-throw to be caught in modal
     }
   };
 
@@ -192,33 +246,9 @@ const AppContent: React.FC = () => {
     }
   };
 
-  // TODO: Re-implement Top-Up functionality with a proper backend/database.
-  // The previous implementation was tied to the mock user database and will not work
-  // with Firebase Authentication without a service like Firestore to store user balances.
   const handleTopUp = async (amount: number) => {
      if (!currentUser) return;
      addToast('Top-up functionality is currently disabled.', 'info');
-     // The original code is commented out below for reference.
-     /*
-     try {
-       type StoredUser = User & { password?: string };
-       const users = JSON.parse(sessionStorage.getItem('mock_users_db') || '{}') as Record<string, StoredUser>;
-       const freshUser = Object.values(users).find(u => u.id === currentUser.id);
-
-       if (!freshUser) {
-         throw new Error('userNotFound');
-       }
-
-       const updatedUser = await api.updateBalance(freshUser.id, Number(amount));
-       setCurrentUser(updatedUser);
-       addToast(t('topUpSuccessMessage'), 'success');
-       setIsTopUpModalOpen(false);
-     } catch (error) {
-       addToast(t('topUpFailed'), 'error');
-       loggingService.logError(error);
-       throw error;
-     }
-     */
   };
 
   const onLoginClick = () => setIsAuthModalOpen(true);
@@ -261,8 +291,9 @@ const AppContent: React.FC = () => {
       <AuthModal
         isOpen={isAuthModalOpen}
         onClose={() => setIsAuthModalOpen(false)}
-        onLogin={handleGoogleSignIn} // Changed from onLogin/onRegister
-        onRegister={() => {}} // No longer used
+        onGoogleSignIn={handleGoogleSignIn}
+        onEmailLogin={handleEmailLogin}
+        onEmailRegister={handleEmailRegister}
         t={t}
       />
       <TopUpModal
